@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Invoice - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" type="text/css" href="/static/datatables.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+        <link href="/static/css.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/static/jquery.css">
+    </head>
+    <body id="dashboard" class="account">
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+        
+         <div class="container-fluid margin-free sidebar-open">
+            {% include "sidebar_block.html" %}
+            <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="/dealer/home/"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li class="active">Invoice</li>
+                    </ol>
+                    <div class="clear"></div>
+                    <div id="json-response">
+                      <div class="table-responsive">
+                        <table class="table filterable display responsive no-wrap" width="100%">
+                          <thead>
+                            <tr>
+                              <th>Id</th>
+                              <th>Vehicle Number</th>
+                              <th>Model</th>
+                              <th>Status</th>
+                              <th>Payment Mode</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% if jobcards %}
+                            {% for jobcard in jobcards %}
+                            <tr>
+                              <td>{{jobcard.jc_id}}</td>
+                              <td>{{jobcard.veh_no}}</td>
+                              <td>{{jobcard.model}}</td>
+                              <td>{{jobcard.status}}</td>
+                              {% if jobcard.invoice %}
+                              <td>{{jobcard.mode}}</td>
+                              <td><a target="_blank" href="/view/invoice/?jc={{jobcard.jc_id}}" class="btn btn-success btn-xs">View Invoice</a></td>
+                              {% elif jobcard.status == "CLOSED"%}
+                              <form id="{{jobcard.jc_id}}" novalidate="novalidate" action="/api/generate/invoice/" method="POST" class="invoice">
+                              <td><select aria-required="true" name="{{jobcard.jc_id}}" id="mode" class="form-control" required="">
+                                    <option value="CASH" selected>CASH</option>
+                                    <option value="CARD">CARD</option>
+                                  </select>
+                              </td>
+                              <td>
+                                  <button type="submit" form="{{jobcard.jc_id}}" class="btn btn-success btn-xs">Generate Invoice</button>
+                              </td>
+                              </form>
+                              {% else %}
+                              <td>-</td>
+                              <td>-</td>
+                              <!--form id="{{jobcard.jc_id}}" novalidate="novalidate" action="/api/generate/invoice/" method="POST" class="invoice">
+                              <td><select aria-required="true" name="{{jobcard.jc_id}}" id="mode" class="form-control" required="">
+                                    <option value="CASH" selected>CASH</option>
+                                    <option value="CARD">CARD</option>
+                                  </select>
+                              </td>
+                              <td>
+                                  <button type="submit" form="{{jobcard.jc_id}}" class="btn btn-success btn-xs">Generate Invoice</button>
+                              </td>
+                              </form-->
+                              {% endif %}
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <p class="alert alert-warning">
+                              No Jobcards found! Please create new Jobcards or try again later.
+                            </p>
+                            {% endif %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="/static/jquery.js"></script>
+        <script src="/static/bootstrap.js"></script>
+        <script type="text/javascript" src="/static/datatables.js"></script>
+        <script src="/static/script.js"></script>
+        
+        <script>
+            jQuery(document).ready(function($){
+                            $('.filterable').DataTable({
+                                responsive: true
+                            });
+                });
+        </script>
+        <script>
+            jQuery(document).ready(function($) {
+                $( ".invoice" ).submit(function( event ) {
+                     event.preventDefault();
+                     var jc_id = $(this).attr('id');
+                     var mode = $('select[name='+jc_id +']').val();
+                     var url  = $(this).attr('action');
+                     var data = JSON.stringify({ data : {jc_id : jc_id, pmt_mode : mode}});
+                     
+                     var posting = $.post( url, data);
+                     posting.done(function( data ) {
+                         if (data.status == "failure") {
+                           alert(data.msg);
+                         } else if (data.status == "success"){
+                           window.location.reload(true);
+                         }
+                         else {
+                           alert("Oops!! Something went wrong!");
+                         }
+                     });
+                });
+            });  
+        </script>
+</body></html>

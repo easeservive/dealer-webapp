@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Update Inventory - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link rel="stylesheet" href="/static/bootstrap-switch.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+        <link href="/static/css.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/static/jquery.css">
+    </head>
+    <body id="dashboard" class="account service-history">
+        {% include "navbar_block.html" %}
+        <div class="container-fluid margin-free sidebar-open">
+            {% include "sidebar_block.html" %}
+            <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="/dealer/home/"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li class="active"><a href="/dealer/inventory/">Spares Inventory</a></li>
+                        <li class="active">Edit Inventory</li>
+                    </ol>
+                    <div class="col-sm-12 padding-left-free">
+                        <h2 class="title">Edit Inventory
+                        </h2>
+                    </div>
+                    <div class="clear"></div>
+                    <form action="/api/update/inventory" method="POST" id="update-inventory">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="part_no">Part Number</label>
+                                <input name="part_no" id="part_no" class="form-control" disabled type="text" value="{{ identifier }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <input name="description" id="description" class="form-control" type="text" value="{{ description }}">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="brand">Brand</label>
+                                <input name="brand" id="brand" class="form-control" type="text" value="{{ brand }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="model">Model</label>
+                                <input name="model" id="model" class="form-control" type="text" value="{{ model }}">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="min_qty">Min Qty</label>
+                                <input name="min_qty" id="min_qty" class="form-control" type="text" value="{{ min_qty }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="available_qty">Available Qty</label>
+                                <input name="available_qty" id="available_qty" class="form-control" type="text" value="{{ avail_qty }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ndp">NDP</label>
+                                <input name="ndp" id="ndp" class="form-control" type="text" value="{{ NDP }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="mrp">MRP</label>
+                                <input name="mrp" id="mrp" class="form-control" type="text" value="{{ MRP }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="alternate">Alternate Part</label>
+                                <input name="alternate" id="alternate" class="form-control" type="text" value="{{ alternate }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <h5 style="display: inline-block;font-weight: bold;margin-bottom: 5px; margin-top:30px">Is Critical</h5>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group" style="margin-bottom: 5px; margin-top:25px; margin-left: -180px">
+                            {% if critical %}
+                            <input type="checkbox" class="my-checkbox" name="critical" checked/>
+                            {% else %}
+                            <input type="checkbox" class="my-checkbox" name="critical"/>
+                            {% endif %}
+                             </div>
+                        </div>
+                        <!--div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="critical">Is Critical</label>
+                                {% if critical %}
+                                <input type="checkbox" class="my-checkbox" name="critical" checked/>
+                                {% else %}
+                                <input type="checkbox" class="my-checkbox" name="critical"/>
+                                {% endif %}
+                            </div>
+                        </div-->
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <button class="btn btn-pink">Save</button>
+                                <a class="btn btn-pink" href="/dealer/inventory/">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="/static/jquery_002.js"></script>
+        <script src="/static/bootstrap.js"></script>
+        <script src="/static/jquery.js"></script>
+        <script src="/static/bootstrap-switch.js"></script>
+        <!--script src="/static/script.js"></script-->
+        
+        <script>
+          // Attach a submit handler to the form
+          $( "#update-inventory" ).submit(function( event ) {
+            // Stop form from submitting normally
+            event.preventDefault();
+ 
+            // Get some values from elements on the page:
+            var $form = $( this ),
+            part_no = $form.find( "input[name='part_no']" ).val(),
+            desc = $form.find( "input[name='description']" ).val(),
+            inv_brand = $form.find( "input[name='brand']" ).val(),
+            inv_model = $form.find( "input[name='model']" ).val(),
+            minimum_qty = $form.find( "input[name='min_qty']" ).val(),
+            available_qty = $form.find( "input[name='available_qty']" ).val(),
+            inv_ndp = $form.find( "input[name='ndp']" ).val(),
+            inv_mrp = $form.find( "input[name='mrp']" ).val(),
+            alt = $form.find( "input[name='alternate']" ).val(),
+            crit = $form.find( "input[name='critical']" ).val(),
+            url = $form.attr( "action" );
+ 
+            var critical;
+            if (crit == "on") {
+                critical = '1';
+            } else {
+                critical = '0';
+            }
+            // Send the data using post
+            var posting = $.post( url, { identifier: part_no, description: desc, brand: inv_brand, model : inv_model, ndp: inv_ndp, mrp: inv_mrp, min_qty: minimum_qty, avail_qty: available_qty, alternate:alt, critical: critical  } );
+ 
+            // Put the results in a div
+            posting.done(function( data ) {
+              console.log(data)
+              if (data.status == "failure") {
+                  alert(data.msg);
+              } else if (data.status == "success"){
+                  alert(data.msg);
+              }
+              else {
+                  alert("Oops!! Something went wrong!");
+              }
+              //var content = $( data ).find( "#content" );
+              //$( "#result" ).empty().append( content );
+            });
+          });
+
+          $(".my-checkbox").bootstrapSwitch({
+                                size : 'mini',
+                                onText : 'Yes',
+                                offText : 'No',
+                                onColor : 'success',
+                                offColor : 'warning'
+                            });
+        </script>
+
+
+</body></html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Edit Jobcard - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/css/printjc.css" type="text/css" media="print"/>   
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="/static/css.css">
+        <link rel="stylesheet" href="/static/jquery-ui.css">
+        <link rel="stylesheet" href="/static/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="/static/bootstrap-datetimepicker.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+            <style>
+            @media print {
+                  .side-nav {
+                     display: none !important;
+                  }   
+                  body, html, #wrapper {
+                      width: 100%;
+                  }
+            }
+        </style>
+    </head>
+    <body id="dashboard" class="account">
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+
+        <div class="container-fluid margin-free sidebar-open">
+            {% if user_agent == "android" %}
+                {% include "sidebar_block_mobile.html" %}
+            {% else %}
+                {% include "sidebar_block.html" %}
+            {% endif %}
+            <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="/dealer/home/"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li><a href="/jobcard/">Jobcard</a></li>
+                        <li class="active">Edit</li>
+                    </ol>
+                    <div class="col-sm-12">
+                        <div class="col-sm-12 padding-left-free">
+                            <h2 class="title">Edit Jobcard</h2>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="col-sm-12 padding-left-free">
+                            <form action="/api/save/jobcard" method="POST" id="editjc" class="validate-form">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="cust_name">Name</label>
+                                        <input value="{{cust_name}}" disabled name="cust_name" id="cust_name"  required type="text" class="form-control">
+                                        <input type="hidden" name="jobcard_id" value="{{ jc_id }}"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="cont_num">Mobile number</label>
+                                        <input value="{{cont_num}}" disabled name="cont_num" id="cont_num" required type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="cont_addr">Address</label>
+                                        <input value="{{cont_address}}" disabled name="cont_addr" id="cont_addr" required type="text" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="number">Enter Vehicle number</label>
+                                        <input type="text" name="number" id="number" required value="{{veh_num}}" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="chasis">Enter Chasis number</label>
+                                        <input type="text" name="chasis" readonly id="chasis" required value="{{c_num}}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="brand">Brand</label>
+                                        <input type="text" name="brand" id="brand" required value="{{brand}}" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="model">Model</label>
+                                        <input type="text" name="model" value="{{model}}" required disabled id="model" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="type">Fuel Type</label>
+                                        <input type="text" name="type" disabled required value="{{fuel_type}}" id="type" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="kms">Kilometers</label>
+                                        <input type="text" name="kms" value="{{km_ticked}}" required disabled id="kms" class="form-control">
+                                    </div>
+                                </div>
+                                {% if status == "CLOSED" %}
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <input type="text" name="status" value="{{status}}" required disabled id="status" class="form-control">
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select name="status" id="status" class="form-control" required>
+                                        {% if status == "OPEN" %}
+                                            <option value="OPEN" selected>OPEN</option>
+                                            <option value="CLOSED">CLOSED</option>
+                                            <option value="PENDING">PENDING</option>
+                                        {% elif status == "PENDING" %}
+                                            <option value="OPEN">OPEN</option>
+                                            <option value="CLOSED">CLOSED</option>
+                                            <option value="PENDING" selected>PENDING</option>
+                                        {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="reason">Pending Reason</label>
+                                        {% if status == "CLOSED" %}
+                                        <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" disabled>
+                                        {% else %}
+                                        <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" required=""/>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if status != "CLOSED" %}
+                                <div class="col-sm-12">
+                                    <div class="form-group transistion">
+                                        <label for="customer-complaint">Customer Complaint</label>
+                                        <input type="text" id="customer-complaint" class="form-control" name="complaint">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="col-sm-12">
+                                    <div id="customer-items">
+                                        {% if status == "CLOSED" %}
+                                        <label for="serviceitems">Service Items</label>
+                                        {% for service in services %}
+                                        <div class="form-group checkbox">
+                                            <input type="checkbox" value="1" disabled class="uncheck-customer-complaint customer-checkbox" checked id="{{ service.description|slugify }}">
+                                            <label for="{{ service.description|slugify }}">{{ service.description }}</label>
+                                        </div>
+                                        {% endfor %}
+                                        {% else %}
+                                        {% for service in services %}
+                                        <div class="form-group checkbox">
+                                            <input type="hidden" class="customer-complaints" value="{{ service.description }}"/>
+                                            <input type="hidden" class="customer-complaints-ids" value="{{service.id}}"/>
+                                            <input type="checkbox" name="customer_complaints[]" value="1" class="uncheck-customer-complaint customer-checkbox" checked id="{{ service.description|slugify }}">
+                                            <label for="{{ service.description|slugify }}">{{ service.description }}</label>
+                                        </div>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if status != "CLOSED" %}
+                                <div class="col-sm-12">
+                                    <div class="form-group transistion">
+                                        <label for="recommended">Recommended Services</label>
+                                        <input type="text" class="form-control" name="recommended" id="recommended">
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="col-sm-12">
+                                    <div id="recommended-items">
+
+                                      {% if status == "CLOSED" and recommendedservices %}
+                                      <label for="serviceitems">Recommended Service Items</label>
+                                      {% for service in recommendedservices %}
+                                      <div class="form-group checkbox">
+                                          <input type="checkbox" value="1" disabled class="uncheck-recommended-item recommended-checkbox" checked id="{{ service|slugify }}">
+                                          <label for="{{ service|slugify }}">{{ service }}</label>
+                                      </div>
+                                      {% endfor %}
+
+
+                                      {% else %}
+                                      {% for service in recommendedservices %}
+                                      <div class="form-group checkbox">
+                                          <input type="hidden" class="recommended-items" value="{{ service }}"/>
+                                          <input type="hidden" class="recommended-items-ids" value=""/>
+                                          <input type="checkbox" name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="{{ service|slugify }}">
+                                          <label for="{{ service|slugify }}">{{ service }}</label>
+                                          <a class="remove-me"><i class="ion-ios-close"></i></a>
+                                      </div>
+                                      {% endfor %}
+                                      {% endif %}
+
+                                    </div>
+                                </div>
+                                {% if status == "CLOSED" and recommendedservices %}
+                                <div class="col-sm-12">
+                                {% else %}
+                                <div class="col-sm-12" style="margin-top: 20px">
+                                {% endif %}
+                                    <div id="parts-estimation">
+                                        <div class='table-responsive'>
+                                          <table class='table'>
+                                            <thead>
+                                                <tr>
+                                                    <th>Parts</th>
+                                                    <th>Description</th>
+                                                    <th>Unit Price</th>
+                                                    <th>Qty</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% if status != "CLOSED" %}
+                                                <tr class="insert-after">
+                                                    <input type="hidden" value="" class="parts_ids" name="parts_ids[]">
+                                                    <td><input type="text" class="form-control parts"/></td>
+                                                    <td><input type="text" class="form-control description sparesdescription"/></td>
+                                                    <td><input type="text" readonly disabled class="form-control price" id="u_price"/></td>
+                                                    <td><input type="number" min="0" class="form-control qty" id="quantity"/></td>
+                                                    <td><input type="text" class="form-control total_price" readonly id="tot_price"/></td>
+                                                    <td><a class="btn btn-success add-part">Add</a></td>
+                                                </tr>
+                                                {% endif %}
+                                                {% for spare in spares %}
+                                                <tr>
+                                                    <input type="hidden" value="{{spare.id}}" class="parts_ids" name="parts_ids[]">
+                                                    <td>{{spare.identifier}}<input type="hidden" value="{{spare.identifier}}" class="parts" name="parts[]"/></td>
+                                                    <td>{{spare.description}}<input type="hidden" value="{{spare.description}}" class="sparesdescription" name="sparesdescription[]"/></td>
+                                                    <td><span class="price-innerhtml">{{spare.unit_price}}</span><input type="hidden" class="price" value="{{spare.unit_price}}" name="prices[]"/></td>
+                                                    <td>{{spare.quantity}}<input type="hidden" value="{{spare.quantity}}" class="qty" id="qty" name="qty[]"/></td>
+                                                    <td>{{spare.total_price}}<input type="hidden" class="total_price" id="total_price" value="{{spare.total_price}}" name="total_price[]"</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="labour-estimation">Other Parts</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" name="op" disabled required id="op" class="form-control" value="{{otherparts}}">
+                                            {% else %}
+                                            <input type="text" name="op" required id="op" class="form-control" value="{{otherparts}}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="labour-estimation">Price</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" name="oc" disabled required id="oc" class="form-control" value="{{othercost}}">
+                                            {% else %}
+                                            <input type="text" name="oc" required id="oc" class="form-control" value="{{othercost}}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="labour-estimation">Labour Cost Estimation</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" name="labour_estimation" disabled required id="labour-estimation" class="form-control" value="{{lab_cost}}">
+                                            {% else %}
+                                            <input type="text" name="labour_estimation" required id="labour-estimation" class="form-control" value="{{lab_cost}}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="total-parts-cost">Total Parts cost</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" disabled name="total_parts_cost" required id="total-parts-cost" class="form-control" value="{{total_parts_cost_editjc}}">
+                                            {% else %}
+                                            <input type="text" name="total_parts_cost" required id="total-parts-cost" class="form-control" value="{{total_parts_cost_editjc}}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="total-estimation">Total Estimation</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" disabled name="total_estimation" required readonly id="total-estimation" class="form-control" value="{{total_cost_editjc}}">
+                                            {% else %}
+                                            <input type="text" name="total_estimation" required readonly id="total-estimation" class="form-control" value="{{total_cost_editjc}}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <div class="col-sm-4 transistion">
+                                        <div class="form-group overflow-not-hidden">
+                                            <label for="delivery-time">Delivery Time</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" disabled name="delivery_time" required id="delivery-time" class="form-control" value="{{del_time}}">
+                                            {% else %}
+                                            <input type="text" name="delivery_time" required id="delivery-time" class="form-control" value="{{del_time}}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group overflow-not-hidden">
+                                        <label for="service-reminder-time">Service Reminder Time</label>
+                                        {% if status == "CLOSED" %}
+                                        <input type="text" disabled name="service-reminder-time" required id="service-reminder-time" class="form-control" value="{{service_reminder_time}}">
+                                        {% else %}                                    <input type="text" name="service-reminder-time" required id="service-reminder-time" class="form-control" value="{{service_reminder_time}}">{% endif %}
+                                    </div>
+                                </div>
+
+                                </div>
+                                <div class="clear"></div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {% if status == "CLOSED" %}
+                                        <a href="/jobcard/" class="btn btn-pink">Back</a>
+                                        {% else %}
+                                         {% if user_agent != "android" %}                
+                                        <a href="#" onclick="myFunction()" class="btn btn-default btn-pink"> <span class="glyphicon glyphicon-print"></span> Print JobCard </a>  
+                                        {% endif %}
+                                        <button class="btn btn-default btn-pink">Save Jobcard</button>
+                                        <a href="/jobcard/" class="btn btn-pink">Cancel</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!--div class="col-sm-6">
+                                    <a href="#" data-target="#add-parts" class="pull-right btn btn-success toggle-content">Add Parts</a>
+                                </div-->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+      function myFunction() {
+          window.print();
+      }</script> 
+        <script src="/static/browser-polyfill.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/u/bs/jqc-1.12.3,dt-1.10.12,cr-1.3.2,r-2.1.0/datatables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+        <script src="/static/bootstrap-datetimepicker.js"></script>
+        <script src="/static/jquery-ui.js"></script>
+        <script src="/static/bootstrap-datepicker.js"></script>
+        <script src="/static/createjobcard.js"></script>
+    </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Dashboard - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+        <link href="/static/css.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/static/jquery.css">
+    </head>
+    <body id="dashboard" class="account">
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+
+        <div class="container-fluid margin-free sidebar-open">
+            {% if user_agent == "android" %}
+                {% include "sidebar_block_mobile.html" %}
+            {% else %}
+                {% include "sidebar_block.html" %}
+            {% endif %}            
+               <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li class="active">Dashboard</li>
+                    </ol>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="panel panel-default light-red">
+                                <div class="panel-heading">
+                                    Current JC
+                                </div>
+                                <div class="panel-body">
+                                    {{ open_jc }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="panel panel-default light-blue">
+                                <div class="panel-heading">
+                                    Pending JC
+                                </div>
+                                <div class="panel-body">
+                                    {{ pending_jc }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="panel panel-default light-yellow">
+                                <div class="panel-heading">
+                                    Vehicles to be delivered
+                                </div>
+                                <div class="panel-body">
+                                    {{ to_deliever_today }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="panel panel-default light-green">
+                                <div class="panel-heading">
+                                    Min Order Required
+                                </div>
+                                <div class="panel-body">
+                                    {{ min_order }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="/static/jquery.js"></script>
+        <script src="/static/bootstrap.js"></script>
+        <script src="/static/script.js"></script>
+    
+
+</body></html>

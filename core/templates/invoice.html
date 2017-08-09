@@ -1,0 +1,264 @@
+{% load mathfilters %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>View - Ease Service</title>
+    <link rel="stylesheet" href="/static/bootstrap.css">
+    <link rel="stylesheet" href="/static/dashboard.css"> 
+    <style>
+
+    th {
+        text-align: None;
+    }
+    .invoice-box{
+        max-width:800px;
+        margin:auto;
+        padding:30px;
+        border:1px solid #eee;
+        box-shadow:0 0 10px rgba(0, 0, 0, .15);
+        font-size:16px;
+        line-height:24px;
+        font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        color:#555;
+    }
+    
+    .invoice-box table{
+        width:100%;
+        line-height:inherit;
+        text-align:left;
+    }
+    
+    .invoice-box table td{
+        padding:5px;
+        vertical-align:top;
+    }
+    
+    /*.invoice-box table tr td:nth-child(2){
+        text-align:right;
+    }*/
+    
+    .invoice-box table tr.top table td{
+        padding-bottom:20px;
+    }
+    
+    .invoice-box table tr.top table td.title{
+        font-size:45px;
+        line-height:45px;
+        color:#333;
+    }
+    
+    .invoice-box table tr.information table td{
+        padding-bottom:40px;
+    }
+    
+    .invoice-box table tr.heading td{
+        background:#eee;
+        border-bottom:1px solid #ddd;
+        font-weight:bold;
+    }
+    
+    .invoice-box table tr.details td{
+        padding-bottom:20px;
+    }
+    
+    .invoice-box table tr.item td{
+        border-bottom:1px solid #eee;
+    }
+    
+    .invoice-box table tr.item.last td{
+        border-bottom:none;
+    }
+    
+    .invoice-box table tr.total td:nth-child(7) {
+        border-top:2px solid #eee;
+        font-weight:bold;
+    }
+    
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+            width:100%;
+            display:block;
+            text-align:center;
+        }
+        
+        .invoice-box table tr.information table td {
+            width:100%;
+            display:block;
+            /*text-align:center;*/
+        }
+    }
+
+    @media print {
+       .dontprint {
+           display: none !important;
+       }
+       .invoice-box table tr.heading td{
+        background:#eee;
+        border-bottom:1px solid #ddd;
+        font-weight:bold;
+    }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <h3 align="center">Invoice</h3>
+        <table cellpadding="0" cellspacing="0">
+           <!--tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="http://nextstepwebs.com/images/logo.png" style="width:100%; max-width:300px;">
+                            </td>
+                            
+                            <td>
+                                Invoice #: 123<br>
+                                Created: January 1, 2015<br>
+                                Due: February 1, 2015
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr-->
+           <tr class="information">
+                <td colspan="3">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Invoice Details</th>
+                            <th style="text-align:left !important">Customer Details</th>
+                            <th style="text-align:right !important">Vehicle Details</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{jobcard_details.inv_no}}<br>
+                                {{jobcard_details.jc_id}}<br>
+                                {{jobcard_details.gen_date}}<br>
+                                {{jobcard_details.pay_mode}}
+                            </td>
+                            <td>
+                                {{jobcard_details.cust_name}}<br>
+                                {{jobcard_details.cont_address}}<br>
+                                {{jobcard_details.cont_num}}
+                            </td>
+
+                            <td style="text-align:right !important">
+                                {{jobcard_details.veh_num}}<br>
+                                {{jobcard_details.brand}} {{jobcard_details.model}}<br>
+                                {{jobcard_details.c_num}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr> 
+        </table>
+        <table cellpadding="0" cellspacing="0">
+            
+            <tr class="heading">
+                <td align="left">SNo</td>
+                <td align="left">Part Number</td>
+                <td align="left">Description</td>
+                <td align="left">Rate</td>
+                <td align="left">Qty</td>
+                <td align="left">Tax</td>
+                <td align="right">Price</td>
+            </tr>
+            {% if jobcard_details.spares %}
+            {% for spare in jobcard_details.spares %}
+            <tr class="item">
+                <td align="left">{{forloop.counter}}</td>
+                <td align="left">{{spare.identifier}}</td>
+                <td align="left">{{spare.description}}</td>
+                <td align="left">{{spare.unit_price}}</td>
+                <td align="left">{{spare.quantity}}</td>
+                <td align="left">{{spare.tax}}</td>
+                <td align="right">{{spare.taxable_price}}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr class="item">
+                <td align="left">-</td>
+                <td align="left">-</td>
+                <td align="left">-</td>
+                <td align="left">-</td>
+                <td align="left">-</td>
+                <td align="left">-</td>
+                <td align="right">-</td>
+            </tr>
+            {% endif %}
+                <tr class="heading">
+                <td align="left">SNo</td>
+                <td align="left">Other Parts</td>
+                <td align="left">Description</td>
+                <td align="left">Rate</td>
+                <td align="left">Qty</td>
+                <td align="left">Tax</td>
+                <td align="right">Price</td>
+            </tr>
+            <tr class="item">
+                <td align="left">1</td>
+                <td align="left">-</td>
+                <td align="left">{{jobcard_details.otherparts}}</td>
+                <td align="left">{{jobcard_details.othercost}}</td>
+                <td align="left">-</td>
+                <td align="left">{{jobcard_details.optax}}</td>
+                <td align="right">{{ jobcard_details.optaxableprice}}</td>
+            </tr> 
+            <tr class="total">
+                <td align="left"></td>
+                <td align="left"></td>
+                <td align="left"></td>
+                <td align="left"></td>
+                <td align="left"></td>
+                <td align="left"></td>
+                <td align="right">Total: ₹{{jobcard_details.total_taxable_price}}</td>
+            </tr>
+        </table>
+        <br>
+        <table cellpadding="0" cellspacing="0">
+          <thead><tr><th>Recommended Serives</th></tr></thead>
+          <tbody>
+          {% for recommendedservice in jobcard_details.recommendedservices %}
+          <tr class="item"><td>{{ recommendedservice }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <h4>
+        <table cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="right">Labour charge: </td><td align="left"> ₹{{jobcard_details.lab_cost}}</td>
+          </tr>
+          <tr>
+            <td align="right">Service Tax %: </td><td align="left">{{ jobcard_details.service_tax }}</td>
+          </tr>
+          <tr>
+            <td align="right">Labour charge with Service Tax: </td><td align="left"> ₹{{jobcard_details.lab_cost_with_tax}}</td>
+          </tr>
+          <tr>
+            <td align="right">Total payable amount: </td><td align="left"> ₹{{jobcard_details.total_cost_with_tax}}</td>
+          </tr>
+
+        </table>
+        <br>
+        <br>
+        <div align="center" class="dontprint">
+            <a href="#" onclick="myFunction()" class="btn btn-default btn-pink"> <span class="glyphicon glyphicon-print"></span> Print  </a></p>
+        </div>
+    </div>
+    <script>
+      function myFunction() {
+          window.print();
+      }
+    </script>
+</body>
+</html>

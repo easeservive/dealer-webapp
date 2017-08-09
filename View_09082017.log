@@ -1,0 +1,108 @@
+2017-08-09 17:27:45,513 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:27:45,516 | DEBUG | Rendered login page.
+2017-08-09 17:46:19,855 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:46:19,858 | DEBUG | Rendered login page.
+2017-08-09 17:46:23,276 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:46:23,279 | DEBUG | Rendered login page.
+2017-08-09 17:46:23,553 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:46:23,555 | DEBUG | Rendered login page.
+2017-08-09 17:47:16,036 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:47:16,041 | DEBUG | Rendered login page.
+2017-08-09 17:47:21,217 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:47:21,221 | DEBUG | Rendered login page.
+2017-08-09 17:47:22,497 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:47:22,500 | DEBUG | Rendered login page.
+2017-08-09 17:48:40,486 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 17:48:40,489 | DEBUG | Rendered login page.
+2017-08-09 18:40:37,272 | DEBUG | Dealer login request for : pygroot
+2017-08-09 18:40:37,312 | DEBUG | Dealer login response for pygroot : {'msg': 'The username and password were incorrect.', 'status': 'failure'}
+2017-08-09 18:40:40,906 | DEBUG | Dealer login request for : pygroot
+2017-08-09 18:40:40,960 | DEBUG | Dealer login response for pygroot : {'msg': 'The username and password were incorrect.', 'status': 'failure'}
+2017-08-09 18:40:44,787 | DEBUG | Dealer login request for : pygroot
+2017-08-09 18:40:44,818 | DEBUG | Dealer login response for pygroot : {'msg': 'The username and password were incorrect.', 'status': 'failure'}
+2017-08-09 18:41:52,452 | DEBUG | Dealer login request for : pygroot
+2017-08-09 18:41:52,528 | DEBUG | Dealer login response for pygroot : {'status': 'success', 'url': '/dealer/home/'}
+2017-08-09 18:41:52,576 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:41:52,576 | DEBUG | Home page request for : pygroot
+2017-08-09 18:41:52,596 | DEBUG | Rendered home page for : pygroot
+2017-08-09 18:42:45,130 | DEBUG | DEALER VIEW : Job card home request for pygroot through GET method
+2017-08-09 18:42:45,130 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:42:45,137 | DEBUG | DEALER VIEW : Rendered Get Job card page for : pygroot
+2017-08-09 18:42:45,393 | DEBUG | JOBCARD VIEW : Get Job card request detail pygroot
+2017-08-09 18:42:45,393 | DEBUG | JOBCARD VIEW : Get Job card request detail <WSGIRequest: POST '/api/get/jobcards/'>
+2017-08-09 18:42:45,394 | DEBUG | JOBCARD VIEW : Get Job card list request for pygroot
+2017-08-09 18:42:45,394 | DEBUG | JOBCARD VIEW : Get Job card list request for True
+2017-08-09 18:42:45,395 | DEBUG | JOBCARD VIEW : Get Job card list response - {'status': 'success', 'data': []}
+2017-08-09 18:42:49,779 | DEBUG | DEALER VIEW : Create job card request for pygroot through GET method
+2017-08-09 18:42:49,782 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:42:49,787 | DEBUG | DEALER VIEW : Rendered Create job card page for : pygroot
+2017-08-09 18:42:50,478 | DEBUG | PARTS GET REQQ : Fetch PARTS details: pygroot :
+2017-08-09 18:42:50,478 | DEBUG | JOBCARD VIEW : Data for Parts suggestion request for  pygroot
+2017-08-09 18:42:50,479 | DEBUG | JOBCARD VIEW : Data for Parts suggestion response - {'status': 'failure', 'msg': 'No stocks in inventory.'}
+2017-08-09 18:43:20,791 | DEBUG | DEALER VIEW : Job card home request for pygroot through GET method
+2017-08-09 18:43:20,791 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:43:20,798 | DEBUG | DEALER VIEW : Rendered Get Job card page for : pygroot
+2017-08-09 18:43:21,080 | DEBUG | JOBCARD VIEW : Get Job card request detail pygroot
+2017-08-09 18:43:21,080 | DEBUG | JOBCARD VIEW : Get Job card request detail <WSGIRequest: POST '/api/get/jobcards/'>
+2017-08-09 18:43:21,081 | DEBUG | JOBCARD VIEW : Get Job card list request for pygroot
+2017-08-09 18:43:21,081 | DEBUG | JOBCARD VIEW : Get Job card list request for True
+2017-08-09 18:43:21,081 | DEBUG | JOBCARD VIEW : Get Job card list response - {'status': 'success', 'data': []}
+2017-08-09 18:43:29,149 | DEBUG | DEALER VIEW : Create job card request for pygroot through GET method
+2017-08-09 18:43:29,166 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:43:29,172 | DEBUG | DEALER VIEW : Rendered Create job card page for : pygroot
+2017-08-09 18:43:29,384 | DEBUG | PARTS GET REQQ : Fetch PARTS details: pygroot :
+2017-08-09 18:43:29,384 | DEBUG | JOBCARD VIEW : Data for Parts suggestion request for  pygroot
+2017-08-09 18:43:29,384 | DEBUG | JOBCARD VIEW : Data for Parts suggestion response - {'status': 'failure', 'msg': 'No stocks in inventory.'}
+2017-08-09 18:51:38,508 | DEBUG | DEALER VIEW : Create job card request for pygroot through GET method
+2017-08-09 18:51:38,513 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:51:38,518 | DEBUG | DEALER VIEW : Rendered Create job card page for : pygroot
+2017-08-09 18:51:38,741 | DEBUG | PARTS GET REQQ : Fetch PARTS details: pygroot :
+2017-08-09 18:51:38,742 | DEBUG | JOBCARD VIEW : Data for Parts suggestion request for  pygroot
+2017-08-09 18:51:38,742 | DEBUG | JOBCARD VIEW : Data for Parts suggestion response - {'status': 'failure', 'msg': 'No stocks in inventory.'}
+2017-08-09 18:51:40,806 | DEBUG | DEALER VIEW : Job card home request for pygroot through GET method
+2017-08-09 18:51:40,806 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:51:40,813 | DEBUG | DEALER VIEW : Rendered Get Job card page for : pygroot
+2017-08-09 18:51:41,064 | DEBUG | JOBCARD VIEW : Get Job card request detail pygroot
+2017-08-09 18:51:41,064 | DEBUG | JOBCARD VIEW : Get Job card request detail <WSGIRequest: POST '/api/get/jobcards/'>
+2017-08-09 18:51:41,065 | DEBUG | JOBCARD VIEW : Get Job card list request for pygroot
+2017-08-09 18:51:41,065 | DEBUG | JOBCARD VIEW : Get Job card list request for True
+2017-08-09 18:51:41,066 | DEBUG | JOBCARD VIEW : Get Job card list response - {'data': [], 'status': 'success'}
+2017-08-09 18:51:48,611 | DEBUG | DEALER VIEW : Create job card request for pygroot through GET method
+2017-08-09 18:51:48,615 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:51:48,620 | DEBUG | DEALER VIEW : Rendered Create job card page for : pygroot
+2017-08-09 18:51:48,838 | DEBUG | PARTS GET REQQ : Fetch PARTS details: pygroot :
+2017-08-09 18:51:48,838 | DEBUG | JOBCARD VIEW : Data for Parts suggestion request for  pygroot
+2017-08-09 18:51:48,839 | DEBUG | JOBCARD VIEW : Data for Parts suggestion response - {'status': 'failure', 'msg': 'No stocks in inventory.'}
+2017-08-09 18:53:01,191 | DEBUG | DEALER VIEW : Invoice page request for pygroot through GET method
+2017-08-09 18:53:01,200 | DEBUG | DEALER VIEW : Rendered Invoice page for : pygroot with context : {'jobcards': [], 'user': <SimpleLazyObject: <User: pygroot>>}
+2017-08-09 18:53:04,829 | DEBUG | INVENTORY details: <WSGIRequest: GET '/dealer/inventory/'> :
+2017-08-09 18:53:04,833 | DEBUG | INVENTORY user: pygroot :
+2017-08-09 18:53:04,833 | DEBUG | DEALER VIEW : Get inventory request for pygroot through GET method
+2017-08-09 18:53:04,843 | DEBUG | DEALER VIEW : Rendered Get Inventory page for : pygroot
+2017-08-09 18:53:09,487 | DEBUG | INVENTORY details: <WSGIRequest: GET '/dealer/inventory/'> :
+2017-08-09 18:53:09,491 | DEBUG | INVENTORY user: pygroot :
+2017-08-09 18:53:09,491 | DEBUG | DEALER VIEW : Get inventory request for pygroot through GET method
+2017-08-09 18:53:09,515 | DEBUG | DEALER VIEW : Rendered Get Inventory page for : pygroot
+2017-08-09 18:53:09,896 | DEBUG | SERVICE HISTORY details: <WSGIRequest: GET '/dealer/service/history/'> :
+2017-08-09 18:53:09,900 | DEBUG | DEALER VIEW : Service history request for pygroot
+2017-08-09 18:53:09,907 | DEBUG | DEALER VIEW : Rendered service history for : pygroot
+2017-08-09 18:53:11,352 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:53:11,352 | DEBUG | Home page request for : pygroot
+2017-08-09 18:53:11,364 | DEBUG | Rendered home page for : pygroot
+2017-08-09 18:53:12,502 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:53:12,502 | DEBUG | Home page request for : pygroot
+2017-08-09 18:53:12,512 | DEBUG | Rendered home page for : pygroot
+2017-08-09 18:53:13,032 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:53:13,032 | DEBUG | Home page request for : pygroot
+2017-08-09 18:53:13,043 | DEBUG | Rendered home page for : pygroot
+2017-08-09 18:53:13,587 | DEBUG | Logout request for pygroot through GET method
+2017-08-09 18:53:13,610 | DEBUG | Dealer login GET request for : AnonymousUser
+2017-08-09 18:53:13,612 | DEBUG | Rendered login page.
+2017-08-09 18:53:22,812 | DEBUG | Dealer login request for : pygroot
+2017-08-09 18:53:22,859 | DEBUG | Dealer login response for pygroot : {'status': 'success', 'url': '/dealer/home/'}
+2017-08-09 18:53:22,885 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:53:22,885 | DEBUG | Home page request for : pygroot
+2017-08-09 18:53:22,895 | DEBUG | Rendered home page for : pygroot
+2017-08-09 18:53:25,452 | DEBUG | USER AGENT : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36
+2017-08-09 18:53:25,452 | DEBUG | Home page request for : pygroot
+2017-08-09 18:53:25,461 | DEBUG | Rendered home page for : pygroot

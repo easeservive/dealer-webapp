@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Create Jobcard - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="/static/css.css">
+        <link rel="stylesheet" href="/static/jquery-ui.css">
+        <link rel="stylesheet" href="/static/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="/static/bootstrap-datetimepicker.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+    </head>
+    <body id="dashboard" class="account">
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+        <div class="container-fluid margin-free sidebar-open">
+            {% if user_agent == "android" %}
+                {% include "sidebar_block_mobile.html" %}
+            {% else %}
+                {% include "sidebar_block.html" %}
+            {% endif %}  
+            <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="/dealer/home/">
+                        <i class="ion-ios-home-outline"></i> </a></li>
+                        <li><a href="/jobcard/">Jobcard</a></li>
+                        <li class="active">Create</li>
+                    </ol>
+                    <div class="col-sm-12">
+                        <div class="col-sm-12 padding-left-free">
+                            <h2 class="title">Create Jobcard</h2>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="col-sm-12 padding-left-free">
+                            <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form">
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="cust_name">Name</label>
+                                        <input aria-required="true" name="cust_name" id="cust_name" class="form-control" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="cont_num">Mobile number</label>
+                                        <input aria-required="true" name="cont_num" id="cont_num" class="form-control" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="cont_addr">Address</label>
+                                        <input aria-required="true" name="cont_addr" id="cont_addr" class="form-control" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="number">Enter Vehicle number</label>
+                                        <input aria-required="true" name="number" id="number" class="form-control" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="chasis">Enter Chasis number</label>
+                                        <input aria-required="true" name="chasis" id="chasis" class="form-control" required="" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="brand">Brand</label>
+                                        <select aria-required="true" name="brand" id="brand" class="form-control" required="">
+                                            {% for brand in brands %}
+                                                {% if forloop.first %}
+                                                    <option value="{{ brand.Brand }}" selected="selected">{{ brand.Brand }}</option>
+                                                {% else %}
+                                                    <option value="{{ brand.Brand }}">{{ brand.Brand }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="model">Model</label>
+                                        <input aria-required="true" name="model" id="model" required="" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="type">Fuel Type</label>
+                                        <select aria-required="true" name="type" id="type" class="form-control" required="">
+                                            <option selected="selected" value="Diesel">Diesel</option>
+                                            <option value="Petrol">Petrol</option>
+                                            <option value="LPG">LPG</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="kms">Kilometers</label>
+                                        <input aria-required="true" name="kms" id="kms" required="" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div id="service-items">
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group transistion">
+                                        <label for="customer-complaint">Customer Complaint</label>
+                                        <input aria-required="true" autocomplete="off" id="customer-complaint" class="form-control ui-autocomplete-input" name="complaint" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div id="customer-items">
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group transistion">
+                                        <label for="recommended">Recommended Services</label>
+                                        <input type="text" class="form-control" name="recommended" id="recommended">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div id="recommended-items">
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div id="parts-estimation">
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="labour-estimation">Other Parts</label>
+                                        <input aria-required="true" name="op" required="" id="op" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="oc">Price</label>
+                                        <input aria-required="true" name="oc" required="" id="oc" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="labour-estimation">Labour Cost Estimation</label>
+                                        <input aria-required="true" name="labour_estimation" required="" id="labour-estimation" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="total-parts-cost">Total Parts cost</label>
+                                        <input aria-required="true" name="total_parts_cost" required="" id="total-parts-cost" class="form-control" readonly="readonly" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group transistion">
+                                        <label for="total-estimation">Total Estimation</label>
+                                        <input name="total_estimation" readonly="readonly" id="total-estimation" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 ">
+                                    <div class="form-group overflow-not-hidden">
+                                        <label for="delivery-time">Delivery Time</label>
+                                        <input aria-required="true" name="delivery_time" required="" id="delivery-time" class="form-control" type="text">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <button class="btn btn-default btn-pink">Create Jobcard</button>
+                                        <a href="/jobcard/" class="btn btn-pink">Cancel</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/static/browser-polyfill.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="/static/moment.js"></script>
+        <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
+        <script src="/static/jquery_002.js"></script>
+        <script src="/static/jquery-ui.js"></script>
+        <script src="/static/bootstrap-datepicker.js"></script>
+        <script src="/static/bootstrap-datetimepicker.js"></script>
+        <script src="/static/createjobcard.js"></script>
+
+
+<ul style="display: none;" tabindex="0" id="ui-id-1" class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content"></ul>
+<span class="ui-helper-hidden-accessible" aria-relevant="additions" aria-live="assertive" role="status"></span>
+</body>
+</html>

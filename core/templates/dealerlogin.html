@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            Login - Ease Service
+        </title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/login.css">
+        <link href="/static/css.css" rel="stylesheet" type="text/css">
+    </head>
+    <body id="login">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-navigation" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/"><img style="width:10%;height:auto;"src='/static/images/flatlogo.png'/> Ease Service</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="my-navigation">
+                    <ul class="nav navbar-nav navbar-right">
+                        <!--li><a href="#">Mesh Up</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li-->
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+        <div class="container">
+            <div class="col-sm-4 col-sm-offset-4">
+                <div class="login-form">
+                    <h3 class="title text-center">Login</h3>
+                    <form novalidate="novalidate" action="#" method="POST" id="login-form">
+                        <div class="form-group relative">
+                            <i class="icon ion-ios-person-outline"></i>
+                            <input aria-required="true" name="email" id="email" autocomplete="off" class="form-control pad-left-45" placeholder="User Id" required="" type="email">
+                        </div>
+                        <div class="form-group relative">
+                            <i class="icon ion-ios-locked-outline"></i>
+                            <input aria-required="true" name="password" id="password" class="form-control pad-left-45" placeholder="Password" required="" type="password">
+                        </div>
+                        <!--div class="checkbox">
+                            <input id="checkbox" class="form-checkbox" type="checkbox">
+                            <label for="checkbox">remember me</label>
+                        </div-->
+                        <br>
+                        <div class="form-group">
+                            <button class="btn btn-default btn-block btn-pink">
+                                <span>Login</span>
+                            </button>
+                        </div>
+                        <!--p class="text-center">
+                            <a href="" class="forgot-password">Forgot Password?</a>
+                        </p-->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="/static/jquery_002.js"></script>
+        <!--script>
+            jQuery(document).ready(function($){
+                $('#email').focus();
+                $('#login-form').validate({
+                    rules : {
+                        email : {
+                            required : true,
+                            email : true
+                        },
+                        password : {
+                            required : true
+                        }
+                    }
+                });
+            });
+        </script-->
+        <script>
+          // Attach a submit handler to the form
+          $( "#login-form" ).submit(function( event ) {
+            // Stop form from submitting normally
+            event.preventDefault();
+ 
+            // Get some values from elements on the page:
+            var $form = $( this ),
+            email = $form.find( "input[name='email']" ).val(),
+            pass = $form.find( "input[name='password']" ).val(),
+            url = $form.attr( "action" );
+ 
+            // Send the data using post
+            var posting = $.post( url, { user: email, passwd: pass } );
+ 
+            // Put the results in a div
+            posting.done(function( data ) {
+              console.log(data)
+              if (data.status == "failure") {
+                  alert(data.msg);
+              } else if (data.status == "success"){
+                  window.location.replace(data.url);
+              }
+              else {
+                  alert("Oops!! Something went wrong!");
+              }
+              //var content = $( data ).find( "#content" );
+              //$( "#result" ).empty().append( content );
+            });
+          });
+        </script>
+    
+
+</body></html>

@@ -1,0 +1,128 @@
+html {
+    height: 100%
+}
+
+body {
+    background-color: rgba(0,0,0,.8) !important;
+    font-size: 150%;
+    font-family: "Open Sans", sans-serif;
+}
+
+#login {
+    background-color: rgba(0,0,0,.8);
+    /*background: url('../images/bg.jpg');*/
+    background: url('images/bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#login .navbar-default {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 8px;
+}
+
+#login .navbar-default a {
+    color: #fff;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+#login .login-form {
+    background-color: #455A64;
+    border-radius: 3px;
+    padding: 1em 2em;
+    margin-top: 5em;
+}
+
+#login h3 {
+    text-transform: uppercase;
+    margin-bottom: 2em;
+    color: #fff;
+    font-weight: 300;
+}
+
+.login-form .form-control {
+    background-color: rgba(69, 90,100,.6);
+    padding: 10px;
+    height: 40px;
+    border-radius: 1px;
+    border: none !important;
+    box-shadow: none;
+    border-bottom: 1px solid #56666D !important;
+    color: #9DA3A7;
+    font-weight: 300;
+}
+
+.btn-pink {
+    background-color: #FF4081;
+    padding: .8em;
+    border-radius: 1px;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.btn-pink:hover, .btn-pink:active, .btn-pink:focus {
+    background-color: rgba(255, 64, 129, 0.89);
+    color: #fff;
+}
+
+.pad-left-45 {
+    padding-left: 45px !important;
+}
+
+.relative {
+    position: relative;
+}
+
+i.icon {
+    position: absolute;
+    color: #9DA3A7;
+    font-size: 1.5em;
+    top: 4px;
+    left: 10px;
+}
+
+#login a.forgot-password {
+    color: #fff;
+    text-decoration: none !important;
+    font-weight: 300;
+    font-size: .9em;
+}
+
+.navbar-toggle {
+    border-radius: 0;
+    border: none;
+    color: #fff;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #455A64;
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border-color: #455A64;
+}
+
+.form-checkbox {
+    box-shadow: none;
+}
+
+.checkbox label {
+    font-weight: 300;
+    font-size: .9em;
+    color: #9DA3A7;
+    text-transform: capitalize;
+}
+
+label.error {
+    color: rgb(247, 137, 137);
+    font-weight: 300;
+}
+

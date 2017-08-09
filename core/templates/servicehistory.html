@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Service History - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+        <link href="/static/css.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/static/jquery.css">
+    </head>
+    <body id="dashboard" class="account service-history">
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+
+        <div class="container-fluid margin-free sidebar-open">
+            {% include "sidebar_block.html" %}
+            <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="/dealer/home/"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li class="active">Service History</li>
+                    </ol>
+                    <div class="col-sm-12 padding-left-free">
+                        <h2 class="title">Service History</h2>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="row fields">
+                        <form action="/api/service/history" method="POST" id="get-service-history">
+                            <div class="form-group col-sm-6 relative">
+                                <label for="number">Enter Vehicle or Chassis no</label>
+                                <input name="number" id="number" required="" class="form-control display-inline" type="text">
+                                <button class="btn btn-default iconic">
+                                    <i class="ion-ios-search-strong"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="json-response">
+                        <p class="alert alert-warning">
+                            No results found! Please try searching vehicle/chassis number
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="/static/jquery.js"></script>
+        <script src="/static/bootstrap.js"></script>
+        <script src="/static/jquery_002.js"></script>
+        <script src="/static/script.js"></script>
+         <script>
+            $(document).ready( function () {
+              $( "#get-service-history" ).submit(function( event ) {
+                event.preventDefault();
+                var $form = $( this ),
+                v_number = $form.find( "input[name='number']" ).val(),
+                url = $form.attr( "action" );
+                var posting = $.post( url, { veh_num : v_number } );
+ 
+                posting.done(function( data ) {
+                  console.log(data)
+                  if (data.status == "success"){
+                        var html = '<div class="table-responsive">';
+                        html+= '<table class="table table-bordered">'+
+                                '<thead>'+
+                                    '<tr>'+
+                                        '<th>Date</th>'+
+                                        '<th>KM</th>'+
+                                        '<th>Service Details</th>'+
+                                        '<th>Recommended Jobs</th>'+
+                                    '</tr>'+
+                                '</thead><tbody>';
+                        
+                        data.history.forEach(function(value) {
+                            value.ser = ""
+                            value.jobs = ""
+                            value.services.forEach(function(service) {
+                              if (service.is_availed == 1) {
+                                value.ser = value.ser + service.service_item + ", "
+                              } else {
+                                value.jobs = value.jobs + service.service_item + ", "
+                              }
+                            });
+
+                            html +=
+                                '<tr>'+
+                                    '<td>'+value.date+'</td>' +
+                                    '<td>'+value.km+'</td>' +
+                                    '<td>'+value.ser.slice(0,-2)+'</td>' +
+                                    '<td>'+value.jobs.slice(0,-2)+'</td>' +
+                                '</tr>';
+                        });
+                        html += '</tbody></table></div>';
+                        $('#json-response').html(html);
+                  } else if (data.status == "unauthorized") {
+                      window.location.replace(data.url);
+                  } else {
+                       $('#json-response').html(
+                           '<p class="alert alert-warning">' +
+                               'No results found! Please try searching vehicle/chassis number' +
+                           '</p>'
+                       );
+                   }
+
+                });
+              });
+             });
+        </script>
+        <!--script>
+            $(document).ready( function () {
+                $('#table_id').DataTable();
+                $('#get-service-history').submit(function(e){
+                    e.preventDefault();
+                    var that = $(this);
+                    $.ajax({
+                        url : that.attr('action'),
+                        type: that.attr('method'),
+                        data: {veh_num : $form.find( "input[name='number']" ).val() },
+                        success: function(response) {
+                            // response = JSON.parse(response);
+                            console.log(response)
+//                          if (response.status) {
+//                              var html = '<div class="table-responsive">';
+//                              html+= '<table class="table table-bordered">'+
+//                                      '<thead>'+
+//                                          '<tr>'+
+//                                              '<th>Brand</th>'+
+//                                              '<th>Model</th>'+
+//                                              '<th>Date</th>'+
+//                                              '<th>Service Details/ History</th>'+
+//                                              '<th>Recommended Jobs</th>'+
+//                                          '</tr>'+
+//                                      '</thead><tbody>';
+//                              
+//                              response.data.forEach(function(value) {
+//                                  html +=
+//                                      '<tr>'+
+//                                          '<td>'+value.brand+'</td>' +
+//                                          '<td>'+value.model+'</td>' +
+//                                          '<td>'+value.date+'</td>' +
+//                                          '<td>'+value.details+'</td>' +
+//                                          '<td>'+value.jobs+'</td>' +
+//                                      '</tr>';
+//                              });
+//                              html += '</tbody></table></div>';
+//                              $('#json-response').html(html);
+//                          } else {
+//                              $('#json-response').html(
+//                                  '<p class="alert alert-warning">' +
+//                                      'No results found! Please try searching vehicle/chassis number' +
+//                                  '</p>'
+//                              );
+//                          }
+                        }
+                    });
+                });
+            });
+        </script-->
+    
+
+</body></html>

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12 hidden-xs hidden-sm" style="padding-left:0; padding-right:0">
+     <img style="width:100%;height:auto" src='{{ image }}' />
+     {{ image }}
+  </div>
+  <div class="col-xs-12 col-sm-12 hidden-md hidden-lg" style="padding-left:0; padding-right:0">
+     <img style="width:100%;height:auto" src='{{ image }}' />
+  </div>
+</div>
+
+
+{% endblock %}

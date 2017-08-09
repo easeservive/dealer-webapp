@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Spares Inventory - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/> -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
+        <link rel="stylesheet" href="/static/bootstrap-switch.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.css">
+    </head>
+    <body id="dashboard" class="account service-history">
+        {% include "navbar_block.html" %}
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+
+        <div class="container-fluid margin-free sidebar-open">
+        {% include "sidebar_block.html" %}
+            <div id="content">
+                <div class="row wrapper">
+                    <ol class="breadcrumb">
+                        <li><a href="/dealer/home/"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li class="active">Spares Inventory</li>
+                    </ol>
+                    <div class="col-sm-12 padding-left-free">
+                        <h2 class="title">Spares Inventory
+                        <!--a href="http://sarav.co/projects/easeservice/add-inventory.html" class="btn btn-success btn-xs">Add Inventory</a>
+                        <a href="http://sarav.co/projects/easeservice/place-inventory.html" class="btn btn-success btn-xs">Place Inventory</a-->
+                        </h2>
+                    </div>
+                    <div class="clear"></div>
+
+                    <div id="json-response"></div>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
+        <script src="/static/bootstrap-switch.js"></script>
+        <script src="/static/script.js"></script>
+        
+        <script>
+            jQuery(document).ready(function($){
+                $.ajax({
+                    url : "/api/get/inventory",
+                    type : "POST",
+                    success : function(response) {
+                        // response = JSON.parse(response);
+                        if (response.status == "success") {
+                            var html = '<div class="table-responsive">';
+                            html += '<table class="filterable table">';
+                            html += '<thead>';
+                            html += '<tr>';
+                            html += '<th>Part No</th><th>Brand</th><th>Model</th><th>Description</th><th>Min Qty</th><th>Available Qty</th><th>NDP</th><th>MRP</th><th>Critical</th><th>Action</th>';
+                            html += '</tr>';
+                            html += '</thead>';
+                            html += '<tbody>';
+                            response.data.forEach(function(value){
+                                html += '<tr>';
+                                html += '<td>'+value.identifier+'</td>';
+                                html += '<td>'+value.brand+'</td>';
+                                html += '<td>'+value.model+'</td>';
+                                html += '<td>'+value.description+'</td>';
+                                html += '<td>'+value.min_qty+'</td>';
+                                html += '<td>'+value.avail_qty+'</td>';
+                                html += '<td>'+value.NDP+'</td>';
+                                html += '<td>'+value.MRP+'</td>';
+                                if (value.critical == 1) {
+                                    html += '<td>'+'<input type="checkbox" class="my-checkbox" checked/>' + '</td>';
+                                } else {
+                                    html += '<td>'+'<input type="checkbox" class="my-checkbox"/>' + '</td>';
+                                }
+                                
+                                html += '<td><a class="btn btn-success btn-xs" href="/dealer/update/inventory/?identifier='+value.identifier+'">Edit</a></td>';
+                                html += '</tr>';
+                            });
+                            html += '</tbody>';
+                            html += '</table>';
+                            html +='</div>';
+
+                            $('#json-response').html(html);
+                            $('.filterable').DataTable();
+                            $(".my-checkbox").bootstrapSwitch({
+                                size : 'mini',
+                                onText : 'Yes',
+                                offText : 'No',
+                                onColor : 'success',
+                                offColor : 'warning'
+                            });
+                        }
+                    }
+                });
+            });
+        </script>
+    
+
+</body></html>
