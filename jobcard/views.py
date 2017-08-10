@@ -125,9 +125,9 @@ def create_job_card(request):
         view_logger = log_rotator.view_logger()
         if request.method == 'POST':
             if request.user.is_authenticated():
-                data = request.body
-                data = json.loads(data)
-                data = data['data']
+
+                data = json.loads(request.body.decode('utf-8'))['data']
+
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
                 details = {}
@@ -171,12 +171,14 @@ def save_job_card(request):
         view_logger = log_rotator.view_logger()
         if request.method == 'POST':
             if request.user.is_authenticated():
-                data = request.body
+                #data = request.body
                 dealerid = request.user
                 details = {}
 
-                data = json.loads(data)
-                data = data['data']
+                # data = json.loads(data)
+                # data = data['data']
+                data = json.loads(request.body.decode('utf-8'))['data']
+
                 view_logger.debug("JOBCARD VIEW : Save job card request - %s"%str(data))
 
                 details['jc_id'] = data.get('jc_id', 'NA')
@@ -251,18 +253,19 @@ def generate_invoice(request):
     try:
         view_logger = log_rotator.view_logger()
         if request.method == 'POST':
-            data = request.body
+            #data = request.body
             dealerid = request.user
             details = {}
             view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(request))
-            try:            
-               data = json.loads(data)
-               data = data['data']
+            try:
+                data = json.loads(request.body.decode('utf-8'))['data']
+                #data = json.loads(data)
+                #data = data['data']
             except:
-               data={} 
-               data['jc_id']=request.POST.keys()[0]
-               data['pmt_mode']=request.POST.values()[0]
-               view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))       
+                data={} 
+                data['jc_id']=request.POST.keys()[0]
+                data['pmt_mode']=request.POST.values()[0]
+                view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))       
             view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))
             jc_id = data['jc_id']
             pmt_mode = data['pmt_mode']

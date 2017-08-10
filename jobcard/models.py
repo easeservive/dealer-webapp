@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import urllib
+#import urllib
+import requests
 
 class JCVehicleInfo(models.Model):
     VehicleNumber = models.CharField(max_length=20)
@@ -93,7 +94,9 @@ def trigger_sms(sender, instance=None,created=False, **kwargs):
                 message = "Dear %s your vehicle service in pending status.JobCard ID:%s Status: %s PendingReason:%s DeliveryTime:%s" %(CustName,instance.JobCardID,instance.Status,instance.PendingReason,instance.DeliveryTime) 
             elif str(instance.Status) == "CLOSED":
                 message = "Dear %s your vehicle service is completed. JobCard ID:%s Status: %s  DeliveryTime:%s. Kindly visit the service center on time and collect your vehicle." %(CustName,instance.JobCardID,instance.Status,instance.DeliveryTime)
-        print(message)
+        #print(message)
         url=str("http://login.bulksmsgateway.in/sendmessage.php?user=easeservice&password=easeservice123!&message="+message+"&sender=EASESE&mobile="+PhoneNo+"&type=3")            
-        f = urllib.urlopen(url)
-        f.close()
+        #f = urllib.urlopen(url)
+        #f.close()
+        message_response = requests.get(url)
+        print(message_response.json())
