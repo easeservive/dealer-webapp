@@ -11,6 +11,7 @@ from jobcard.models import JCVehicleInfo, JCStatus, JCServiceDetails, JCStocksIn
 from inventory.models import Inventory
 from django.contrib.auth.models import User
 import config
+from easeservice.message_functions import send_text_message
 
 def fetch_vehicles(user):
     try:
@@ -40,11 +41,18 @@ def generateOTP(user):
         status = 0
         # trigger SMS
         OTPTransactionInfo.objects.create(User = user,
-                                          TranID = tranID,
-                                          OTPValue = otpValue,
-                                          DateTime = time,
-                                          VerificationStatus = status)
+            TranID = tranID,
+            OTPValue = otpValue,
+            DateTime = time,
+            VerificationStatus = status
+        )
+
+        print("otpValue - %s" % otpValue)
+
+        send_text_message(user, "EASE SERVICE OTP - %s" % otpValue)
+
         return 1, tranID
+
     except:
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
@@ -54,10 +62,11 @@ def generateOTP(user):
 def isValidOPT(tranid, otpvalue):
     try:
         otp_obj = OTPTransactionInfo.objects.get(TranID = tranid)
+
         if otp_obj.OTPValue == otpvalue:
             otp_obj.VerificationStatus = '1'
             otp_obj.save()
-            user_obj = User.objects.filter(username = otp_obj.user)
+            user_obj = User.objects.get(username = otp_obj.User)
             user_obj.is_active = 1
             user_obj.save()
             return True

@@ -26,10 +26,10 @@ from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('core.urls')),
-    url(r'', include('customer.urls')),
     url(r'', include('dealer.urls')),
     url(r'', include('inventory.urls')),
     url(r'', include('jobcard.urls')),
+    url(r'^apis/customer/v1/', include('customer.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 admin.autodiscover()

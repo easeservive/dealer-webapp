@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,11 +25,18 @@ SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SMS_BLOCK = True
 
 ALLOWED_HOSTS = ['*']
 
 #PATH_LOGS = os.path.join(BASE_DIR, 'es.log')
 PATH_LOGS = BASE_DIR
+
+SMS_GATEWAY = {
+    'USER': "easeservice",
+    'PASSWORD': "easeservice123!",
+    'SENDER': "EASESE"
+}
 
 # Application definition
 INSTALLED_APPS = [
@@ -38,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     'mathfilters',
     'core',
     'customer',
@@ -46,16 +56,28 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
-    # 'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'middleware.TrackingMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
+    'JWT_ALLOW_REFRESH': True,
+}
 
 ROOT_URLCONF = 'easeservice.urls'
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = False
@@ -71,10 +93,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'django.core.context_processors.i18n',
-                # 'django.core.context_processors.media',
-                # 'django.core.context_processors.static',
-                # 'django.core.context_processors.tz',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
@@ -92,8 +110,6 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'easedb',
         'USER': 'root',

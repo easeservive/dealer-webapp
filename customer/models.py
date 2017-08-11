@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Vehicles(models.Model):
     VehicleType = models.CharField(max_length=20)
@@ -18,3 +18,12 @@ class OTPTransactionInfo(models.Model):
     OTPValue = models.CharField(max_length=20)
     DateTime = models.CharField(max_length=50)
     VerificationStatus = models.CharField(max_length=20)
+
+
+class Customer(models.Model):
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)
+    mobile = models.CharField(max_length=20, primary_key=True)
+    email = models.EmailField(default="")
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    address = models.CharField(max_length=300, blank=True, default="")
