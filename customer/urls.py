@@ -17,6 +17,8 @@ urlpatterns = [
    url(r'^login$', views.login, name="login"),
    url(r'^otp/verify$', views.verify_otp, name="verify_otp"),
    url(r'^otp/resend$', views.resend_otp, name="resend_otp"),
+   url(r'^customer$', views.retrieve_customer, name="retrieve_customer"),
+   url(r'^address/add$', views.add_address, name="add_address"),
    url(r'^test$', views.test, name="test"),
 
    # JWT

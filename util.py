@@ -47,6 +47,11 @@ def generateOTP(user):
             VerificationStatus = status
         )
 
+        # deactivate user until verification
+        user_obj = User.objects.get(username = user)
+        user_obj.is_active = 0
+        user_obj.save()
+
         print("otpValue - %s" % otpValue)
 
         send_text_message(user, "EASE SERVICE OTP - %s" % otpValue)

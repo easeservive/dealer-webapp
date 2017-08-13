@@ -20,6 +20,7 @@ from rest_framework_jwt.settings import api_settings
 
 from . import models
 from . import forms
+from easeservice.portal_functions import generate_uuid
 
 
 def json_default(obj):
@@ -189,12 +190,13 @@ def register(request):
             last_login = timezone.now()
         )
 
-        customer_obj = models.Customer(
+        customer_obj = models.Customer.objects.create(
             mobile = register_form.cleaned_data['mobile'],
             first_name = register_form.cleaned_data['first_name'],
             last_name = register_form.cleaned_data['last_name'],
-            address = register_form.cleaned_data['address']
-        ).save()
+            #address = {'address': [register_form.cleaned_data['address']]}
+            #address = register_form.cleaned_data['address']
+        )
 
     except IntegrityError:
         error_logger = log_rotator.error_logger()
@@ -261,6 +263,56 @@ def resend_otp(request):
         return Response({'status': "failure", 'msg': "OPT Failure"}, status=status_code.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response({'status': "success", 'otptranid': otptranid, 'msg': "OTP has been re-sent."})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_customer(request):
+
+    customer_obj = models.Customer.objects.get(mobile=request.user.username)
+
+    return Response({'status': "success",
+        "customer_data": {
+            "customer_id": customer_obj.mobile,
+            "username": customer_obj.mobile,
+            "mobile": customer_obj.mobile,
+            "address": customer_obj.address,
+            "email": customer_obj.email,
+            "first_name": customer_obj.first_name,
+            "last_name": customer_obj.last_name
+        }
+    })
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def add_address(request):
+
+    address_form = forms.AddAddressForm(request.data)
+    if not address_form.is_valid():
+        return Response({'status': "failure", 'errors': address_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    customer_obj = models.Customer.objects.get(mobile=request.user.username)
+
+    print("address - %s" % customer_obj.address)
+
+    is_unique = True
+    while is_unique:
+        address_id = generate_uuid(4)
+        if address_id not in customer_obj.address:
+            is_unique = False
+
+    customer_obj.address[address_id] = {
+        'address_id': address_id,
+        'address_line_1': address_form.cleaned_data['address_line_1'],
+        'address_line_2': address_form.cleaned_data['address_line_2'],
+        'city': address_form.cleaned_data['city'],
+        'state': address_form.cleaned_data['state'],
+        'zipcode': address_form.cleaned_data['zipcode']
+    }
+    customer_obj.save()
+
+    return Response({'status': "success", "msg": "Address saved successfully."})
 
 
 @api_view(['POST'])

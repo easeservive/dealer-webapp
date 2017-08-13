@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'mathfilters',
     'core',
+    'dealer',
     'customer',
     'jobcard',
     'inventory'
@@ -75,7 +76,7 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=10800),
     'JWT_ALLOW_REFRESH': True,
 }
 

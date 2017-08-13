@@ -21,6 +21,26 @@ class OtpForm(forms.Form):
     otp_value = forms.CharField()
     otptranid = forms.CharField()
 
+
 class ResendOtpForm(forms.Form):
 
-	mobile = forms.IntegerField()
+    mobile = forms.IntegerField()
+
+
+class AddAddressForm(forms.Form):
+
+    address_line_1 = forms.CharField()
+    address_line_2 = forms.CharField()
+    city = forms.CharField()
+    state = forms.CharField()
+    zipcode = forms.IntegerField()
+
+
+class BookServiceForm(forms.Form):
+
+    vehicle_type = forms.CharField()
+    vehicle_model_id = forms.CharField()
+    vehicle_registration_number = forms.CharField()
+    service_center_id = forms.CharField()
+    customer_address_id = forms.CharField()
+    service_details = forms.CharField()

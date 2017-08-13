@@ -100,3 +100,14 @@ def trigger_sms(sender, instance=None,created=False, **kwargs):
         #f.close()
         message_response = requests.get(url)
         print(message_response.json())
+
+
+class CServiceBooking(models.Model):
+    booking_id = models.AutoField(primary_key=True)
+    customer_id = models.CharField(max_length=20)
+    vehicle_type = models.CharField(max_length=50)
+    vehicle_model_id = models.CharField(max_length=20)
+    vehicle_registration_number = models.CharField(max_length=20)
+    service_center_id = models.CharField(max_length=20)
+    customer_address_id = models.CharField(max_length=20)
+    service_details = models.CharField(max_length=200)

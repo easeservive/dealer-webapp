@@ -6,6 +6,14 @@ from django.http import HttpResponse
 import util
 import log_rotator
 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status as status_code
+
+from . import models
+from . import forms
+
 
 def json_default(obj):
     """
@@ -279,6 +287,7 @@ def generate_invoice(request):
     view_logger.debug("JOBCARD VIEW : Generate Invoice response - %s"%str(result))
     return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
+
 def get_jobcards_list(request):
     try:
         view_logger = log_rotator.view_logger()
@@ -301,3 +310,76 @@ def get_jobcards_list(request):
     return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
 
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def book_service(request):
+
+    service_form = forms.BookServiceForm(request.data)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    service_obj = models.CServiceBooking.objects.create(
+        customer_id = request.user.username,
+        vehicle_type = service_form.cleaned_data['vehicle_type'],
+        vehicle_model_id = service_form.cleaned_data['vehicle_model_id'],
+        vehicle_registration_number = service_form.cleaned_data['vehicle_registration_number'],
+        service_center_id = service_form.cleaned_data['service_center_id'],
+        customer_address_id = service_form.cleaned_data['customer_address_id'],
+        service_details = service_form.cleaned_data['service_details'],
+    )
+
+    # get vehicle_name from vehicle_model_id
+    vehicle_name = service_form.cleaned_data['vehicle_model_id']
+    
+    return Response({'status': "success", "booking_id": service_obj.booking_id, "vehicle_name": vehicle_name})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_service_details(request):
+
+    service_form = forms.RetrieveServiceForm(request.GET)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    try:
+        service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+    except models.CServiceBooking.DoesNotExist:
+        return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+    
+    return Response({'status': "success", "booking_data":{
+            "booking_id": service_obj.booking_id,
+            "customer_id": service_obj.customer_id,
+            "vehicle_type": service_obj.vehicle_type,
+            "vehicle_model_id": service_obj.vehicle_model_id,
+            "vehicle_registration_number": service_obj.vehicle_registration_number,
+            "service_center_id": service_obj.service_center_id,
+            "customer_address_id": service_obj.customer_address_id,
+            "service_details": service_obj.service_details
+        }
+    })
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_service_history(request):
+
+    booking_list = models.CServiceBooking.objects.filter(customer_id=request.user.username)
+
+    if booking_list:
+        services_history = []
+        for service_obj in booking_list:
+            services_history.append({
+                "booking_id": service_obj.booking_id,
+                "customer_id": service_obj.customer_id,
+                "vehicle_type": service_obj.vehicle_type,
+                "vehicle_model_id": service_obj.vehicle_model_id,
+                "vehicle_registration_number": service_obj.vehicle_registration_number,
+                "service_center_id": service_obj.service_center_id,
+                "customer_address_id": service_obj.customer_address_id,
+                "service_details": service_obj.service_details
+            })
+    else:
+        services_history = []
+    
+    return Response({'status': "success", 'services_history': services_history})

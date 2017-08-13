@@ -19,6 +19,14 @@ import random
 import util
 import log_rotator
 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status as status_code
+
+from . import models
+from . import forms
+
 # Create your views here.
 
 def json_default(obj):
@@ -153,7 +161,6 @@ def dealerhome(request):
     t = get_template('dealerhome.html')
     html = t.render({})
     return HttpResponse(html)
-
 
 def categories(request):
     result = {"bikes": {}, "cars": {}}
@@ -505,3 +512,35 @@ def service_history_data(request):
         print(traceback.format_exc())
         result = {"status": "failure", "msg": "something went wrong"}
     return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_service_center(request):
+
+    service_form = forms.RetrieveServiceCenter(request.GET)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    try:
+        service_center_obj = models.ServiceCenterInfo.objects.get(id=service_form.cleaned_data['service_center_id'])
+    except models.ServiceCenterInfo.DoesNotExist:
+        return Response({'status': "failure", "msg": "Invalid service_center_id."}, status=status_code.HTTP_409_CONFLICT)
+
+    return Response({
+        'status': "success",
+        "service_center_data": {
+            "name": service_center_obj.Name,
+            "contact_number": service_center_obj.ContactNumber,
+            "email": service_center_obj.Email,
+            "building_number": service_center_obj.BuildingNo,
+            "street": service_center_obj.Street,
+            "town": service_center_obj.Town,
+            "district": service_center_obj.District,
+            "city": service_center_obj.City,
+            "pincode": service_center_obj.Pincode,
+            "owner_name": service_center_obj.OwnerName,
+            "specilization": service_center_obj.Specialization,
+            "images": service_center_obj.Images
+        }
+    })

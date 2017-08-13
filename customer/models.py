@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django_mysql.models import JSONField
 
 class Vehicles(models.Model):
     VehicleType = models.CharField(max_length=20)
@@ -21,9 +22,8 @@ class OTPTransactionInfo(models.Model):
 
 
 class Customer(models.Model):
-    #user = models.OneToOneField(User, on_delete=models.CASCADE)
     mobile = models.CharField(max_length=20, primary_key=True)
     email = models.EmailField(default="")
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    address = models.CharField(max_length=300, blank=True, default="")
+    address = JSONField()
