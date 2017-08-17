@@ -110,4 +110,17 @@ class CServiceBooking(models.Model):
     vehicle_registration_number = models.CharField(max_length=20)
     service_center_id = models.CharField(max_length=20)
     customer_address_id = models.CharField(max_length=20)
-    service_details = models.CharField(max_length=200)
+    service_details = models.TextField()
+    feedback_stars = models.IntegerField(null=True)
+    feedback_text = models.TextField(null=True)
+
+
+class EmergencyServiceBooking(models.Model):
+    booking_id = models.AutoField(primary_key=True)
+    customer_id = models.CharField(max_length=20)
+    vehicle_type = models.CharField(max_length=50)
+    customer_address_id = models.CharField(max_length=20, null=True)
+    customer_latlon = models.CharField(max_length=100, null=True)
+    service_details = models.TextField()
+    feedback_stars = models.IntegerField(null=True)
+    feedback_text = models.TextField(null=True)

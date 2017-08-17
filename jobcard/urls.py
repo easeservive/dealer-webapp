@@ -20,6 +20,9 @@ urlpatterns = [
    url(r'^apis/jobcard/v1/service/book$', views.book_service, name="book_service"),
    url(r'^apis/jobcard/v1/service/details$', views.retrieve_service_details, name="retrieve_service_details"),
    url(r'^apis/jobcard/v1/service/history$', views.retrieve_service_history, name="retrieve_service_history"),
+   url(r'^apis/jobcard/v1/service/feedback/add$', views.add_service_feedback, name="add_service_feedback"),
+   url(r'^apis/jobcard/v1/emergency/service/book$', views.book_emergency_service, name="book_emergency_service"),
+   url(r'^apis/jobcard/v1/emergency/service/details$', views.retrieve_emergency_service, name="retrieve_emergency_service"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

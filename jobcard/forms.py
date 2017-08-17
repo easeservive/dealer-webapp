@@ -13,3 +13,18 @@ class BookServiceForm(forms.Form):
 class RetrieveServiceForm(forms.Form):
     
     booking_id = forms.CharField()
+
+
+class ServiceFeedbackForm(forms.Form):
+    
+    booking_id = forms.CharField()
+    feedback_text = forms.CharField(required=False)
+    feedback_stars = forms.IntegerField()
+
+
+class BookEmergencyServiceForm(forms.Form):
+    
+    vehicle_type = forms.CharField()
+    customer_address_id = forms.CharField(required=False)
+    customer_latlon = forms.CharField(required=False)
+    service_details = forms.CharField()

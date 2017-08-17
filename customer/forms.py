@@ -44,3 +44,14 @@ class BookServiceForm(forms.Form):
     service_center_id = forms.CharField()
     customer_address_id = forms.CharField()
     service_details = forms.CharField()
+
+
+class AddVehicleForm(forms.Form):
+
+    vehicle_type = forms.CharField()
+    vehicle_model_id = forms.CharField(required=False)
+    vehicle_brand = forms.CharField(required=False)
+    vehicle_model = forms.CharField(required=False)
+    vehicle_registration_number = forms.CharField()
+    fuel_type = forms.CharField()
+    total_kms = forms.IntegerField()

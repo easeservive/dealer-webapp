@@ -355,7 +355,9 @@ def retrieve_service_details(request):
             "vehicle_registration_number": service_obj.vehicle_registration_number,
             "service_center_id": service_obj.service_center_id,
             "customer_address_id": service_obj.customer_address_id,
-            "service_details": service_obj.service_details
+            "service_details": service_obj.service_details,
+            "feedback_stars": service_obj.feedback_stars,
+            "feedback_text": service_obj.feedback_text,
         }
     })
 
@@ -364,10 +366,11 @@ def retrieve_service_details(request):
 @permission_classes((IsAuthenticated,))
 def retrieve_service_history(request):
 
-    booking_list = models.CServiceBooking.objects.filter(customer_id=request.user.username)
+    services_history = []
+    emergency_services_history = []
 
+    booking_list = models.CServiceBooking.objects.filter(customer_id=request.user.username)
     if booking_list:
-        services_history = []
         for service_obj in booking_list:
             services_history.append({
                 "booking_id": service_obj.booking_id,
@@ -377,9 +380,94 @@ def retrieve_service_history(request):
                 "vehicle_registration_number": service_obj.vehicle_registration_number,
                 "service_center_id": service_obj.service_center_id,
                 "customer_address_id": service_obj.customer_address_id,
-                "service_details": service_obj.service_details
+                "service_details": service_obj.service_details,
+                "feedback_stars": service_obj.feedback_stars,
+                "feedback_text": service_obj.feedback_text,
             })
-    else:
-        services_history = []
+
+    emergency_booking_list = models.EmergencyServiceBooking.objects.filter(customer_id=request.user.username)
+    if emergency_booking_list:
+        for e_service_obj in emergency_booking_list:
+            emergency_services_history.append({
+                'booking_id': e_service_obj.booking_id,
+                'customer_id': e_service_obj.customer_id,
+                'vehicle_type': e_service_obj.vehicle_type,
+                'customer_address_id': e_service_obj.customer_address_id,
+                'customer_latlon': e_service_obj.customer_latlon,
+                'service_details': e_service_obj.service_details,
+                'feedback_stars': e_service_obj.feedback_stars,
+                'feedback_text': e_service_obj.feedback_text,
+            })
     
-    return Response({'status': "success", 'services_history': services_history})
+    return Response({'status': "success", 'services_history': services_history, 'emergency_services_history': emergency_services_history})
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def add_service_feedback(request):
+
+    service_form = forms.ServiceFeedbackForm(request.data)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    try:
+        service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+    except models.CServiceBooking.DoesNotExist:
+        return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+
+    service_obj.feedback_stars = service_form.cleaned_data['feedback_stars']
+    service_obj.feedback_text = service_form.cleaned_data['feedback_text']
+    service_obj.save()
+
+    return Response({'status': "success", 'msg': "Feedback saved successfully."})
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def book_emergency_service(request):
+
+    service_form = forms.BookEmergencyServiceForm(request.data)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    if (
+        not service_form.cleaned_data['customer_latlon'] and
+        not service_form.cleaned_data['customer_address_id']
+        ):
+        return Response({'status': "failure", 'msg': "Please enter an address or send your current location."}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    service_obj = models.EmergencyServiceBooking.objects.create(
+        customer_id = request.user.username,
+        vehicle_type = service_form.cleaned_data['vehicle_type'],
+        customer_address_id = service_form.cleaned_data['customer_address_id'],
+        customer_latlon = service_form.cleaned_data['customer_latlon'],
+        service_details = service_form.cleaned_data['service_details'],
+    )
+    
+    return Response({'status': "success", "booking_id": service_obj.booking_id})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_emergency_service(request):
+
+    service_form = forms.RetrieveServiceForm(request.GET)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    try:
+        service_obj = models.EmergencyServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+    except models.EmergencyServiceBooking.DoesNotExist:
+        return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+    
+    return Response({'status': "success", "booking_data":{
+            "booking_id": service_obj.booking_id,
+            "customer_id": service_obj.customer_id,
+            "vehicle_type": service_obj.vehicle_type,
+            "customer_address_id": service_obj.customer_address_id,
+            "customer_latlon": service_obj.customer_latlon,
+            "service_details": service_obj.service_details,
+            'feedback_stars': service_obj.feedback_stars,
+            'feedback_text': service_obj.feedback_text,
+        }
+    })
