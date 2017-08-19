@@ -55,3 +55,7 @@ class AddVehicleForm(forms.Form):
     vehicle_registration_number = forms.CharField()
     fuel_type = forms.CharField()
     total_kms = forms.IntegerField()
+
+class TipsForm(forms.Form):
+
+    vehicle_type = forms.CharField()

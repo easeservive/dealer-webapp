@@ -2,6 +2,8 @@ import json
 import datetime
 
 from django.http import HttpResponse
+from django.db.models import Q
+
 #import simplejson
 import util
 import log_rotator
@@ -326,6 +328,7 @@ def book_service(request):
         service_center_id = service_form.cleaned_data['service_center_id'],
         customer_address_id = service_form.cleaned_data['customer_address_id'],
         service_details = service_form.cleaned_data['service_details'],
+        status = "Pending Confirmation"
     )
 
     # get vehicle_name from vehicle_model_id
@@ -383,6 +386,8 @@ def retrieve_service_history(request):
                 "service_details": service_obj.service_details,
                 "feedback_stars": service_obj.feedback_stars,
                 "feedback_text": service_obj.feedback_text,
+                "created_at": service_obj.created_at,
+                "status": service_obj.status
             })
 
     emergency_booking_list = models.EmergencyServiceBooking.objects.filter(customer_id=request.user.username)
@@ -397,6 +402,9 @@ def retrieve_service_history(request):
                 'service_details': e_service_obj.service_details,
                 'feedback_stars': e_service_obj.feedback_stars,
                 'feedback_text': e_service_obj.feedback_text,
+                "created_at": e_service_obj.created_at,
+                "status": e_service_obj.status,
+                "service_center_id": e_service_obj.service_center_id
             })
     
     return Response({'status': "success", 'services_history': services_history, 'emergency_services_history': emergency_services_history})
@@ -442,6 +450,7 @@ def book_emergency_service(request):
         customer_address_id = service_form.cleaned_data['customer_address_id'],
         customer_latlon = service_form.cleaned_data['customer_latlon'],
         service_details = service_form.cleaned_data['service_details'],
+        status = "Pending Confirmation"
     )
     
     return Response({'status': "success", "booking_id": service_obj.booking_id})
@@ -471,3 +480,55 @@ def retrieve_emergency_service(request):
             'feedback_text': service_obj.feedback_text,
         }
     })
+
+
+
+@api_view(['GET'])
+def retrieve_service_requests(request):
+    ''' Retrieve service requests for a particular service center '''
+
+    service_form = forms.RetrieveServiceRequests(request.GET)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    services_requests = []
+    emergency_service_requests = []
+
+    service_requests_list = models.CServiceBooking.objects.filter(service_center_id=service_form.cleaned_data['service_center_id'])
+    if service_requests_list:
+        for service_obj in service_requests_list:
+            services_requests.append({
+                "booking_id": service_obj.booking_id,
+                "customer_id": service_obj.customer_id,
+                "vehicle_type": service_obj.vehicle_type,
+                "vehicle_model_id": service_obj.vehicle_model_id,
+                "vehicle_registration_number": service_obj.vehicle_registration_number,
+                "service_center_id": service_obj.service_center_id,
+                "customer_address_id": service_obj.customer_address_id,
+                "service_details": service_obj.service_details,
+                "feedback_stars": service_obj.feedback_stars,
+                "feedback_text": service_obj.feedback_text,
+                "created_at": service_obj.created_at,
+                "status": service_obj.status
+            })
+
+    emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
+        Q(status="Pending Confirmation") | Q(service_center_id=service_form.cleaned_data['service_center_id'])
+    )
+    if emergency_service_requests_list:
+        for e_service_obj in emergency_service_requests_list:
+            emergency_service_requests.append({
+                'booking_id': e_service_obj.booking_id,
+                'customer_id': e_service_obj.customer_id,
+                'vehicle_type': e_service_obj.vehicle_type,
+                'customer_address_id': e_service_obj.customer_address_id,
+                'customer_latlon': e_service_obj.customer_latlon,
+                'service_details': e_service_obj.service_details,
+                'feedback_stars': e_service_obj.feedback_stars,
+                'feedback_text': e_service_obj.feedback_text,
+                "created_at": e_service_obj.created_at,
+                "status": e_service_obj.status,
+                "service_center_id": e_service_obj.service_center_id
+            })
+
+    return Response({'status': "success", 'services_requests': services_requests, 'emergency_service_requests': emergency_service_requests})

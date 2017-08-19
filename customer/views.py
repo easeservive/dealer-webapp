@@ -19,6 +19,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
 
 from . import models
+from core.models import MaintenanceTips
 from . import forms
 from easeservice.portal_functions import generate_uuid
 
@@ -350,6 +351,38 @@ def add_vehicle(request):
     customer_obj.save()
 
     return Response({'status': "success", "msg": "Vehicle saved successfully."})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_maintenance_tips(request):
+
+    tips_form = forms.TipsForm(request.GET)
+    if not tips_form.is_valid():
+        return Response({'status': "failure", 'errors': tips_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    tips_objects = MaintenanceTips.objects.filter(vehicle_type=tips_form.cleaned_data['vehicle_type'])
+
+    tips_list = []
+    for tip_obj in tips_objects:
+        tips_list.append({
+            "tip_id": tips_list.id,
+            "title": tips_list.title,
+            "text": tips_list.text,
+            "vehicle_type": tips_list.vehicle_type
+        })
+
+    return Response({'status': "success", "tips_list": tips_list})
+
+
+# @api_view(['GET'])
+# @permission_classes((IsAuthenticated,))
+# def retrieve_surveys(request):
+
+#     customer_obj = models.Customer.objects.get(mobile=request.user.username)
+
+    
+    
 
 
 @api_view(['POST'])

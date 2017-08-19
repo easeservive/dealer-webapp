@@ -15,6 +15,7 @@ class ScheduledServiceDetails(models.Model):
     ServiceInfo = models.CharField(max_length=1000)
     Parts = models.CharField(max_length=500)
 
+
 class ComplaintCode(models.Model):
     Code = models.CharField(max_length=10, primary_key = True)
     Description = models.CharField(max_length=70)
@@ -35,8 +36,10 @@ class ServiceCenterInfo(models.Model):
     Specialization = models.CharField(max_length=1000)
     Images = models.CharField(max_length=1000)
 
+
 class SupportedCarBrands(models.Model):
     Brand  = models.CharField(max_length=200)
+
 
 #class SupportedVehicles(models.Model):
 #    Brand  = models.CharField(max_length=200)
@@ -44,3 +47,15 @@ class SupportedCarBrands(models.Model):
 #    Type = models.CharField(max_length=20)
 #
 
+
+class MaintenanceTips(models.Model):
+    title  = models.CharField(max_length=200)
+    text = models.TextField()
+    vehicle_type = models.CharField(max_length=20)
+
+
+# class Surveys(models.Model):
+#     title  = models.CharField(max_length=200)
+#     text = models.TextField()
+#     vehicle_type = models.CharField(max_length=20)
+#     choices_id = 

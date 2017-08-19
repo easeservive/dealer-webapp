@@ -113,6 +113,9 @@ class CServiceBooking(models.Model):
     service_details = models.TextField()
     feedback_stars = models.IntegerField(null=True)
     feedback_text = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=20)
 
 
 class EmergencyServiceBooking(models.Model):
@@ -124,3 +127,7 @@ class EmergencyServiceBooking(models.Model):
     service_details = models.TextField()
     feedback_stars = models.IntegerField(null=True)
     feedback_text = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=20)
+    service_center_id = models.CharField(max_length=20)
