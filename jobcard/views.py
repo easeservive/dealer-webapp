@@ -1,5 +1,6 @@
 import json
 import datetime
+import random
 
 from django.http import HttpResponse
 from django.db.models import Q
@@ -482,7 +483,6 @@ def retrieve_emergency_service(request):
     })
 
 
-
 @api_view(['GET'])
 def retrieve_service_requests(request):
     ''' Retrieve service requests for a particular service center '''
@@ -532,3 +532,61 @@ def retrieve_service_requests(request):
             })
 
     return Response({'status': "success", 'services_requests': services_requests, 'emergency_service_requests': emergency_service_requests})
+
+
+@api_view(['POST'])
+def accept_service_request(request):
+
+    service_form = forms.AcceptServiceForm(request.data)
+    if not service_form.is_valid():
+        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    try:
+        service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+    except models.CServiceBooking.DoesNotExist:
+        return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+
+    service_obj.status = "Accepted"
+    service_obj.save()
+
+    # get vehicle data from vehicle_model_id
+    #vehicle_data = service_obj.vehicle_model_id
+
+    # get customer_data using customer_id
+    customer_obj = models.Customer.objects.get(mobile=request.user.username)
+
+    # create a job card and save the data
+    jc_id = "JC" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999))
+
+    # create job card vehile info
+    models.JCVehicleInfo.objects.create(
+        VehicleNumber = details['veh_num'],
+        Brand = vehicle_data['brand'],
+        Model = vehicle_data['model'],
+        FuelType = vehicle_data['fuel_type'],
+        ChassisNumber = vehicle_data['c_num'],
+        CustomerName = "%s %s" % (customer_obj.first_name, customer_obj.last_name),
+        ContactNumber = customer_obj.mobile,
+        Address = customer_obj.address[service_obj.customer_address_id],
+        KilometersTicked = customer_obj.vehicles[service_obj.customer_vehicle_id]['km_ticked'],
+        JobCardID = jc_id,
+        DealerID = request.user,
+        CreatedTime = str(datetime.datetime.now())
+    )
+
+    # create job card
+    models.JCStatus.objects.create(
+        JobCardID = jc_id,
+        DealerID = request.user,
+        DeliveryTime = "",
+        Status = "OPEN",
+        PendingReason = "",
+        CreatedTime = str(datetime.datetime.now()),
+        LastedEditedTime = str(datetime.datetime.now()),
+        CustomerComplaint=service_obj.service_details
+    )
+
+    service_obj.job_card_id = jc_id
+    service_obj.save()
+    
+    return Response({'status': "success", "message": "Service accepted and job created successfully.", "jc_id": jc_id})

@@ -33,6 +33,8 @@ urlpatterns = [
 
      # REST
      url(r'^apis/core/v1/servicecenter$', views.retrieve_service_center, name="retrieve_service_center"),
+     url(r'^apis/core/v1/surveys$', views.retrieve_surveys, name="retrieve_surveys"),
+     url(r'^apis/core/v1/reviews/vehicle$', views.retrieve_vehicle_review, name="retrieve_vehicle_review"),
 
 ]
 

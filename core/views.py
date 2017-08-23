@@ -544,3 +544,48 @@ def retrieve_service_center(request):
             "images": service_center_obj.Images
         }
     })
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_surveys(request):
+
+    surveys_objects = models.Surveys.objects.filter(survey_availability=1)
+
+    surveys_list = []
+    for survey_obj in surveys_objects:
+        surveys_list.append({
+            "survey_id": survey_obj.id,
+            "title": survey_obj.title,
+            "description": survey_obj.description,
+            "survey_url": survey_obj.survey_url,
+            "created_at": survey_obj.created_at,
+            "ends_at": survey_obj.ends_at,
+        })
+
+    return Response({'status': "success", "surveys_list": surveys_list})
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def retrieve_vehicle_review(request):
+
+    review_form = forms.RetrieveVehicleReview(request.GET)
+    if not review_form.is_valid():
+        return Response({'status': "failure", 'errors': review_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    try:
+        vehicle_obj = models.VehicleReviews.objects.get(vehicle_model_id=review_form.cleaned_data['vehicle_model_id'])
+
+    except models.VehicleReviews.DoesNotExist:
+        vehicle_obj = None
+
+    if vehicle_obj:
+        vehicle_data = {}
+
+        # populate vehicle_data with reviews and vehicle details
+
+    else:
+        vehicle_data = {}
+
+    return Response({'status': "success", "vehicle_data": vehicle_data})

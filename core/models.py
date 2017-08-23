@@ -59,3 +59,16 @@ class MaintenanceTips(models.Model):
 #     text = models.TextField()
 #     vehicle_type = models.CharField(max_length=20)
 #     choices_id = 
+
+class Surveys(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    survey_url = models.CharField(max_length=200)
+    survey_availability = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    ends_at = models.DateTimeField()
+
+
+class VehicleReviews(models.Model):
+
+    vehicle_model_id = models.IntegerField()
