@@ -26,6 +26,10 @@ urlpatterns = [
 
    url(r'^apis/jobcard/v1/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
    url(r'^apis/jobcard/v1/service/accept$', views.accept_service_request, name="accept_service_request"),
+
+   url(r'^apis/jobcard/v1/user/vehicle$', views.retrieve_vehicle_data, name="retrieve_vehicle_data"),
+
+   url(r'^apis/jobcard/v1/servicetypes$', views.retrieve_service_types, name="retrieve_service_types"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

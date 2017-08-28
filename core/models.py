@@ -72,6 +72,9 @@ class Surveys(models.Model):
 class VehicleReviews(models.Model):
 
     vehicle_model_id = models.IntegerField()
+    stars = models.IntegerField()
+    text = models.IntegerField()
+    user_count = models.IntegerField()
 
 
 class VehicleModels(models.Model):

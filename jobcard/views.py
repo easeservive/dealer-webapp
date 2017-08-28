@@ -18,6 +18,7 @@ from . import models
 from . import forms
 from customer.models import Vehicles
 from core.models import VehicleModels
+from easeservice import global_constants
 
 
 def json_default(obj):
@@ -740,3 +741,9 @@ def retrieve_vehicle_data(request):
             "total_kms": vehicle_obj.total_kms
         }
     })
+
+
+@api_view(['GET'])
+def retrieve_service_types(request):
+
+    return ({"status": "success", "service_types":service_types_dropdown})
