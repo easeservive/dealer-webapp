@@ -179,6 +179,8 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
             details['km_ticked'] = veh_obj.KilometersTicked
             details['jc_id'] = veh_obj.JobCardID
             details['service_reminder_time'] = jc_obj.service_reminder_time
+            details['service_type'] = "%s - %s" % (global_contants.service_types[jc_obj.ServiceTypeId]['service_type'],
+                global_contants.service_types[jc_obj.ServiceTypeId]['classification'])
             details['del_time'] = jc_obj.DeliveryTime
             details['status'] = jc_obj.Status
             details['reason'] = jc_obj.PendingReason
@@ -303,7 +305,9 @@ def createJobCard(details, dealerid):
                                     Status = "OPEN",
                                     PendingReason = "",
                                     CreatedTime = str(datetime.datetime.now()),
-                                    LastedEditedTime = str(datetime.datetime.now()))
+                                    LastedEditedTime = str(datetime.datetime.now()),
+                                    ServiceTypeId = details['ServiceTypeId'],
+                                    )
                 JCOtherStocksInfo.objects.create(OtherPartsDesc = details['otherparts_desc'],
                                             OtherPartsCost = details['otherparts_cost'],
                                             JobCardID = jc_id)
@@ -400,6 +404,7 @@ def saveJobCard(details, dealerid, jc_id):
                     jc_obj.service_reminder_time = details['service_reminder_time']
                     jc_obj.Status = details['status']
                     jc_obj.PendingReason = details['reason']
+                    jc_obj.ServiceTypeId = details['service_type_id']
                     jc_obj.save()
                     
                     other_parts.OtherPartsDesc=details['otherparts_desc']
@@ -659,6 +664,8 @@ def getJobCardsList(dealerid, for_invoice=False):
                             temp_dict['veh_no'] = veh_obj.VehicleNumber
                             temp_dict['model'] = veh_obj.Brand + " " + veh_obj.Model
                             temp_dict['status'] = obj.Status
+                            temp_dict['service_type'] = "%s - %s" % (global_contants.service_types[obj.ServiceTypeId]['service_type'],
+                                global_contants.service_types[obj.ServiceTypeId]['classification'])
                             temp_dict['invoice'] = False
                             temp_dict['mechanic_name'] = obj.MechanicName
                             invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = obj.JobCardID)

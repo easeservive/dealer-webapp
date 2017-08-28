@@ -61,7 +61,7 @@ class JcForm(forms.Form):
     otherparts_cost = forms.CharField(required=False)
     recommendedservices = forms.CharField(required=False)
     labour_cost = forms.CharField(required=False)
-    #service_type = forms.CharField()
+    service_type_id = forms.CharField()
 
 
 class SaveJcForm(forms.Form):
@@ -87,7 +87,7 @@ class SaveJcForm(forms.Form):
     labour_cost = forms.CharField(required=False)
     jc_id = forms.CharField()
     service_reminder_time = forms.CharField(required=False)
-    #service_type = forms.CharField()
+    service_type_id = forms.CharField()
 
 
 class RetrieveVehicleDataForm(forms.Form):

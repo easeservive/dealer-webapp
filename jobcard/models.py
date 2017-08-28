@@ -29,8 +29,8 @@ class JCStatus(models.Model):
     PendingReason = models.CharField(max_length=100)
     CreatedTime = models.CharField(max_length=30)
     LastedEditedTime = models.CharField(max_length=30)
-    ServiceType = models.CharField(max_length=30)
     CustomerComplaint = models.TextField()
+    ServiceTypeId = models.CharField(max_length=30)
 
 class JCServiceDetails(models.Model):
     id = models.AutoField(primary_key=True)

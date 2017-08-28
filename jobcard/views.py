@@ -176,7 +176,7 @@ def create_job_card(request):
                 'otherparts_cost': jc_form.cleaned_data['otherparts_cost'],
                 'recommendedservices': jc_form.cleaned_data['recommendedservices'],
                 'labour_cost': jc_form.cleaned_data['labour_cost'],
-                #'service_type': jc_form.cleaned_data['service_type']
+                'service_type_id': jc_form.cleaned_data['service_type_id']
             },
             request.user
         )
@@ -274,7 +274,7 @@ def save_job_card(request):
                 'otherparts_cost': jc_form.cleaned_data['otherparts_cost'],
                 'recommendedservices': jc_form.cleaned_data['recommendedservices'],
                 'labour_cost': jc_form.cleaned_data['labour_cost'],
-                #'service_type': jc_form.cleaned_data['service_type']
+                'service_type_id': jc_form.cleaned_data['service_type_id']
             },
             request.user
         )
@@ -692,9 +692,9 @@ def accept_service_request(request):
     models.JCStatus.objects.create(
         JobCardID = jc_id,
         DealerID = request.user,
-        DeliveryTime = "",
+        #DeliveryTime = "",
         Status = "OPEN",
-        PendingReason = "",
+        #PendingReason = "",
         CreatedTime = str(datetime.datetime.now()),
         LastedEditedTime = str(datetime.datetime.now()),
         CustomerComplaint=service_obj.service_details
