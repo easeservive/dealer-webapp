@@ -3,14 +3,13 @@ from django.contrib.auth.models import User
 from django_mysql.models import JSONField
 
 class Vehicles(models.Model):
-    VehicleType = models.CharField(max_length=20)
-    Brand = models.CharField(max_length=200)
-    Model = models.CharField(max_length=500)
-    FuelType = models.CharField(max_length=20)
-    RegNumber = models.CharField(max_length=200)
-    YearOfManufacture = models.IntegerField()
-    ChassisNumber = models.CharField(max_length=200)
-    User = models.CharField(max_length=200)
+    vehicle_model_id = models.CharField(max_length=20)
+    fuel_type = models.CharField(max_length=20)
+    vehicle_registration_number = models.CharField(max_length=30, primary_key=True)
+    year = models.IntegerField()
+    chassis_number = models.CharField(max_length=200)
+    customer_id = models.CharField(max_length=20)
+    total_kms = models.IntegerField()
 
 
 class OTPTransactionInfo(models.Model):

@@ -22,6 +22,7 @@ from . import models
 from core.models import MaintenanceTips
 from . import forms
 from easeservice.portal_functions import generate_uuid
+#from core.models import VehicleModels
 
 
 def json_default(obj):
@@ -281,7 +282,6 @@ def retrieve_customer(request):
             "email": customer_obj.email,
             "first_name": customer_obj.first_name,
             "last_name": customer_obj.last_name,
-            "vehicles": customer_obj.vehicles
         }
     })
 
@@ -323,32 +323,15 @@ def add_vehicle(request):
     if not vehicle_form.is_valid():
         return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    if (
-        not vehicle_form.cleaned_data['vehicle_model_id'] and
-        not vehicle_form.cleaned_data['vehicle_brand'] and
-        not vehicle_form.cleaned_data['vehicle_model']
-        ):
-        return Response({'status': "failure", 'msg': "Please enter valid vehicle details."}, status=status_code.HTTP_400_BAD_REQUEST)
-
-    customer_obj = models.Customer.objects.get(mobile=request.user.username)
-
-    is_not_unique = True
-    while is_not_unique:
-        vehicle_id = generate_uuid(4)
-        if vehicle_id not in customer_obj.vehicles:
-            is_not_unique = False
-
-    customer_obj.vehicles[vehicle_id] = {
-        'vehicle_id': vehicle_id,
-        'vehicle_brand': vehicle_form.cleaned_data['vehicle_brand'],
-        'vehicle_model': vehicle_form.cleaned_data['vehicle_model'],
-        'vehicle_type': vehicle_form.cleaned_data['vehicle_type'],
-        'vehicle_model_id': vehicle_form.cleaned_data['vehicle_model_id'],
-        'vehicle_registration_number': vehicle_form.cleaned_data['vehicle_registration_number'],
-        'fuel_type': vehicle_form.cleaned_data['fuel_type'],
-        'total_kms': vehicle_form.cleaned_data['total_kms']
-    }
-    customer_obj.save()
+    vehicle_obj = Vehicles.objects.create(
+        total_kms = vehicle_form.cleaned_data['total_kms'],
+        vehicle_model_id = vehicle_form.cleaned_data['vehicle_model_id'],
+        vehicle_registration_number = vehicle_form.cleaned_data['vehicle_registration_number'],
+        fuel_type = vehicle_form.cleaned_data['fuel_type'],
+        year = vehicle_form.cleaned_data['year'],
+        customer_id = request.user.username,
+        chassis_number = vehicle_form.cleaned_data['chassis_number']
+    )
 
     return Response({'status': "success", "msg": "Vehicle saved successfully."})
 

@@ -46,14 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'mathfilters',
     'core',
     'dealer',
     'customer',
     'jobcard',
-    'inventory'
+    'inventory',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'mathfilters',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -112,7 +112,7 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easedb',
+        'NAME': 'easedb_1',
         'USER': 'root',
         'PASSWORD': '404lollypop',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

@@ -22,6 +22,7 @@ class JCVehicleInfo(models.Model):
 class JCStatus(models.Model):
     JobCardID = models.CharField(max_length=30)
     DealerID = models.CharField(max_length=30)
+    MechanicName = models.CharField(max_length=30)
     DeliveryTime = models.CharField(max_length=30)
     service_reminder_time = models.CharField(max_length=30)
     Status = models.CharField(max_length=10)
@@ -58,6 +59,7 @@ class JCStocksInfo(models.Model):
 class JCInvoiceAndLabourCost(models.Model):
     JobCardID = models.CharField(max_length=30)
     DealerID = models.CharField(max_length=30)
+    MechanicName = models.CharField(max_length=30)
     InvoiceNumber = models.CharField(max_length=30)
     LabourCharge = models.CharField(max_length=30)
     PaymentMode = models.CharField(max_length=30)
@@ -106,7 +108,7 @@ def trigger_sms(sender, instance=None,created=False, **kwargs):
 class CServiceBooking(models.Model):
     booking_id = models.AutoField(primary_key=True)
     customer_id = models.IntegerField()
-    vehicle_type = models.CharField(max_length=50)
+    #vehicle_type = models.CharField(max_length=50)
     vehicle_model_id = models.IntegerField()
     vehicle_registration_number = models.CharField(max_length=20)
     service_center_id = models.CharField(max_length=20)

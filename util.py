@@ -182,6 +182,7 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
             details['del_time'] = jc_obj.DeliveryTime
             details['status'] = jc_obj.Status
             details['reason'] = jc_obj.PendingReason
+            details['mechanic_name'] = jc_obj.MechanicName
 
             services = []
             for obj in ser_obj:
@@ -298,6 +299,7 @@ def createJobCard(details, dealerid):
                 JCStatus.objects.create(JobCardID = jc_id,
                                     DealerID = dealerid,
                                     DeliveryTime = details['del_time'],
+                                    MechanicName = details['mechanic_name'],
                                     Status = "OPEN",
                                     PendingReason = "",
                                     CreatedTime = str(datetime.datetime.now()),
@@ -318,7 +320,9 @@ def createJobCard(details, dealerid):
                                                   PaymentMode = "",
                                                   PartsTotalPrice = "",
                                                   VATPercentage = "",
-                                                  TaxPercentage = "")
+                                                  TaxPercentage = "",
+                                                  MechanicName = details['mechanic_name']
+                                                  )
 
                 service_items = "##".join(details['recommendedservices'])
                 JCRecommendedServices.objects.create(JobCardID = jc_id,
@@ -427,7 +431,9 @@ def saveJobCard(details, dealerid, jc_id):
                                                           PaymentMode = "",
                                                           PartsTotalPrice = "",
                                                           VATPercentage = "",
-                                                          TaxPercentage = "")
+                                                          TaxPercentage = "",
+                                                          MechanicName=details['mechanic_name']
+                                                          )
 
                     recomd_obj.ServiceItems = "##".join(details['recommendedservices'])
                     recomd_obj.save()
@@ -654,6 +660,7 @@ def getJobCardsList(dealerid, for_invoice=False):
                             temp_dict['model'] = veh_obj.Brand + " " + veh_obj.Model
                             temp_dict['status'] = obj.Status
                             temp_dict['invoice'] = False
+                            temp_dict['mechanic_name'] = obj.MechanicName
                             invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = obj.JobCardID)
                             if invoice_obj and invoice_obj.InvoiceNumber != "":
                                 temp_dict['invoice'] = True
@@ -731,3 +738,34 @@ def get_image():
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         return False
+
+
+def vehicle_number_check(reg_data):
+
+    reg_data = reg_data.split(' ')
+
+    if len(reg_data) == 3:
+        if (
+            not reg_data[0].isalpha() or
+            len(reg_data[0]) != 2 or
+            not reg_data[1].isdigit() or
+            len(reg_data[1]) != 2 or
+            not reg_data[2].isdigit() or
+            len(reg_data[2]) != 4
+            ):
+            return False, "Invalid Registration Number Format."
+
+    else:
+        if (
+            not reg_data[0].isalpha() or
+            len(reg_data[0]) != 2 or
+            not reg_data[1].isdigit() or
+            len(reg_data[1]) != 2 or
+            not reg_data[2].isalpha() or
+            len(reg_data[2]) > 3 or
+            not reg_data[3].isdigit() or
+            len(reg_data[2]) != 4
+            ):
+            return False, "Invalid Registration Number Format."
+
+    return True, None

@@ -38,3 +38,58 @@ class RetrieveServiceRequests(forms.Form):
 class AcceptServiceForm(forms.Form):
 
     booking_id = forms.IntegerField()
+
+
+class JcForm(forms.Form):
+
+    veh_num = forms.CharField()
+    brand = forms.CharField()
+    model = forms.CharField()
+    fuel_type = forms.CharField()
+    c_num = forms.CharField(required=False)
+    cust_name = forms.CharField()
+    cont_num = forms.IntegerField()
+    cont_address = forms.CharField()
+    km_ticked = forms.IntegerField()
+    del_time = forms.CharField()
+    status = forms.CharField()
+    reason = forms.CharField()
+    mechanic_name = forms.CharField()
+    services = forms.CharField(required=False)
+    spares = forms.CharField(required=False)
+    otherparts_desc = forms.CharField(required=False)
+    otherparts_cost = forms.CharField(required=False)
+    recommendedservices = forms.CharField(required=False)
+    labour_cost = forms.CharField(required=False)
+    #service_type = forms.CharField()
+
+
+class SaveJcForm(forms.Form):
+
+    veh_num = forms.CharField()
+    brand = forms.CharField()
+    model = forms.CharField()
+    fuel_type = forms.CharField()
+    c_num = forms.CharField(required=False)
+    cust_name = forms.CharField()
+    cont_num = forms.IntegerField()
+    cont_address = forms.CharField()
+    km_ticked = forms.IntegerField()
+    del_time = forms.CharField()
+    status = forms.CharField()
+    reason = forms.CharField()
+    mechanic_name = forms.CharField()
+    services = forms.CharField(required=False)
+    spares = forms.CharField(required=False)
+    otherparts_desc = forms.CharField(required=False)
+    otherparts_cost = forms.CharField(required=False)
+    recommendedservices = forms.CharField(required=False)
+    labour_cost = forms.CharField(required=False)
+    jc_id = forms.CharField()
+    service_reminder_time = forms.CharField(required=False)
+    #service_type = forms.CharField()
+
+
+class RetrieveVehicleDataForm(forms.Form):
+
+    vehicle_registration_number = forms.CharField()

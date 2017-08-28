@@ -48,13 +48,12 @@ class BookServiceForm(forms.Form):
 
 class AddVehicleForm(forms.Form):
 
-    vehicle_type = forms.CharField()
-    vehicle_model_id = forms.CharField(required=False)
-    vehicle_brand = forms.CharField(required=False)
-    vehicle_model = forms.CharField(required=False)
+    vehicle_model_id = forms.CharField()
     vehicle_registration_number = forms.CharField()
     fuel_type = forms.CharField()
     total_kms = forms.IntegerField()
+    year = forms.IntegerField()
+    chassis_number = forms.CharField(required=False)
 
 class TipsForm(forms.Form):
 

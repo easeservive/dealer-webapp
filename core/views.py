@@ -582,7 +582,7 @@ def retrieve_vehicle_review(request):
 
     if vehicle_obj:
         vehicle_data = {}
-
+        #######
         # populate vehicle_data with reviews and vehicle details
 
     else:
