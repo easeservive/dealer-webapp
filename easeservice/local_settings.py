@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import datetime
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -75,6 +76,8 @@ REST_FRAMEWORK = {
     )
 }
 
+#AUTH_USER_MODEL = 'auth.User'
+
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=10800),
     'JWT_ALLOW_REFRESH': True,
@@ -113,6 +116,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'easedb_1',
+        #'NAME': 'easedb',
         'USER': 'root',
         'PASSWORD': '404lollypop',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

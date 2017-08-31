@@ -134,204 +134,223 @@ def fetch_job_card(request):
     return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 def create_job_card(request):
 
-    if not request.user.is_authenticated():
-        return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
+    print(request.user)
 
-    view_logger = log_rotator.view_logger()
+    # if not request.user.is_authenticated():
+    #     return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
 
-    jc_form = forms.JcForm(request.data)
-    if not jc_form.is_valid():
-        return Response({'status': "failure", 'errors': jc_form.errors, "msg": "Parameters Missing."},
-            status=status_code.HTTP_400_BAD_REQUEST
-        )
+    # view_logger = log_rotator.view_logger()
 
-    is_valid, message = util.vehicle_number_check(jc_form.cleaned_data['veh_num'])
-    if not is_valid:
-        return Response({'status': "failure", "msg": message}, 
-                status=status_code.HTTP_400_BAD_REQUEST
-            )
+    # jc_form = forms.JcForm(request.data)
+    # if not jc_form.is_valid():
+    #     return Response({'status': "failure", 'errors': jc_form.errors, "msg": "Parameters Missing."},
+    #         status=status_code.HTTP_400_BAD_REQUEST
+    #     )
 
-    try:
-        result = util.createJobCard(
-            {
-                'veh_num': jc_form.cleaned_data['veh_num'],
-                'brand': jc_form.cleaned_data['brand'],
-                'model': jc_form.cleaned_data['model'],
-                'fuel_type': jc_form.cleaned_data['fuel_type'],
-                'c_num': jc_form.cleaned_data['c_num'],
-                'cust_name': jc_form.cleaned_data['cust_name'],
-                'cont_num': jc_form.cleaned_data['cont_num'],
-                'cont_address': jc_form.cleaned_data['cont_address'],
-                'km_ticked': jc_form.cleaned_data['km_ticked'],
-                'del_time': jc_form.cleaned_data['del_time'],
-                'status': jc_form.cleaned_data['status'],
-                'reason': jc_form.cleaned_data['reason'],
-                'mechanic_name': jc_form.cleaned_data['mechanic_name'],
-                'services': jc_form.cleaned_data['services'],
-                'spares': jc_form.cleaned_data['spares'],
-                'otherparts_desc': jc_form.cleaned_data['otherparts_desc'],
-                'otherparts_cost': jc_form.cleaned_data['otherparts_cost'],
-                'recommendedservices': jc_form.cleaned_data['recommendedservices'],
-                'labour_cost': jc_form.cleaned_data['labour_cost'],
-                'service_type_id': jc_form.cleaned_data['service_type_id']
-            },
-            request.user
-        )
-
-        result['url'] = '/jobcard/'
-    except:
-        view_logger.exception("JOBCARD VIEW : Create job card response - %s" % str(result))
-
-    return Response(result)
+    # is_valid, message = util.vehicle_number_check(jc_form.cleaned_data['veh_num'])
+    # if not is_valid:
+    #     return Response({'status': "failure", "msg": message}, 
+    #             status=status_code.HTTP_400_BAD_REQUEST
+    #         )
 
     # try:
-    #     view_logger = log_rotator.view_logger()
-    #     if request.method == 'POST':
-    #         if request.user.is_authenticated():
+    #     result = util.createJobCard(
+    #         {
+    #             'veh_num': jc_form.cleaned_data['veh_num'],
+    #             'brand': jc_form.cleaned_data['brand'],
+    #             'model': jc_form.cleaned_data['model'],
+    #             'fuel_type': jc_form.cleaned_data['fuel_type'],
+    #             'c_num': jc_form.cleaned_data['c_num'],
+    #             'cust_name': jc_form.cleaned_data['cust_name'],
+    #             'cont_num': jc_form.cleaned_data['cont_num'],
+    #             'cont_address': jc_form.cleaned_data['cont_address'],
+    #             'km_ticked': jc_form.cleaned_data['km_ticked'],
+    #             'del_time': jc_form.cleaned_data['del_time'],
+    #             'status': jc_form.cleaned_data['status'],
+    #             'reason': jc_form.cleaned_data['reason'],
+    #             'mechanic_name': jc_form.cleaned_data['mechanic_name'],
+    #             'services': jc_form.cleaned_data['services'],
+    #             'spares': jc_form.cleaned_data['spares'],
+    #             'otherparts_desc': jc_form.cleaned_data['otherparts_desc'],
+    #             'otherparts_cost': jc_form.cleaned_data['otherparts_cost'],
+    #             'recommendedservices': jc_form.cleaned_data['recommendedservices'],
+    #             'labour_cost': jc_form.cleaned_data['labour_cost'],
+    #             'service_type_id': jc_form.cleaned_data['service_type_id']
+    #         },
+    #         request.user
+    #     )
 
-    #             data = json.loads(request.body.decode('utf-8'))['data']
-
-    #             view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
-    #             dealerid = request.user
-    #             details = {}
-
-    #             details['veh_num'] = data['veh_num']
-    #             details['brand'] = data['brand']
-    #             details['model'] = data['model']
-    #             details['fuel_type'] = data['fuel_type']
-    #             details['c_num'] = data['c_num']
-    #             details['cust_name'] = data['cust_name']
-    #             details['cont_num'] = data['cont_num']
-    #             details['cont_address'] = data['cont_address']
-    #             details['km_ticked'] = data['km_ticked']
-
-    #             details['del_time'] = data['del_time']
-    #             details['status'] = data['status']
-    #             details['reason'] = data['reason']
-    #             details['mechanic_name'] = data['mechanic_name']
-    #             details['services'] = data['services']
-    #             details['spares'] = data['spares']
-    #             details['otherparts_desc'] = data['otherparts_desc']
-    #             details['otherparts_cost'] = data['otherparts_cost']
-    #             details['recommendedservices'] = data['recommendedservices']
-    #             details['labour_cost'] = data['labour_cost']
-    #             result = util.createJobCard(details, dealerid)
-    #             result['url'] = '/jobcard/'
-    #         else:
-    #             result = {"status": "failure", "msg" : "Invalid session"}
-    #     else:
-    #         result = {"status": "failure", "msg": "Invalid request method"}
+    #     result['url'] = '/jobcard/'
     # except:
-    #     error_logger = log_rotator.error_logger()
-    #     error_logger.debug("Exception::", exc_info=True)
-    #     result = {"status": "failure", "msg": "something went wrong"}
-    # view_logger.debug("JOBCARD VIEW : Create job card response - %s"%str(result))
-    # return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+    #     view_logger.exception("JOBCARD VIEW : Create job card response - %s" % str(result))
+
+    # return Response(result)
+
+    try:
+        view_logger = log_rotator.view_logger()
+        if request.method == 'POST':
+            if request.user.is_authenticated():
+
+                data = json.loads(request.body.decode('utf-8'))['data']
+
+                view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
+                dealerid = request.user
+                details = {}
+
+                details['veh_num'] = data['veh_num']
+                details['brand'] = data['brand']
+                details['model'] = data['model']
+                details['fuel_type'] = data['fuel_type']
+                details['c_num'] = data['c_num']
+                details['cust_name'] = data['cust_name']
+                details['cont_num'] = data['cont_num']
+                details['cont_address'] = data['cont_address']
+                details['km_ticked'] = data['km_ticked']
+                details['del_time'] = data['del_time']
+                details['status'] = data['status']
+                details['reason'] = data['reason']
+
+                details['services'] = data['services']
+                details['spares'] = data['spares']
+                details['otherparts_desc'] = data['otherparts_desc']
+                details['otherparts_cost'] = data['otherparts_cost']
+                details['recommendedservices'] = data['recommendedservices']
+                details['labour_cost'] = data['labour_cost']
+
+                if 'mechanic_name' in details:
+                    details['mechanic_name'] = data['mechanic_name']
+                else:
+                    details['mechanic_name'] = ""
+                if 'service_type_id' in details:
+                    details['ServiceTypeId'] = data['service_type_id']
+                else:
+                    # General service by default
+                    details['ServiceTypeId'] = "5s5d5f5g"
+
+                result = util.createJobCard(details, dealerid)
+                result['url'] = '/jobcard/'
+            else:
+                result = {"status": "failure", "msg" : "Invalid session"}
+        else:
+            result = {"status": "failure", "msg": "Invalid request method"}
+    except:
+        error_logger = log_rotator.error_logger()
+        error_logger.debug("Exception::", exc_info=True)
+        result = {"status": "failure", "msg": "something went wrong"}
+    view_logger.debug("JOBCARD VIEW : Create job card response - %s"%str(result))
+    return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 def save_job_card(request):
 
-    if not request.user.is_authenticated():
-        return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
+    # if not request.user.is_authenticated():
+    #     return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
 
-    view_logger = log_rotator.view_logger()
+    # view_logger = log_rotator.view_logger()
 
-    jc_form = forms.SaveJcForm(request.data)
-    if not jc_form.is_valid():
-        return Response({'status': "failure", 'errors': jc_form.errors, "msg": "Parameters Missing."}, status=status_code.HTTP_400_BAD_REQUEST)
+    # jc_form = forms.SaveJcForm(request.data)
+    # if not jc_form.is_valid():
+    #     return Response({'status': "failure", 'errors': jc_form.errors, "msg": "Parameters Missing."}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    is_valid, message = util.vehicle_number_check(jc_form.cleaned_data['veh_num'])
-    if not is_valid:
-        return Response({'status': "failure", "msg": message}, 
-                status=status_code.HTTP_400_BAD_REQUEST
-            )
-
-    try:
-        result = util.saveJobCard(
-            {
-                'jc_id': jc_form.cleaned_data['jc_id'],
-                'veh_num': jc_form.cleaned_data['veh_num'],
-                'brand': jc_form.cleaned_data['brand'],
-                'model': jc_form.cleaned_data['model'],
-                'fuel_type': jc_form.cleaned_data['fuel_type'],
-                'c_num': jc_form.cleaned_data['c_num'],
-                'cust_name': jc_form.cleaned_data['cust_name'],
-                'cont_num': jc_form.cleaned_data['cont_num'],
-                'cont_address': jc_form.cleaned_data['cont_address'],
-                'km_ticked': jc_form.cleaned_data['km_ticked'],
-                'service_reminder_time': jc_form.cleaned_data['service_reminder_time'],
-                'del_time': jc_form.cleaned_data['del_time'],
-                'status': jc_form.cleaned_data['status'],
-                'reason': jc_form.cleaned_data['reason'],
-                'mechanic_name': jc_form.cleaned_data['mechanic_name'],
-                'services': jc_form.cleaned_data['services'],
-                'spares': jc_form.cleaned_data['spares'],
-                'otherparts_desc': jc_form.cleaned_data['otherparts_desc'],
-                'otherparts_cost': jc_form.cleaned_data['otherparts_cost'],
-                'recommendedservices': jc_form.cleaned_data['recommendedservices'],
-                'labour_cost': jc_form.cleaned_data['labour_cost'],
-                'service_type_id': jc_form.cleaned_data['service_type_id']
-            },
-            request.user
-        )
-
-        result['url'] = '/jobcard/'
-    except:
-        view_logger.exception("JOBCARD VIEW : Create job card response - %s" % str(result))
-
-    return Response(result)
+    # is_valid, message = util.vehicle_number_check(jc_form.cleaned_data['veh_num'])
+    # if not is_valid:
+    #     return Response({'status': "failure", "msg": message}, 
+    #             status=status_code.HTTP_400_BAD_REQUEST
+    #         )
 
     # try:
-    #     view_logger = log_rotator.view_logger()
-    #     if request.method == 'POST':
-    #         if request.user.is_authenticated():
-    #             #data = request.body
-    #             dealerid = request.user
-    #             details = {}
+    #     result = util.saveJobCard(
+    #         {
+    #             'jc_id': jc_form.cleaned_data['jc_id'],
+    #             'veh_num': jc_form.cleaned_data['veh_num'],
+    #             'brand': jc_form.cleaned_data['brand'],
+    #             'model': jc_form.cleaned_data['model'],
+    #             'fuel_type': jc_form.cleaned_data['fuel_type'],
+    #             'c_num': jc_form.cleaned_data['c_num'],
+    #             'cust_name': jc_form.cleaned_data['cust_name'],
+    #             'cont_num': jc_form.cleaned_data['cont_num'],
+    #             'cont_address': jc_form.cleaned_data['cont_address'],
+    #             'km_ticked': jc_form.cleaned_data['km_ticked'],
+    #             'service_reminder_time': jc_form.cleaned_data['service_reminder_time'],
+    #             'del_time': jc_form.cleaned_data['del_time'],
+    #             'status': jc_form.cleaned_data['status'],
+    #             'reason': jc_form.cleaned_data['reason'],
+    #             'mechanic_name': jc_form.cleaned_data['mechanic_name'],
+    #             'services': jc_form.cleaned_data['services'],
+    #             'spares': jc_form.cleaned_data['spares'],
+    #             'otherparts_desc': jc_form.cleaned_data['otherparts_desc'],
+    #             'otherparts_cost': jc_form.cleaned_data['otherparts_cost'],
+    #             'recommendedservices': jc_form.cleaned_data['recommendedservices'],
+    #             'labour_cost': jc_form.cleaned_data['labour_cost'],
+    #             'service_type_id': jc_form.cleaned_data['service_type_id']
+    #         },
+    #         request.user
+    #     )
 
-    #             # data = json.loads(data)
-    #             # data = data['data']
-    #             data = json.loads(request.body.decode('utf-8'))['data']
-
-    #             view_logger.debug("JOBCARD VIEW : Save job card request - %s"%str(data))
-
-    #             details['jc_id'] = data.get('jc_id', 'NA')
-    #             details['veh_num'] = data['veh_num']
-    #             details['brand'] = data['brand']
-    #             details['model'] = data['model']
-    #             details['fuel_type'] = data['fuel_type']
-    #             details['c_num'] = data['c_num']
-    #             details['cust_name'] = data['cust_name']
-    #             details['cont_num'] = data['cont_num']
-    #             details['cont_address'] = data['cont_address']
-    #             details['km_ticked'] = data['km_ticked']
-    #             details['service_reminder_time'] = data['service_reminder_time']
-    #             details['del_time'] = data['del_time']
-    #             details['status'] = data['status']
-    #             details['reason'] = data['reason']
-    #             details['mechanic_name'] = data['mechanic_name']
-    #             details['otherparts_desc'] = data['otherparts_desc']
-    #             details['otherparts_cost'] = data['otherparts_cost']
-    #             details['services'] = data['services']
-    #             details['spares'] = data['spares']
-    #             details['recommendedservices'] = data['recommendedservices']
-    #             details['labour_cost'] = data['labour_cost']
-    #             result = util.saveJobCard(details, dealerid, details['jc_id'])
-    #             result['url'] = '/jobcard/'
-    #         else:
-    #             result = {"status": "failure", "msg" : "Invalid session"}
-    #     else:
-    #         result = {"status": "failure", "msg": "Invalid request method"}
+    #     result['url'] = '/jobcard/'
     # except:
-    #     error_logger = log_rotator.error_logger()
-    #     error_logger.debug("Exception::", exc_info=True)
-    #     result = {"status": "failure", "msg": "something went wrong"}
-    # view_logger.debug("JOBCARD VIEW : Save job card response - %s"%str(result))
-    # return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+    #     view_logger.exception("JOBCARD VIEW : Create job card response - %s" % str(result))
+
+    # return Response(result)
+
+    try:
+        view_logger = log_rotator.view_logger()
+        if request.method == 'POST':
+            if request.user.is_authenticated():
+                dealerid = request.user
+                details = {}
+
+                data = json.loads(request.body.decode('utf-8'))['data']
+
+                view_logger.debug("JOBCARD VIEW : Save job card request - %s"%str(data))
+
+                details['jc_id'] = data.get('jc_id', 'NA')
+                details['veh_num'] = data['veh_num']
+                details['brand'] = data['brand']
+                details['model'] = data['model']
+                details['fuel_type'] = data['fuel_type']
+                details['c_num'] = data['c_num']
+                details['cust_name'] = data['cust_name']
+                details['cont_num'] = data['cont_num']
+                details['cont_address'] = data['cont_address']
+                details['km_ticked'] = data['km_ticked']
+                details['service_reminder_time'] = data['service_reminder_time']
+                details['del_time'] = data['del_time']
+                details['status'] = data['status']
+                details['reason'] = data['reason']
+                details['otherparts_desc'] = data['otherparts_desc']
+                details['otherparts_cost'] = data['otherparts_cost']
+                details['services'] = data['services']
+                details['spares'] = data['spares']
+                details['recommendedservices'] = data['recommendedservices']
+                details['labour_cost'] = data['labour_cost']
+
+                if 'mechanic_name' in details:
+                    details['mechanic_name'] = data['mechanic_name']
+                else:
+                    details['mechanic_name'] = ""
+                if 'service_type_id' in details:
+                    details['ServiceTypeId'] = data['service_type_id']
+                else:
+                    # General service by default
+                    details['ServiceTypeId'] = "5s5d5f5g"
+
+                result = util.saveJobCard(details, dealerid, details['jc_id'])
+                result['url'] = '/jobcard/'
+            else:
+                result = {"status": "failure", "msg" : "Invalid session"}
+        else:
+            result = {"status": "failure", "msg": "Invalid request method"}
+    except:
+        error_logger = log_rotator.error_logger()
+        error_logger.debug("Exception::", exc_info=True)
+        result = {"status": "failure", "msg": "something went wrong"}
+    view_logger.debug("JOBCARD VIEW : Save job card response - %s"%str(result))
+    return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
 
 def data_for_jobs_auto_suggestion(request):
