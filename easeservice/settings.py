@@ -39,14 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'mathfilters',
     'core',
     'customer',
     'jobcard',
     'inventory',
     'dealer',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'mathfilters',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -91,7 +91,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-            ],
+            ]
+            'debug': DEBUG,
         },
     },
 ]

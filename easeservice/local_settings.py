@@ -116,7 +116,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'easedb_server',
-        #'NAME': 'easedb',
         'USER': 'root',
         'PASSWORD': '404lollypop',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
@@ -164,7 +163,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-#STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
