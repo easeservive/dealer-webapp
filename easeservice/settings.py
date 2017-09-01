@@ -157,5 +157,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DRS = [
     os.path.join(BASE_DIR, "static"),
-    '/var/www/html/easeserver/easeservice/static/',
+    #'/var/www/html/easeserver/easeservice/static/',
+    '/var/ease/dealer-webapp'
 ]
