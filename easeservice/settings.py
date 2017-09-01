@@ -39,14 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'mathfilters',
     'core',
     'customer',
     'jobcard',
     'inventory',
     'dealer',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'mathfilters',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -91,7 +91,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-            ],
+            ]
+            'debug': DEBUG,
         },
     },
 ]
@@ -156,5 +157,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DRS = [
     os.path.join(BASE_DIR, "static"),
-    '/var/www/html/easeserver/easeservice/static/',
+    #'/var/www/html/easeserver/easeservice/static/',
+    '/var/ease/dealer-webapp'
 ]

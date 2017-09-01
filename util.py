@@ -12,6 +12,7 @@ from inventory.models import Inventory
 from django.contrib.auth.models import User
 import config
 from easeservice.message_functions import send_text_message
+from easeservice import global_constants
 
 def fetch_vehicles(user):
     try:
@@ -179,9 +180,12 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
             details['km_ticked'] = veh_obj.KilometersTicked
             details['jc_id'] = veh_obj.JobCardID
             details['service_reminder_time'] = jc_obj.service_reminder_time
+            details['service_type'] = "%s - %s" % (global_constants.service_types[jc_obj.ServiceTypeId]['service_type'],
+                global_constants.service_types[jc_obj.ServiceTypeId]['classification'])
             details['del_time'] = jc_obj.DeliveryTime
             details['status'] = jc_obj.Status
             details['reason'] = jc_obj.PendingReason
+            details['mechanic_name'] = jc_obj.MechanicName
 
             services = []
             for obj in ser_obj:
@@ -298,10 +302,13 @@ def createJobCard(details, dealerid):
                 JCStatus.objects.create(JobCardID = jc_id,
                                     DealerID = dealerid,
                                     DeliveryTime = details['del_time'],
+                                    MechanicName = details['mechanic_name'],
                                     Status = "OPEN",
                                     PendingReason = "",
                                     CreatedTime = str(datetime.datetime.now()),
-                                    LastedEditedTime = str(datetime.datetime.now()))
+                                    LastedEditedTime = str(datetime.datetime.now()),
+                                    ServiceTypeId = details['ServiceTypeId'],
+                                    )
                 JCOtherStocksInfo.objects.create(OtherPartsDesc = details['otherparts_desc'],
                                             OtherPartsCost = details['otherparts_cost'],
                                             JobCardID = jc_id)
@@ -318,7 +325,9 @@ def createJobCard(details, dealerid):
                                                   PaymentMode = "",
                                                   PartsTotalPrice = "",
                                                   VATPercentage = "",
-                                                  TaxPercentage = "")
+                                                  TaxPercentage = "",
+                                                  MechanicName = details['mechanic_name']
+                                                  )
 
                 service_items = "##".join(details['recommendedservices'])
                 JCRecommendedServices.objects.create(JobCardID = jc_id,
@@ -396,6 +405,7 @@ def saveJobCard(details, dealerid, jc_id):
                     jc_obj.service_reminder_time = details['service_reminder_time']
                     jc_obj.Status = details['status']
                     jc_obj.PendingReason = details['reason']
+                    jc_obj.ServiceTypeId = details['ServiceTypeId']
                     jc_obj.save()
                     
                     other_parts.OtherPartsDesc=details['otherparts_desc']
@@ -427,7 +437,9 @@ def saveJobCard(details, dealerid, jc_id):
                                                           PaymentMode = "",
                                                           PartsTotalPrice = "",
                                                           VATPercentage = "",
-                                                          TaxPercentage = "")
+                                                          TaxPercentage = "",
+                                                          MechanicName=details['mechanic_name']
+                                                          )
 
                     recomd_obj.ServiceItems = "##".join(details['recommendedservices'])
                     recomd_obj.save()
@@ -642,6 +654,7 @@ def getJobCardsList(dealerid, for_invoice=False):
     try:
         result = []
         jc_objs = JCStatus.objects.filter(DealerID__iexact = dealerid)
+
         if jc_objs:
             for obj in jc_objs:
                 try:
@@ -653,7 +666,10 @@ def getJobCardsList(dealerid, for_invoice=False):
                             temp_dict['veh_no'] = veh_obj.VehicleNumber
                             temp_dict['model'] = veh_obj.Brand + " " + veh_obj.Model
                             temp_dict['status'] = obj.Status
+                            temp_dict['service_type'] = "%s - %s" % (global_constants.service_types[obj.ServiceTypeId]['service_type'],
+                                global_constants.service_types[obj.ServiceTypeId]['classification'])
                             temp_dict['invoice'] = False
+                            temp_dict['mechanic_name'] = obj.MechanicName
                             invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = obj.JobCardID)
                             if invoice_obj and invoice_obj.InvoiceNumber != "":
                                 temp_dict['invoice'] = True
@@ -731,3 +747,34 @@ def get_image():
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         return False
+
+
+def vehicle_number_check(reg_data):
+
+    reg_data = reg_data.split(' ')
+
+    if len(reg_data) == 3:
+        if (
+            not reg_data[0].isalpha() or
+            len(reg_data[0]) != 2 or
+            not reg_data[1].isdigit() or
+            len(reg_data[1]) != 2 or
+            not reg_data[2].isdigit() or
+            len(reg_data[2]) != 4
+            ):
+            return False, "Invalid Registration Number Format."
+
+    else:
+        if (
+            not reg_data[0].isalpha() or
+            len(reg_data[0]) != 2 or
+            not reg_data[1].isdigit() or
+            len(reg_data[1]) != 2 or
+            not reg_data[2].isalpha() or
+            len(reg_data[2]) > 3 or
+            not reg_data[3].isdigit() or
+            len(reg_data[2]) != 4
+            ):
+            return False, "Invalid Registration Number Format."
+
+    return True, None

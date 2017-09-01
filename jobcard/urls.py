@@ -5,7 +5,7 @@ from jobcard import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-   url('^api/add/vehicle$', views.addvehicle),
+   #url('^api/add/vehicle$', views.addvehicle),
    url('^api/get/sch_maintenance$', views.fetch_scheduled_maintenance),
    url('^api/estimate/spares$', views.estimate_parts),
    url('^api/create/jobcard/$', views.create_job_card),
@@ -26,6 +26,10 @@ urlpatterns = [
 
    url(r'^apis/jobcard/v1/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
    url(r'^apis/jobcard/v1/service/accept$', views.accept_service_request, name="accept_service_request"),
+
+   url(r'^apis/jobcard/v1/user/vehicle$', views.retrieve_vehicle_data, name="retrieve_vehicle_data"),
+
+   url(r'^apis/jobcard/v1/servicetypes$', views.retrieve_service_types, name="retrieve_service_types"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

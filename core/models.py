@@ -72,3 +72,14 @@ class Surveys(models.Model):
 class VehicleReviews(models.Model):
 
     vehicle_model_id = models.IntegerField()
+    stars = models.IntegerField()
+    text = models.IntegerField()
+    user_count = models.IntegerField()
+
+
+class VehicleModels(models.Model):
+
+    vehicle_model_id = models.CharField(max_length=20)
+    model_name = models.CharField(max_length=30)
+    brand_name = models.CharField(max_length=30)
+    vehicle_type = models.CharField(max_length=10)

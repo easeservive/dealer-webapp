@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import datetime
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -46,14 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'mathfilters',
     'core',
     'dealer',
     'customer',
     'jobcard',
-    'inventory'
+    'inventory',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'mathfilters',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -74,6 +75,8 @@ REST_FRAMEWORK = {
         #'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+#AUTH_USER_MODEL = 'auth.User'
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=10800),
@@ -112,7 +115,7 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easedb',
+        'NAME': 'easedb_server',
         'USER': 'root',
         'PASSWORD': '404lollypop',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
@@ -160,7 +163,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-#STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")

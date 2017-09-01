@@ -575,17 +575,29 @@ def retrieve_vehicle_review(request):
         return Response({'status': "failure", 'errors': review_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     try:
-        vehicle_obj = models.VehicleReviews.objects.get(vehicle_model_id=review_form.cleaned_data['vehicle_model_id'])
+        vehicle_obj = models.VehicleModels.objects.get(vehicle_model_id=review_form.cleaned_data['vehicle_model_id'])
+    except models.VehicleModels.DoesNotExist:
+        return Response({'status': "failure", "msg": "Invalid Vehicle Model."}, status=status_code.HTTP_400_BAD_REQUEST)
 
+    try:
+        vehicle_review_obj = models.VehicleReviews.objects.get(vehicle_model_id=review_form.cleaned_data['vehicle_model_id'])
     except models.VehicleReviews.DoesNotExist:
-        vehicle_obj = None
+        vehicle_review_obj = None
 
-    if vehicle_obj:
-        vehicle_data = {}
+    vehicle_data = {
+        'vehicle_name': vehicle_obj.vehicle_name,
+        'model_name': vehicle_obj.model_name,
+        'brand_name': vehicle_obj.brand_name
+    }
 
-        # populate vehicle_data with reviews and vehicle details
-
+    if vehicle_review_obj:
+        vehicle_data['stars'] = vehicle_review_obj.stars
+        vehicle_data['text'] = vehicle_review_obj.text
+        vehicle_data['user_count'] = vehicle_review_obj.user_count
     else:
-        vehicle_data = {}
+        # stars = 0 depicts that there is no review for this model, catch 0 and display no reviews in frontend
+        vehicle_data['stars'] = 0
+        vehicle_data['text'] = "Not Available"
+        vehicle_data['user_count'] = "Not Available"
 
     return Response({'status': "success", "vehicle_data": vehicle_data})
