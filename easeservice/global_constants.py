@@ -10,7 +10,9 @@ service_types = {
 
     'pg7g8h8j': {'service_type': 'Water Wash', 'classification': 'Full Vehicle Wash'},
     'a8k5hj6g': {'service_type': 'Water Wash', 'classification': 'Interior & Exterior Cleaning'},
-    'h8h9hljk': {'service_type': 'Water Wash', 'classification': 'Body Wash'}
+    'h8h9hljk': {'service_type': 'Water Wash', 'classification': 'Body Wash'},
+
+    'default': {'service_type': 'Not Available', 'classification': 'Not Available'}
 }
 
 service_types_dropdown = [

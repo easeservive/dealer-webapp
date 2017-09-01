@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easedb_1',
+        'NAME': 'easedb_server',
         #'NAME': 'easedb',
         'USER': 'root',
         'PASSWORD': '404lollypop',
