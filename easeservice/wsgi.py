@@ -19,7 +19,8 @@ os.environ['PYTHON_EGG_CACHE'] = '/tmp/egg'
 if server_config and server_config.__contains__("Development"):
     sys.path.append("/host/Ease/easeserver/easeservice")
 else:
-    sys.path.append("/var/www/html/easeserver/easeservice")
+	sys.path.append("/var/ease/dealer-webapp")
+    #sys.path.append("/var/www/html/easeserver/easeservice")
 sys.path.append("/host/Ease/easeserver/easeservice")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.settings")
 application = get_wsgi_application()
