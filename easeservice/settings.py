@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 SMS_BLOCK = True
 
 ALLOWED_HOSTS = ['*']
@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easedb',
+        'NAME': 'ease_db',
         'USER': 'root',
         'PASSWORD': 'ease123!',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

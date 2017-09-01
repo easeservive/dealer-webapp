@@ -20,7 +20,7 @@ _viewLogger = [None]
 _utilLogger = [None]
 
 #PATH_LOGS = os.path.dirname(os.path.abspath(__file__)) + '/../../logs/'
-PATH_LOGS = settings.PATH_LOGS
+PATH_LOGS = "/var/ease/dealer-webapp/logs"
 
 def getLogger(logger_name, fName, levelname, disable_formatting=False):
     """
