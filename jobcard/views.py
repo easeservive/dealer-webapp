@@ -10,8 +10,10 @@ import util
 import log_rotator
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import status as status_code
 
 from . import models
@@ -615,6 +617,8 @@ def retrieve_emergency_service(request):
 
 
 @api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 def retrieve_service_requests(request):
     ''' Retrieve service requests for a particular service center '''
 
@@ -666,6 +670,8 @@ def retrieve_service_requests(request):
 
 
 @api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 def accept_service_request(request):
 
     service_form = forms.AcceptServiceForm(request.data)
@@ -726,12 +732,11 @@ def accept_service_request(request):
 
 
 @api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 def retrieve_vehicle_data(request):
 
-    if not request.user.is_authenticated():
-        return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
-
-    vehicle_form = forms.RetrieveVehicleDataForm(request.data)
+    vehicle_form = forms.RetrieveVehicleDataForm(request.GET)
     if not vehicle_form.is_valid():
         return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
@@ -744,7 +749,7 @@ def retrieve_vehicle_data(request):
     try:
         vehicle_obj = Vehicles.objects.get(vehicle_registration_number=vehicle_form.cleaned_data['vehicle_registration_number'])
     except Vehicles.DoesNotExist:
-        return Response({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)
+        return Response({'status': "success", "msg": "Vehicle not in database.", 'vehicle_data': {}})
 
     vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=vehicle_obj.vehicle_model_id)
 
@@ -765,4 +770,4 @@ def retrieve_vehicle_data(request):
 @api_view(['GET'])
 def retrieve_service_types(request):
 
-    return ({"status": "success", "service_types":service_types_dropdown})
+    return ({"status": "success", "service_types": service_types_dropdown})

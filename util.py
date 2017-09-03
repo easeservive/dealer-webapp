@@ -753,6 +753,8 @@ def vehicle_number_check(reg_data):
 
     reg_data = reg_data.split(' ')
 
+    print("number - %s" % reg_data)
+
     if len(reg_data) == 3:
         if (
             not reg_data[0].isalpha() or
@@ -773,7 +775,7 @@ def vehicle_number_check(reg_data):
             not reg_data[2].isalpha() or
             len(reg_data[2]) > 3 or
             not reg_data[3].isdigit() or
-            len(reg_data[2]) != 4
+            len(reg_data[3]) != 4
             ):
             return False, "Invalid Registration Number Format."
 
