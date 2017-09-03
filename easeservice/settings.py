@@ -28,7 +28,7 @@ DEBUG = False
 SMS_BLOCK = True
 
 ALLOWED_HOSTS = ['*']
-PATH_LOGS = BASE_DIR
+PATH_LOGS = "/var/ease/dealer-webapp/logs"
 
 # Application definition
 
