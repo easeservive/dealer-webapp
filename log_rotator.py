@@ -29,7 +29,7 @@ def getLogger(logger_name, fName, levelname, disable_formatting=False):
     logger = logging.getLogger(logger_name)
     curr_date = datetime.datetime.now()
     date_now = "%02d%02d%d" % (curr_date.day, curr_date.month, curr_date.year)
-    handle = logging.FileHandler(fName + "_" + date_now + ".log")
+    handle = logging.FileHandler(fName + "_" + date_now + ".log", mode='a')
     if not disable_formatting:
         formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
         handle.setFormatter(formatter)
