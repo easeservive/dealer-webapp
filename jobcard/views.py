@@ -4,6 +4,9 @@ import random
 
 from django.http import HttpResponse
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from itertools import chain
 
 #import simplejson
 import util
@@ -616,57 +619,57 @@ def retrieve_emergency_service(request):
     })
 
 
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def retrieve_service_requests(request):
-    ''' Retrieve service requests for a particular service center '''
+#@api_view(['GET'])
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+# def retrieve_service_requests(request):
+#     ''' Retrieve service requests for a particular service center '''
 
-    service_form = forms.RetrieveServiceRequests(request.GET)
-    if not service_form.is_valid():
-        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+#     service_form = forms.RetrieveServiceRequests(request.GET)
+#     if not service_form.is_valid():
+#         return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    services_requests = []
-    emergency_service_requests = []
+#     services_requests = []
+#     emergency_service_requests = []
 
-    service_requests_list = models.CServiceBooking.objects.filter(service_center_id=service_form.cleaned_data['service_center_id'])
-    if service_requests_list:
-        for service_obj in service_requests_list:
-            services_requests.append({
-                "booking_id": service_obj.booking_id,
-                "customer_id": service_obj.customer_id,
-                "vehicle_type": service_obj.vehicle_type,
-                "vehicle_model_id": service_obj.vehicle_model_id,
-                "vehicle_registration_number": service_obj.vehicle_registration_number,
-                "service_center_id": service_obj.service_center_id,
-                "customer_address_id": service_obj.customer_address_id,
-                "service_details": service_obj.service_details,
-                "feedback_stars": service_obj.feedback_stars,
-                "feedback_text": service_obj.feedback_text,
-                "created_at": service_obj.created_at,
-                "status": service_obj.status
-            })
+#     service_requests_list = models.CServiceBooking.objects.filter(service_center_id=service_form.cleaned_data['service_center_id'])
+#     if service_requests_list:
+#         for service_obj in service_requests_list:
+#             services_requests.append({
+#                 "booking_id": service_obj.booking_id,
+#                 "customer_id": service_obj.customer_id,
+#                 "vehicle_type": service_obj.vehicle_type,
+#                 "vehicle_model_id": service_obj.vehicle_model_id,
+#                 "vehicle_registration_number": service_obj.vehicle_registration_number,
+#                 "service_center_id": service_obj.service_center_id,
+#                 "customer_address_id": service_obj.customer_address_id,
+#                 "service_details": service_obj.service_details,
+#                 "feedback_stars": service_obj.feedback_stars,
+#                 "feedback_text": service_obj.feedback_text,
+#                 "created_at": service_obj.created_at,
+#                 "status": service_obj.status
+#             })
 
-    emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
-        Q(status="Pending Confirmation") | Q(service_center_id=service_form.cleaned_data['service_center_id'])
-    )
-    if emergency_service_requests_list:
-        for e_service_obj in emergency_service_requests_list:
-            emergency_service_requests.append({
-                'booking_id': e_service_obj.booking_id,
-                'customer_id': e_service_obj.customer_id,
-                'vehicle_type': e_service_obj.vehicle_type,
-                'customer_address_id': e_service_obj.customer_address_id,
-                'customer_latlon': e_service_obj.customer_latlon,
-                'service_details': e_service_obj.service_details,
-                'feedback_stars': e_service_obj.feedback_stars,
-                'feedback_text': e_service_obj.feedback_text,
-                "created_at": e_service_obj.created_at,
-                "status": e_service_obj.status,
-                "service_center_id": e_service_obj.service_center_id
-            })
+#     emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
+#         Q(status="Pending Confirmation") | Q(service_center_id=service_form.cleaned_data['service_center_id'])
+#     )
+#     if emergency_service_requests_list:
+#         for e_service_obj in emergency_service_requests_list:
+#             emergency_service_requests.append({
+#                 'booking_id': e_service_obj.booking_id,
+#                 'customer_id': e_service_obj.customer_id,
+#                 'vehicle_type': e_service_obj.vehicle_type,
+#                 'customer_address_id': e_service_obj.customer_address_id,
+#                 'customer_latlon': e_service_obj.customer_latlon,
+#                 'service_details': e_service_obj.service_details,
+#                 'feedback_stars': e_service_obj.feedback_stars,
+#                 'feedback_text': e_service_obj.feedback_text,
+#                 "created_at": e_service_obj.created_at,
+#                 "status": e_service_obj.status,
+#                 "service_center_id": e_service_obj.service_center_id
+#             })
 
-    return Response({'status': "success", 'services_requests': services_requests, 'emergency_service_requests': emergency_service_requests})
+#     return Response({'status': "success", 'services_requests': services_requests, 'emergency_service_requests': emergency_service_requests})
 
 
 @api_view(['POST'])
@@ -770,4 +773,27 @@ def retrieve_vehicle_data(request):
 @api_view(['GET'])
 def retrieve_service_types(request):
 
-    return ({"status": "success", "service_types": service_types_dropdown})
+    return Response({"status": "success", "service_types": global_constants.service_types_dropdown})
+
+
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def retrieve_service_requests(request):
+    ''' Retrieve service requests for a particular service center '''
+
+    if request.method != "GET":
+        return Response({"status":"failure"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    services_requests = models.CServiceBooking.objects.filter(service_center_id=request.session['service_center_id'])
+
+    emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
+        Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'])
+    )
+
+    requests_list = list(chain(services_requests, emergency_service_requests_list))
+
+    print("requests_list - %s" % requests_list)
+
+    # render and return services_requests and emergency_service_requests
+
+    return HttpResponse(json.dumps({"status":"success"}))

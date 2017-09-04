@@ -16,6 +16,9 @@ urlpatterns = [
    url('^api/auto/spares$', views.data_for_parts_auto_suggestion),
    url('^api/get/jobcards/$', views.get_jobcards_list),
 
+   # DJANGO
+   url(r'^jobcard/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
+
    # REST
    url(r'^apis/jobcard/v1/service/book$', views.book_service, name="book_service"),
    url(r'^apis/jobcard/v1/service/details$', views.retrieve_service_details, name="retrieve_service_details"),
@@ -24,7 +27,7 @@ urlpatterns = [
    url(r'^apis/jobcard/v1/emergency/service/book$', views.book_emergency_service, name="book_emergency_service"),
    url(r'^apis/jobcard/v1/emergency/service/details$', views.retrieve_emergency_service, name="retrieve_emergency_service"),
 
-   url(r'^apis/jobcard/v1/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
+   #url(r'^apis/jobcard/v1/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
    url(r'^apis/jobcard/v1/service/accept$', views.accept_service_request, name="accept_service_request"),
 
    url(r'^apis/jobcard/v1/user/vehicle$', views.retrieve_vehicle_data, name="retrieve_vehicle_data"),

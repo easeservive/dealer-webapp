@@ -51,6 +51,12 @@ def login_dealer(request):
                 # the authentication system was unable to verify the username and password
                 result = {"status": "failure", "msg": "The username and password were incorrect."}
             view_logger.debug("Dealer login response for %s : %s"%(username, str(result)))
+
+            ######## TEST
+            #service_center_id = request.sess
+            request.session['service_center_id'] = "TEST123"
+            ######## TEST
+
             return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
         elif request.method == 'GET':
             view_logger.debug("Dealer login GET request for : %s"%request.user)
