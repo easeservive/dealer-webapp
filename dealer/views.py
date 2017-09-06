@@ -107,6 +107,7 @@ def home(request):
         result = {'status': 'error', 'msg': 'Something went wrong.'}
         return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
+
 def logout_dealer(request):
     try:
         view_logger = log_rotator.view_logger()
@@ -126,6 +127,7 @@ def logout_dealer(request):
         error_logger.debug("Exception::", exc_info=True)
         result = {"status": "failure", "msg": "something went wrong"}
     return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+
 
 def get_service_history(request):
     try:
@@ -149,6 +151,7 @@ def get_service_history(request):
         error_logger.debug("Exception::", exc_info=True)
         result = {"status": "failure", "msg": "something went wrong"}
         return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+
 
 def get_inventory(request):
     try:
