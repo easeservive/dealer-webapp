@@ -1,0 +1,52 @@
+-- MySQL dump 10.13  Distrib 5.5.15, for Linux (x86_64)
+--
+-- Host: localhost    Database: easedb
+-- ------------------------------------------------------
+-- Server version	5.5.15
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `core_supportedcarbrands`
+--
+
+DROP TABLE IF EXISTS `core_supportedcarbrands`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `core_supportedcarbrands` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Brand` varchar(200) NOT NULL,
+  `Value` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `core_supportedcarbrands`
+--
+
+LOCK TABLES `core_supportedcarbrands` WRITE;
+/*!40000 ALTER TABLE `core_supportedcarbrands` DISABLE KEYS */;
+INSERT INTO `core_supportedcarbrands` VALUES (1,'AUDI','audi'),(2,'BMW',NULL),(3,'CHEVROLET',NULL),(4,'DATSUN',NULL),(5,'FIAT',NULL),(6,'FORCE MOTORS',NULL),(7,'FORD',NULL),(8,'HONDA',NULL),(9,'HYUNDAI',NULL),(10,'ICML',NULL),(11,'ISUZU',NULL),(12,'JAGUAR',NULL),(13,'LAND ROVER',NULL),(14,'MAHINDRA',NULL),(15,'MARUTI SUZUKI',NULL),(16,'MERCEDES BENZ',NULL),(17,'MINI',NULL),(18,'MITSUBISHI',NULL),(19,'NISSAN',NULL),(20,'PORSCHE',NULL),(21,'RENAULT',NULL),(22,'SKODA',NULL),(23,'SSANGYONG',NULL),(24,'TATA',NULL),(25,'TOYOTA',NULL),(26,'VOLKSWAGEN',NULL),(27,'VOLVO',NULL);
+/*!40000 ALTER TABLE `core_supportedcarbrands` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2016-07-03 22:57:26
