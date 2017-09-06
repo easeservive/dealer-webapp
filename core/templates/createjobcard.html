@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="/static/jquery-ui.css">
         <link rel="stylesheet" href="/static/bootstrap-datepicker.css">
         <link rel="stylesheet" href="/static/bootstrap-datetimepicker.css">
-        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <!-- <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css"> -->
         <link rel="stylesheet" href="/static/dashboard.css">
     </head>
     <body id="dashboard" class="account">
@@ -43,29 +43,43 @@
                         </div>
                         <div class="clear"></div>
                         <div class="col-sm-12 padding-left-free">
-                            <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form">
+                            <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form" enctype="multipart/form-data">
+                                <div class='col-sm-4'>
+                                    <label>Upload Image</label>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                         Browse… <input type="file" id="imgInp" name="imgInp">
+                                        </span>
+                                        </span>
+           
+                                    </div>
+                                    <div class='col-sm-12'>
+                                        <img id='img-upload'/>
+                                    </div>
+                                </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="cust_name">Name</label>
-                                        <input aria-required="true" name="cust_name" id="cust_name" class="form-control" required="" type="text">
+                                        <input aria-required="true" name="cust_name" id="cust_name" class="form-control" data-validation="required" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="cont_num">Mobile number</label>
-                                        <input aria-required="true" name="cont_num" id="cont_num" class="form-control" required="" type="text">
+                                        <input aria-required="true" name="cont_num" id="cont_num" class="form-control" data-validation="required" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="cont_addr">Address</label>
-                                        <input aria-required="true" name="cont_addr" id="cont_addr" class="form-control" required="" type="text">
+                                        <input aria-required="true" name="cont_addr" id="cont_addr" class="form-control" data-validation="required" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="number">Enter Vehicle number</label>
-                                        <input aria-required="true" name="number" id="number" class="form-control" required="" type="text">
+                                        <input aria-required="true" name="number" id="number" data-validation="veh_numb" class="form-control"  type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -78,7 +92,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="brand">Brand</label>
-                                        <select aria-required="true" name="brand" id="brand" class="form-control" required="">
+                                        <select aria-required="true" name="brand" id="brand" class="form-control" data-validation="required">
                                             {% for brand in brands %}
                                                 {% if forloop.first %}
                                                     <option value="{{ brand.Brand }}" selected="selected">{{ brand.Brand }}</option>
@@ -89,16 +103,45 @@
                                         </select>
                                     </div>
                                 </div>
+
+
+                                <div class="col-sm-4">
+                                    <div class="form-group col-sm-12" style="padding: 0px   ;">
+                                        <label for="serviceType">Service Types</label>
+                                        <select aria-required="true" name="serviceType" id="serviceType" class="form-control" data-validation="required">
+                                            {% for serviceType in serviceTypes %}
+                                                {% if forloop.first %}
+                                                    <option value="{{ serviceType.service_type_name }}" selected="selected">{{ serviceType.service_type_name }}</option>
+                                                {% else %}
+                                                    <option value="{{ serviceType.service_type_name }}">{{ serviceType.service_type_name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-sm-12">
+                                        {% for serviceType in serviceTypes %}
+                                            <div id="{{ serviceType.service_type_name }}" class="serviceTypeCheckbox col-sm-12" style="display: none;" >
+                                                {% for serviceTypeClass in serviceType.classifications %}
+                                                    <div class="checkbox col-sm-12">
+                                                        <label><input  type="checkbox" name="{{ serviceType.service_type_name }}" value="{{ serviceTypeClass.id }}" >{{ serviceTypeClass.name }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %} 
+                                    </div>
+                                </div>
+                               
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="model">Model</label>
-                                        <input aria-required="true" name="model" id="model" required="" class="form-control" type="text">
+                                        <input aria-required="true" name="model" id="model" data-validation="required" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="type">Fuel Type</label>
-                                        <select aria-required="true" name="type" id="type" class="form-control" required="">
+                                        <select aria-required="true" name="type" id="type" class="form-control" data-validation="required">
                                             <option selected="selected" value="Diesel">Diesel</option>
                                             <option value="Petrol">Petrol</option>
                                             <option value="LPG">LPG</option>
@@ -108,7 +151,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="kms">Kilometers</label>
-                                        <input aria-required="true" name="kms" id="kms" required="" class="form-control" type="text">
+                                        <input aria-required="true" name="kms" id="kms" data-validation="required" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-12">
@@ -146,25 +189,25 @@
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="labour-estimation">Other Parts</label>
-                                        <input aria-required="true" name="op" required="" id="op" class="form-control" type="text">
+                                        <input aria-required="true" name="op" data-validation="required" id="op" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="oc">Price</label>
-                                        <input aria-required="true" name="oc" required="" id="oc" class="form-control" type="text">
+                                        <input aria-required="true" name="oc" data-validation="required" id="oc" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="labour-estimation">Labour Cost Estimation</label>
-                                        <input aria-required="true" name="labour_estimation" required="" id="labour-estimation" class="form-control" type="text">
+                                        <input aria-required="true" name="labour_estimation" data-validation="required" id="labour-estimation" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="total-parts-cost">Total Parts cost</label>
-                                        <input aria-required="true" name="total_parts_cost" required="" id="total-parts-cost" class="form-control" readonly="readonly" type="text">
+                                        <input aria-required="true" name="total_parts_cost" data-validation="required" id="total-parts-cost" class="form-control" readonly="readonly" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -173,10 +216,19 @@
                                         <input name="total_estimation" readonly="readonly" id="total-estimation" class="form-control" type="text">
                                     </div>
                                 </div>
-                                <div class="col-sm-4 ">
+                                <div class="col-sm-4">
                                     <div class="form-group overflow-not-hidden">
                                         <label for="delivery-time">Delivery Time</label>
-                                        <input aria-required="true" name="delivery_time" required="" id="delivery-time" class="form-control" type="text">
+                                        <input aria-required="true" name="delivery_time" data-validation="required" id="delivery-time" class="form-control" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 mechCol">
+                                    <div class="col-sm-4">
+                                        <div class="form-group transistion">
+                                            <label for="mechanic_name">Mechanic Name</label>
+                                            <input aria-required="true" name="mechanic_name" id="mechanic_name" class="form-control" data-validation="required" type="text">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-12">
@@ -193,6 +245,7 @@
         </div>
         <script src="/static/browser-polyfill.js"></script> 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="/static/moment.js"></script>
         <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>

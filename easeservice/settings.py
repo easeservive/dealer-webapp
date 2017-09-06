@@ -25,12 +25,10 @@ SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-SMS_BLOCK = True
+SMS_BLOCK = False
 
 ALLOWED_HOSTS = ['*']
-#PATH_LOGS = "/var/ease/dealer-webapp/logs"
-
-PATH_LOGS = "/var/ease/logs"
+PATH_LOGS = BASE_DIR
 
 # Application definition
 

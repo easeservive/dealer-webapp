@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Jobcard - Ease Service</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/static/bootstrap.css">
+        <link rel="stylesheet" href="/static/ionicons.css">
+        <link rel="stylesheet" href="/static/awesome-bootstrap-checkbox.css">
+        <link rel="stylesheet" type="text/css" href="/static/datatables.css">
+        <link rel="stylesheet" href="/static/dashboard.css">
+        <link href="/static/css.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/static/jquery.css">
+    </head>
+    <body id="dashboard" class="account">
+            {% if user_agent == "android" %}
+                {% include "navbar_block_mobile.html" %}
+            {% else %}
+                {% include "navbar_block.html" %}
+            {% endif %}
+
+        <div class="container-fluid margin-free sidebar-open">
+            {% if user_agent == "android" %}
+                {% include "sidebar_block_mobile.html" %}
+            {% else %}
+                {% include "sidebar_block.html" %}
+            {% endif %}
+            <div id="content">
+                <div class="row wrapper">
+                    <!-- <ol class="breadcrumb">
+                        <li><a href="/dealer/home/"><i class="ion-ios-home-outline"></i> </a></li>
+                        <li class="active">Jobcard</li>
+                    </ol> -->
+                    <div class="col-sm-12 padding-left-free">
+                        <h2 class="title">Service Requests
+                            
+                            
+                        </h2>
+                    </div>
+                    <div class="clear"></div>
+                    <div id="json-response">
+                        <div class="table-responsive">
+                            <table class="table filterable display responsive no-wrap" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Customer ID</th>
+                                        <th>Vehicle Type</th>
+                                        <th>Vehicle Reg No.</th>
+                                        <th>Vehicle Model ID</th>
+                                        <th>Service Details</th>
+                                        <th>Status</th>
+                                        <th>Created at</th>
+                                        <th>Action</th>
+                                                                               
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  
+                                        {% for sr in service_requests %}
+                                        <tr> 
+                                        <td>{{ sr.booking_id }}</td>
+                                        <td>{{ sr.customer_id }}</td>
+                                        <td>{{ sr.vehicle_type }}</td>
+                                        <td>{{ sr.vehicle_registration_number }}</td>
+                                        <td>{{ sr.vehicle_model_id }}</td>
+                                        <td>{{ sr.service_details }}</td>
+                                        <td>{{ sr.status }}</td>
+                                        <td>{{ sr.created_at }}</td>
+                                        <td> <button type="button" class="btn btn-success sr-accept-btn" value="{{ sr.booking_id }}">Accept Job</button></td>
+                                        </tr>
+                                        {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                          
+                        </div>
+
+                    <div class="col-sm-12 padding-left-free">
+                        <h2 class="title">Emergency Service Requests
+                            
+                            
+                        </h2>
+                    </div>
+                        <div class="table-responsive">
+                            <table class="table filterable display responsive no-wrap" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Customer ID</th>
+                                        <th>Vehicle Type</th>
+                                       
+                                        <th>Service Details</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                        <th>Action</th>
+                                                                             
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  
+                                        {% for esr in emergency_service_requests %}
+                                        <tr> 
+                                        <td>{{ esr.booking_id }}</td>
+                                        <td>{{ esr.customer_id }}</td>
+                                        <td>{{ esr.vehicle_type }}</td>
+                                       
+                                        <td>{{ esr.service_details }}</td>
+                                        <td>{{ esr.status }}</td>
+                                        <td>{{ esr.created_at }}</td>
+                                        <td><button type="button" class="btn btn-success sr-accept-btn" value="{{ esr.booking_id }}" >Accept Job</button></td>
+                                        </tr>
+                                        {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                          
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="/static/jquery.js"></script>
+        <script src="/static/bootstrap.js"></script>
+        <script type="text/javascript" src="/static/datatables.js"></script>
+        <script src="/static/script.js"></script>
+        
+        <script>
+            $('.filterable').DataTable({
+                responsive: true
+            });
+        </script>
+
+
+       <!--  <script>
+            jQuery(document).ready(function($){
+                $.ajax({
+                    url : '/api/get/jobcards/',
+                    type: 'POST',
+                    success : function(response) {
+                        // // response = JSON.parse(response);
+                        if (response.status == "success") {
+                            var html = '<div class="table-responsive">';
+                            html+= '<table class="table filterable display responsive no-wrap" width="100%">'+
+                                    '<thead>'+
+                                        '<tr>'+
+                                            '<th>Id</th>'+
+                                            '<th>Vehicle Number</th>'+
+                                            '<th>Model</th>'+
+                                            '<th>Status</th>'+
+                                            '<th>Action</th>'+
+                                        '</tr>'+
+                                    '</thead><tbody>';
+                            
+                            response.data.forEach(function(value) {
+                                html +=
+                                    '<tr>'+
+                                        '<td>'+value.jc_id+'</td>' +
+                                        '<td>'+value.veh_no+'</td>' +
+                                        '<td>'+value.model+'</td>' +
+                                        '<td>'+value.status+'</td>';
+
+                                         if (value.status == "CLOSED") {
+                                             html += '<td><a href="/jobcard/edit/?jc='+value.jc_id+'" class="btn btn-success btn-xs">View Jobcard</a></td>';
+                                         } else {
+                                             html += '<td><a href="/jobcard/edit/?jc='+value.jc_id+'" class="btn btn-success btn-xs">Edit Jobcard</a></td>';
+                                         }
+
+                                    html += '</tr>';
+                            });
+                            html += '</tbody></table></div>';
+                            $('#json-response').html(html);
+                            $('.filterable').DataTable({
+                                responsive: true
+                            });
+                        } else {
+                            $('#json-response').html(
+                                '<p class="alert alert-warning">' +
+                                    'No Jobcards found! Please create new Jobcards or try again later.' +
+                                '</p>'
+                            );
+                        }
+                    }
+                });
+            });
+        </script>
+     -->
+
+</body></html>

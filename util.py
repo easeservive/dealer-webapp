@@ -753,8 +753,6 @@ def vehicle_number_check(reg_data):
 
     reg_data = reg_data.split(' ')
 
-    print("number - %s" % reg_data)
-
     if len(reg_data) == 3:
         if (
             not reg_data[0].isalpha() or

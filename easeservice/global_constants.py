@@ -17,20 +17,20 @@ service_types = {
 
 service_types_dropdown = [
     {
-        "service_type_name": "Paid Service",
+        "service_type_name": "Paid-Service",
         "classifications": [
             {'id': 'j4j5b67l', 'name': 'Oil Change', 'selected': False},
             {'id': '5s5d5f5g', 'name': 'General Service', 'selected': False}
         ]
     },
     {
-        "service_type_name": "Running Repairs",
+        "service_type_name": "Running-Repairs",
         "classifications": [
             {'id': 's7s9dkf9', 'name': 'Major Job', 'selected': False}
         ]
     },
     {
-        "service_type_name": "Accidental Repairs",
+        "service_type_name": "Accidental-Repairs",
         "classifications": [
             {'id': 'dkfd9ndf', 'name': 'Dent Removal', 'selected': False},
             {'id': '0o5s7j8g', 'name': 'Tinkering & Painting', 'selected': False},
@@ -38,7 +38,7 @@ service_types_dropdown = [
         ]
     },
     {
-        "service_type_name": "Water Wash",
+        "service_type_name": "Water-Wash",
         "classifications": [
             {'id': 'pg7g8h8j', 'name': 'Full Vehicle Wash', 'selected': False},
             {'id': 'a8k5hj6g', 'name': 'Interior & Exterior Cleaning', 'selected': False},

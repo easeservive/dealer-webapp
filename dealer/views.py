@@ -3,6 +3,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.template import Context
+from easeservice import global_constants
 
 import json
 import decimal
@@ -250,6 +251,8 @@ def jobcard_new(request):
 
             context_dictionary['user'] = request.user
             context_dictionary['user_agent'] = user_agent
+
+            context_dictionary['serviceTypes'] = global_constants.service_types_dropdown
             html = t.render(context_dictionary)
             view_logger.debug("DEALER VIEW : Rendered Create job card page for : %s"%request.user)
             return HttpResponse(html)

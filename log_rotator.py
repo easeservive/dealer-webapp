@@ -20,7 +20,7 @@ _viewLogger = [None]
 _utilLogger = [None]
 
 #PATH_LOGS = os.path.dirname(os.path.abspath(__file__)) + '/../../logs/'
-#PATH_LOGS = "/var/ease/dealer-webapp/logs"
+#PATH_LOGS = "/var/ease/dealer-webapp/logs" 
 
 def getLogger(logger_name, fName, levelname, disable_formatting=False):
     """
@@ -64,7 +64,7 @@ def gen_logger(logger_name, fName, logger_obj, disable_formatting=False):
 
 def tracking_logger():
     global _trackingLogger
-    fPath = os.path.join(settings.PATH_LOGS, 'Tracking')
+    fPath = os.path.join(settings.PATH_LOGS, 'Tracking') 
     return gen_logger("TrackingVisitor", fPath, _trackingLogger)
 
 
