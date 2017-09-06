@@ -2,7 +2,10 @@ import json
 import datetime
 import random
 
+from django.shortcuts import render, redirect
+from django.template.loader import get_template
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -13,11 +16,11 @@ import util
 import log_rotator
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import status as status_code
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 from . import models
 from . import forms
@@ -144,6 +147,7 @@ def create_job_card(request):
 
     print(request.user)
 
+
     # if not request.user.is_authenticated():
     #     return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
 
@@ -200,7 +204,7 @@ def create_job_card(request):
             if request.user.is_authenticated():
 
                 data = json.loads(request.body.decode('utf-8'))['data']
-
+                print(data)
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
                 details = {}
@@ -225,7 +229,7 @@ def create_job_card(request):
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
 
-                if 'mechanic_name' in details:
+                if 'mechanic_name' in data:
                     details['mechanic_name'] = data['mechanic_name']
                 else:
                     details['mechanic_name'] = ""
@@ -619,6 +623,57 @@ def retrieve_emergency_service(request):
     })
 
 
+
+# @api_view(['GET'])
+# def retrieve_service_requests(request):
+#     ''' Retrieve service requests for a particular service center '''
+
+#     service_form = forms.RetrieveServiceRequests(request.GET)
+#     if not service_form.is_valid():
+#         return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+#     services_requests = []
+#     emergency_service_requests = []
+
+#     service_requests_list = models.CServiceBooking.objects.filter(service_center_id=service_form.cleaned_data['service_center_id'])
+#     if service_requests_list:
+#         for service_obj in service_requests_list:
+#             services_requests.append({
+#                 "booking_id": service_obj.booking_id,
+#                 "customer_id": service_obj.customer_id,
+#                 "vehicle_type": service_obj.vehicle_type,
+#                 "vehicle_model_id": service_obj.vehicle_model_id,
+#                 "vehicle_registration_number": service_obj.vehicle_registration_number,
+#                 "service_center_id": service_obj.service_center_id,
+#                 "customer_address_id": service_obj.customer_address_id,
+#                 "service_details": service_obj.service_details,
+#                 "feedback_stars": service_obj.feedback_stars,
+#                 "feedback_text": service_obj.feedback_text,
+#                 "created_at": service_obj.created_at,
+#                 "status": service_obj.status
+#             })
+
+#     emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
+#         Q(status="Pending Confirmation") | Q(service_center_id=service_form.cleaned_data['service_center_id'])
+#     )
+#     if emergency_service_requests_list:
+#         for e_service_obj in emergency_service_requests_list:
+#             emergency_service_requests.append({
+#                 'booking_id': e_service_obj.booking_id,
+#                 'customer_id': e_service_obj.customer_id,
+#                 'vehicle_type': e_service_obj.vehicle_type,
+#                 'customer_address_id': e_service_obj.customer_address_id,
+#                 'customer_latlon': e_service_obj.customer_latlon,
+#                 'service_details': e_service_obj.service_details,
+#                 'feedback_stars': e_service_obj.feedback_stars,
+#                 'feedback_text': e_service_obj.feedback_text,
+#                 "created_at": e_service_obj.created_at,
+#                 "status": e_service_obj.status,
+#                 "service_center_id": e_service_obj.service_center_id
+#             })
+
+#     return Response({'status': "success", 'services_requests': services_requests, 'emergency_service_requests': emergency_service_requests})
+
 #@api_view(['GET'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
@@ -672,19 +727,18 @@ def retrieve_emergency_service(request):
 #     return Response({'status': "success", 'services_requests': services_requests, 'emergency_service_requests': emergency_service_requests})
 
 
+
 @api_view(['POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
 def accept_service_request(request):
 
     service_form = forms.AcceptServiceForm(request.data)
     if not service_form.is_valid():
-        return Response({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     try:
         service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
     except models.CServiceBooking.DoesNotExist:
-        return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+        return JsonResponse({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
 
     service_obj.status = "Accepted"
     service_obj.save()
@@ -731,15 +785,16 @@ def accept_service_request(request):
     service_obj.job_card_id = jc_id
     service_obj.save()
     
-    return Response({'status': "success", "message": "Service accepted and job created successfully.", "jc_id": jc_id})
+    return JsonResponse({'status': "success", "message": "Service accepted and job created successfully.", "jc_id": jc_id})
 
 
 @api_view(['GET'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
 def retrieve_vehicle_data(request):
 
-    vehicle_form = forms.RetrieveVehicleDataForm(request.GET)
+    if not request.user.is_authenticated():
+        return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
+
+    vehicle_form = forms.RetrieveVehicleDataForm(request.data)
     if not vehicle_form.is_valid():
         return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
@@ -752,7 +807,7 @@ def retrieve_vehicle_data(request):
     try:
         vehicle_obj = Vehicles.objects.get(vehicle_registration_number=vehicle_form.cleaned_data['vehicle_registration_number'])
     except Vehicles.DoesNotExist:
-        return Response({'status': "success", "msg": "Vehicle not in database.", 'vehicle_data': {}})
+        return Response({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)
 
     vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=vehicle_obj.vehicle_model_id)
 
@@ -773,7 +828,7 @@ def retrieve_vehicle_data(request):
 @api_view(['GET'])
 def retrieve_service_types(request):
 
-    return Response({"status": "success", "service_types": global_constants.service_types_dropdown})
+    return JsonResponse({"status": "success", "service_types": global_constants.service_types_dropdown})
 
 
 @authentication_classes((SessionAuthentication, BasicAuthentication))
@@ -790,10 +845,59 @@ def retrieve_service_requests(request):
         Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'])
     )
 
-    requests_list = list(chain(services_requests, emergency_service_requests_list))
+    #requests_list = list(chain(services_requests, emergency_service_requests_list))
 
-    print("requests_list - %s" % requests_list)
+    # print("requests_list - %s" % requests_list)
 
-    # render and return services_requests and emergency_service_requests
+    # service_requests = [ 
+    #            { "booking_id": 'bookid9876',
+    #             "customer_id": 'cus_id987',
+    #             "vehicle_type": 'veh_type_test',
+    #             "vehicle_model_id": 'au43',
+    #             "vehicle_registration_number": 'TN09BN9876',
+    #             "service_center_id": 'serv_id09',
+    #             "customer_address_id": 'test address',
+    #             "service_details": 'ac service work in progress',
+    #             "feedback_stars": 4,
+    #             "feedback_text": 'good service',
+    #             "created_at": '2016/09/09',
+    #             "status": 'pending'
+    #             },
+               
 
-    return HttpResponse(json.dumps({"status":"success"}))
+    #           { "booking_id": 'bookid0067',
+    #             "customer_id": 'cus_id98237',
+    #             "vehicle_type": 'veh_type_tesdfdft',
+    #             "vehicle_model_id": 'au4asdf3',
+    #             "vehicle_registration_number": 'PY09BN9876',
+    #             "service_center_id": 'serv_id4509',
+    #             "customer_address_id": 'test addrpyindfess',
+    #             "service_details": 'engine service work in progress',
+    #             "feedback_stars": 2,
+    #             "feedback_text": 'good ok service',
+    #             "created_at": '2016/05/09',
+    #             "status": 'done'
+    #             }
+    # ]
+
+   
+    # emergency_service_requests = [ 
+    #         {
+    #             'booking_id': 'bookid1234',
+    #             'customer_id': 'cus_id4565',
+    #             'vehicle_type': 'veh_type_ya',
+    #             'customer_address_id': 'testing address tn',
+    #             'customer_latlon': '3.4555, 5,6666',
+    #             'service_details': 'engine failure',
+    #             'feedback_stars': '',
+    #             'feedback_text': '',
+    #             "created_at": '2017/08/01',
+    #             "status": 'pending',
+    #             "service_center_id": 'SerID9980'
+    #         }
+    # ]    
+
+    t = get_template('servicerequests.html')
+    context = {'service_requests': service_requests, 'emergency_service_requests': emergency_service_requests}
+    html = t.render(context)
+    return HttpResponse(html)

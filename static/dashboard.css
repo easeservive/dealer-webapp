@@ -326,7 +326,7 @@ textarea.form-control {
     text-align: center;
 }
 
-.checkbox label::before {
+/*.checkbox label::before {
     content: "";
     display: inline-block;
     position: absolute;
@@ -355,7 +355,7 @@ textarea.form-control {
     font-size: 22px;
     color: #455A64;
     margin-top: -5px;
-}
+}*/
 
 .ui-menu .ui-menu-item {
     font-weight: 300;
@@ -611,7 +611,8 @@ div.form-group.transistion label.open {
 }
 
 form.validate-form .form-group {
-    min-height: 50px;
+   /* min-height: 50px;*/
+   height: 120px;
     padding-bottom: 25px;
 }
 
@@ -619,4 +620,38 @@ div.form-group.transistion label.error {
     position: absolute !important;
     top: 80px !important;
     left: 0;
+}
+
+.mechCol {
+    padding: 0px;
+}
+
+.has-error {
+    padding: 0px;
+    margin: 0px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+#img-upload {
+    width: 300px;
+    height: 200px;
 }

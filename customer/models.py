@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_mysql.models import JSONField
 
+
 class Vehicles(models.Model):
     vehicle_model_id = models.CharField(max_length=20)
     fuel_type = models.CharField(max_length=20)
