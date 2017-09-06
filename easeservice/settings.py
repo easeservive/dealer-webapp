@@ -28,7 +28,7 @@ DEBUG = False
 SMS_BLOCK = False
 
 ALLOWED_HOSTS = ['*']
-PATH_LOGS = BASE_DIR
+PATH_LOGS = PATH_LOGS = "/var/ease/logs"
 
 # Application definition
 
