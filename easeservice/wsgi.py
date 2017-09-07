@@ -22,6 +22,6 @@ if server_config and server_config.__contains__("Development"):
 else:
     sys.path.append("/var/ease/dealer-webapp")
 
-sys.path.append("/host/Ease/easeserver/easeservice")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.settings")
+#sys.path.append("/host/Ease/easeserver/easeservice")
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.settings")
 application = get_wsgi_application()
