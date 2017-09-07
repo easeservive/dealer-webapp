@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 import config
 from easeservice.message_functions import send_text_message
 from easeservice import global_constants
+from easeservice.portal_functions import generate_confirmation_token
 
 def fetch_vehicles(user):
     try:
@@ -63,6 +64,18 @@ def generateOTP(user):
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         return 0, ""
+
+
+def generateVLINK(user_obj):
+
+    user_obj.is_active = 0
+    user_obj.save()
+
+    #token = generate_confirmation_token()
+    # use token to generate verification link
+    # send sms to user with verification link
+    
+    return True
 
 
 def isValidOPT(tranid, otpvalue):

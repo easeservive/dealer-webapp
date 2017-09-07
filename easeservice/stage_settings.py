@@ -39,6 +39,8 @@ SMS_GATEWAY = {
     'SENDER': "EASESE"
 }
 
+SECURITY_PASSWORD_SALT = "bVFOOugP5PAIf!EqLJbXQbfTxs"
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

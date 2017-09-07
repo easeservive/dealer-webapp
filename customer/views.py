@@ -1,6 +1,5 @@
 import json
 import datetime
-import random
 from django.utils import timezone
 
 from django.contrib.auth import authenticate, login
@@ -22,6 +21,7 @@ from . import models
 from core.models import MaintenanceTips
 from . import forms
 from easeservice.portal_functions import generate_uuid
+from core.models import ServiceCenterInfo
 #from core.models import VehicleModels
 
 
@@ -220,9 +220,12 @@ def login(request):
         return Response({'status': "failure", 'errors': login_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     # check if user account is activated
-    user_obj = User.objects.get(username=login_form.cleaned_data['mobile'])
-    if user_obj.is_active != 1:
-        return Response({'status': "failure", 'msg': "User not verified."}, status=status_code.HTTP_401_UNAUTHORIZED)
+    try:
+        user_obj = User.objects.get(username=login_form.cleaned_data['mobile'])
+        if user_obj.is_active != 1:
+            return Response({'status': "failure", 'msg': "User not verified."}, status=status_code.HTTP_401_UNAUTHORIZED)
+    except User.DoesNotExist:
+        return Response({'status': "failure", 'msg': "Invalid username/password."}, status=status_code.HTTP_401_UNAUTHORIZED)
 
     user = authenticate(username=login_form.cleaned_data['mobile'], password=login_form.cleaned_data['password'])
     if user is not None:
@@ -368,10 +371,12 @@ def retrieve_maintenance_tips(request):
     
 
 
-@api_view(['POST'])
-@permission_classes((IsAuthenticated,))
+@api_view(['GET'])
+#@permission_classes((IsAuthenticated,))
 def test(request):
 
     print("Auth success")
+
+    sc_obj = ServiceCenterInfo.objects.get(ServiceCenterID="21232324wergvwerg")
 
     return Response({'status': "success"})

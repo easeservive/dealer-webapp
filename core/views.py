@@ -9,11 +9,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.core.files.images import ImageFile
 from django.db import IntegrityError
+from django.utils import timezone
 
 from .models import ServiceCenterInfo
 
 import json
 import datetime
+import time
 import random
 
 import util
@@ -26,8 +28,15 @@ from rest_framework import status as status_code
 
 from . import models
 from . import forms
+from easeservice.portal_functions import generate_uuid
+from easeservice.global_constants import ResponseMessages
 
-# Create your views here.
+
+def create_username():
+    user_name = "ES%s" % int(time.time())
+    print("user_name - %s" % user_name)
+    return user_name
+
 
 def json_default(obj):
     """
@@ -42,6 +51,7 @@ def json_default(obj):
         return str(obj)
     raise TypeError
 
+
 def test(request):
     result = {"status": "success", "msg": "It works"}
     lis1 = '<input type="checkbox" name="serv1" value="Change Oil" checked="checked"> Change Oil<br>'
@@ -49,6 +59,7 @@ def test(request):
     lis3 = '<input type="checkbox" name="serv3" value="Check tyre pressure" checked="checked"> Check tyre pressure<br>'
     result['scheduled'] = lis1 + lis2 + lis3
     return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+
 
 def meshup(request):
     try:
@@ -64,49 +75,48 @@ def meshup(request):
             contact_no = request.POST.get('contact_no', 'NA')
             owner_name = request.POST.get('owner_name', 'NA')
             specialization = request.POST.get('specialization', 'NA')
-            #images = request.POST.get('img', 'NA')
-            #image_ids = []
-            #error_logger = log_rotator.error_logger()
-            #error_logger.debug(str(request))
-            #error_logger.debug(dir(request.FILES))
-            #if isinstance(images, list):
-            #    for image in request.FILES.getlist("file[]"):
-            #        error_logger.debug(str(image))
-            #        image_id = "IMG" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999)) + '.jpg'
-            #        handle_uploaded_file(ImageFile(image), image_id)
-            #        image_ids.append(image_id)
-            #    ServiceCenterInfo.objects.create(Name = service_center_name,
-            #                                 ContactNumber = contact_no,
-            #                                 Email = email,
-            #                                 BuildingNo = building_no,
-            #                                 Street = street_name,
-            #                                 Town  = town,
-            #                                 District = district,
-            #                                 City = city,
-            #                                 Pincode = pin_code,
-            #                                 OwnerName = owner_name,
-            #                                 Specialization = specialization,
-            #                                 Images = ",".join(image_ids))
-            #else:
-            #    image_id = "IMG" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' +str(random.randint(111, 999)) + '.jpg'
-            #    #if util.save_image(image_id, images):
-            #    #    image_ids.append(image_id)
-            #    handle_uploaded_file(ImageFile(request.FILES['img']), image_id)
-            ServiceCenterInfo.objects.create(Name = service_center_name,
-                                             ContactNumber = contact_no,
-                                             Email = email,
-                                             BuildingNo = building_no,
-                                             Street = street_name,
-                                             Town  = town,
-                                             District = district,
-                                             City = city,
-                                             Pincode = pin_code,
-                                             OwnerName = owner_name,
-                                             Specialization = specialization)
+
+            is_not_unique = True
+            while is_not_unique:
+                service_center_id = generate_uuid(8)
+                try:
+                    sc_obj = models.ServiceCenterInfo.objects.get(ServiceCenterID=service_center_id)
+                except models.ServiceCenterInfo.DoesNotExist:
+                    is_not_unique = False
+
+            ######TEMP
+            user_name = create_username()
+
+            # create user for service_center
+            user_obj = User.objects.create_user(
+                username = user_name,
+                email = email,
+                password = user_name,
+                date_joined = timezone.now()
+            )
+
+            status = util.generateVLINK(user_obj)
+
+            # create service_center
+            ServiceCenterInfo.objects.create(
+                ServiceCenterID = service_center_id,
+                Name = service_center_name,
+                ContactNumber = contact_no,
+                Email = email,
+                BuildingNo = building_no,
+                Street = street_name,
+                Town  = town,
+                District = district,
+                City = city,
+                Pincode = pin_code,
+                OwnerName = owner_name,
+                Specialization = specialization,
+                USER=user_obj
+            )
+
             t = get_template('home.html')
-            html = t.render({'show_success': True, 'show_failure': False})
+            html = t.render({'show_success': True, 'show_failure': False, 'msg': ResponseMessages.MOBILE_VERIFICATION_LINK})
             return HttpResponse(html) 
-            #redirect('/?post=success')
         else:
             result = {'status': 'error', 'msg': 'Invalid Request method.'}
             return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")

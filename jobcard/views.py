@@ -6,25 +6,20 @@ from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from itertools import chain
-
-#import simplejson
 import util
 import log_rotator
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status as status_code
-from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 from . import models
 from . import forms
-from customer.models import Vehicles
+from customer.models import Vehicles, Customer
 from core.models import VehicleModels
 from easeservice import global_constants
 
@@ -473,6 +468,7 @@ def book_service(request):
     )
 
     # get vehicle_name from vehicle_model_id
+    #####TEMP
     vehicle_name = service_form.cleaned_data['vehicle_model_id']
     
     return Response({'status': "success", "booking_id": service_obj.booking_id, "vehicle_name": vehicle_name})
@@ -584,6 +580,8 @@ def book_emergency_service(request):
         not service_form.cleaned_data['customer_address_id']
         ):
         return Response({'status': "failure", 'msg': "Please enter an address or send your current location."}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    print("request.user.username - %s" % request.user.username)
 
     service_obj = models.EmergencyServiceBooking.objects.create(
         customer_id = request.user.username,
@@ -744,12 +742,20 @@ def accept_service_request(request):
     service_obj.save()
 
     # get vehicle data from vehicle_model_id
-    vehicle_model_obj = VehicleModels.object.get(vehicle_model_id=service_obj.vehicle_model_id)
+    vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
 
-    vehicle_obj = VehicleModels.object.get(vehicle_model_id=service_obj.vehicle_registration_number)
+    # retrieve data from user vehicle database
+    #vehicle_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_registration_number)
+    #### TEMP
+    fuel_type = "Petrol"
+    chassis_number = "xsasas"
+    total_kms= 1000
 
     # get customer_data using customer_id
-    customer_obj = models.Customer.objects.get(mobile=request.user.username)
+    customer_obj = Customer.objects.get(mobile=service_obj.customer_id)
+    
+    #TEMP
+    customer_obj.address = {'1252': "27, nakkirar street, chennai"}
 
     # create a job card and save the data
     jc_id = "JC" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999))
@@ -757,14 +763,14 @@ def accept_service_request(request):
     # create job card vehile info
     models.JCVehicleInfo.objects.create(
         VehicleNumber = service_obj.vehicle_registration_number,
-        Brand = vehicle_model_obj.brand,
-        Model = vehicle_model_obj.model,
-        FuelType = vehicle_obj.fuel_type,
-        ChassisNumber = vehicle_obj.chassis_number,
+        Brand = vehicle_model_obj.brand_name,
+        Model = vehicle_model_obj.model_name,
+        FuelType = fuel_type,
+        ChassisNumber = chassis_number,
         CustomerName = "%s %s" % (customer_obj.first_name, customer_obj.last_name),
         ContactNumber = customer_obj.mobile,
         Address = customer_obj.address[service_obj.customer_address_id],
-        KilometersTicked = vehicle_obj.total_kms,
+        KilometersTicked = total_kms,
         JobCardID = jc_id,
         DealerID = request.user,
         CreatedTime = str(datetime.datetime.now())
@@ -829,75 +835,3 @@ def retrieve_vehicle_data(request):
 def retrieve_service_types(request):
 
     return JsonResponse({"status": "success", "service_types": global_constants.service_types_dropdown})
-
-
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def retrieve_service_requests(request):
-    ''' Retrieve service requests for a particular service center '''
-
-    if request.method != "GET":
-        return Response({"status":"failure"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    services_requests = models.CServiceBooking.objects.filter(service_center_id=request.session['service_center_id'])
-
-    emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
-        Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'])
-    )
-
-    #requests_list = list(chain(services_requests, emergency_service_requests_list))
-
-    # print("requests_list - %s" % requests_list)
-
-    # service_requests = [ 
-    #            { "booking_id": 'bookid9876',
-    #             "customer_id": 'cus_id987',
-    #             "vehicle_type": 'veh_type_test',
-    #             "vehicle_model_id": 'au43',
-    #             "vehicle_registration_number": 'TN09BN9876',
-    #             "service_center_id": 'serv_id09',
-    #             "customer_address_id": 'test address',
-    #             "service_details": 'ac service work in progress',
-    #             "feedback_stars": 4,
-    #             "feedback_text": 'good service',
-    #             "created_at": '2016/09/09',
-    #             "status": 'pending'
-    #             },
-               
-
-    #           { "booking_id": 'bookid0067',
-    #             "customer_id": 'cus_id98237',
-    #             "vehicle_type": 'veh_type_tesdfdft',
-    #             "vehicle_model_id": 'au4asdf3',
-    #             "vehicle_registration_number": 'PY09BN9876',
-    #             "service_center_id": 'serv_id4509',
-    #             "customer_address_id": 'test addrpyindfess',
-    #             "service_details": 'engine service work in progress',
-    #             "feedback_stars": 2,
-    #             "feedback_text": 'good ok service',
-    #             "created_at": '2016/05/09',
-    #             "status": 'done'
-    #             }
-    # ]
-
-   
-    # emergency_service_requests = [ 
-    #         {
-    #             'booking_id': 'bookid1234',
-    #             'customer_id': 'cus_id4565',
-    #             'vehicle_type': 'veh_type_ya',
-    #             'customer_address_id': 'testing address tn',
-    #             'customer_latlon': '3.4555, 5,6666',
-    #             'service_details': 'engine failure',
-    #             'feedback_stars': '',
-    #             'feedback_text': '',
-    #             "created_at": '2017/08/01',
-    #             "status": 'pending',
-    #             "service_center_id": 'SerID9980'
-    #         }
-    # ]    
-
-    t = get_template('servicerequests.html')
-    context = {'service_requests': service_requests, 'emergency_service_requests': emergency_service_requests}
-    html = t.render(context)
-    return HttpResponse(html)

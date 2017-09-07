@@ -26,7 +26,7 @@ SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SMS_BLOCK = True
+SMS_BLOCK = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -38,6 +38,8 @@ SMS_GATEWAY = {
     'PASSWORD': "easeservice123!",
     'SENDER': "EASESE"
 }
+
+SECURITY_PASSWORD_SALT = "bVFOOugP5PAIf!EqLJbXQbfTxs"
 
 # Application definition
 INSTALLED_APPS = [

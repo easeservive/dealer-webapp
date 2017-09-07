@@ -4,6 +4,15 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.template import Context
 from easeservice import global_constants
+from django.contrib.auth.models import User
+from django.db.models import Q
+
+from core.models import ServiceCenterInfo
+from jobcard.models import CServiceBooking, EmergencyServiceBooking
+
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 import json
 import decimal
@@ -39,6 +48,23 @@ def login_dealer(request):
             username = data.get('user', 'NA')
             passwd = data.get('passwd', 'NA')
             view_logger.debug("Dealer login request for : %s"%username)
+
+            # check if user is valid and activated.
+            try:
+                user_obj = User.objects.get(username=username)
+                if user_obj.is_active != 1:
+                    return HttpResponse(json.dumps(
+                        {"status": "failure", "msg": global_constants.ResponseMessages.LOGIN_VERIFICATION},
+                        default=json_default
+                        ), content_type="application/json"
+                    )
+            except User.DoesNotExist:
+                return HttpResponse(json.dumps(
+                    {"status": "failure", "msg": "The username and password were incorrect."},
+                    default=json_default
+                    ), content_type="application/json"
+                )
+
             user = authenticate(username=username, password=passwd)
             if user is not None:
                 # the password verified for the user
@@ -53,10 +79,9 @@ def login_dealer(request):
                 result = {"status": "failure", "msg": "The username and password were incorrect."}
             view_logger.debug("Dealer login response for %s : %s"%(username, str(result)))
 
-            ######## TEST
-            #service_center_id = request.sess
-            request.session['service_center_id'] = "TEST123"
-            ######## TEST
+            # save ServiceCenterID to session
+            sc_obj = ServiceCenterInfo.objects.get(USER=user_obj)
+            request.session['service_center_id'] = sc_obj.ServiceCenterID
 
             return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
         elif request.method == 'GET':
@@ -345,4 +370,76 @@ def view_invoice(request):
         return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
 
 
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def retrieve_service_requests(request):
+    ''' Retrieve service requests for a particular service center '''
 
+    if request.method != "GET":
+        return Response({"status":"failure"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    print(request.session['service_center_id'])
+    
+    service_requests = CServiceBooking.objects.filter(service_center_id=request.session['service_center_id'])
+    print(service_requests)
+
+    emergency_service_requests = EmergencyServiceBooking.objects.filter(
+        Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'])
+    )
+
+    #requests_list = list(chain(services_requests, emergency_service_requests_list))
+
+    # print("requests_list - %s" % requests_list)
+
+    # service_requests = [ 
+    #            { "booking_id": 'bookid9876',
+    #             "customer_id": 'cus_id987',
+    #             "vehicle_type": 'veh_type_test',
+    #             "vehicle_model_id": 'au43',
+    #             "vehicle_registration_number": 'TN09BN9876',
+    #             "service_center_id": 'serv_id09',
+    #             "customer_address_id": 'test address',
+    #             "service_details": 'ac service work in progress',
+    #             "feedback_stars": 4,
+    #             "feedback_text": 'good service',
+    #             "created_at": '2016/09/09',
+    #             "status": 'pending'
+    #             },
+               
+
+    #           { "booking_id": 'bookid0067',
+    #             "customer_id": 'cus_id98237',
+    #             "vehicle_type": 'veh_type_tesdfdft',
+    #             "vehicle_model_id": 'au4asdf3',
+    #             "vehicle_registration_number": 'PY09BN9876',
+    #             "service_center_id": 'serv_id4509',
+    #             "customer_address_id": 'test addrpyindfess',
+    #             "service_details": 'engine service work in progress',
+    #             "feedback_stars": 2,
+    #             "feedback_text": 'good ok service',
+    #             "created_at": '2016/05/09',
+    #             "status": 'done'
+    #             }
+    # ]
+
+   
+    # emergency_service_requests = [ 
+    #         {
+    #             'booking_id': 'bookid1234',
+    #             'customer_id': 'cus_id4565',
+    #             'vehicle_type': 'veh_type_ya',
+    #             'customer_address_id': 'testing address tn',
+    #             'customer_latlon': '3.4555, 5,6666',
+    #             'service_details': 'engine failure',
+    #             'feedback_stars': '',
+    #             'feedback_text': '',
+    #             "created_at": '2017/08/01',
+    #             "status": 'pending',
+    #             "service_center_id": 'SerID9980'
+    #         }
+    # ]    
+
+    t = get_template('servicerequests.html')
+    context = {'service_requests': service_requests, 'emergency_service_requests': emergency_service_requests}
+    html = t.render(context)
+    return HttpResponse(html)
