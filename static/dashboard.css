@@ -655,3 +655,7 @@ div.form-group.transistion label.error {
     width: 300px;
     height: 200px;
 }
+
+.usr-img {
+    padding: 10px 0px;
+}

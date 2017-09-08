@@ -44,20 +44,7 @@
                         <div class="clear"></div>
                         <div class="col-sm-12 padding-left-free">
                             <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form" enctype="multipart/form-data">
-                                <div class='col-sm-4'>
-                                    <label>Upload Image</label>
-                                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                        <span class="btn btn-default btn-file">
-                                         Browse… <input type="file" id="imgInp" name="imgInp">
-                                        </span>
-                                        </span>
-           
-                                    </div>
-                                    <div class='col-sm-12'>
-                                        <img id='img-upload'/>
-                                    </div>
-                                </div>
+                               
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="cust_name">Name</label>
@@ -110,16 +97,18 @@
                                         <label for="serviceType">Service Types</label>
                                         <select aria-required="true" name="serviceType" id="serviceType" class="form-control" data-validation="required">
                                             {% for serviceType in serviceTypes %}
-                                                {% if forloop.first %}
-                                                    <option value="{{ serviceType.service_type_name }}" selected="selected">{{ serviceType.service_type_name }}</option>
-                                                {% else %}
-                                                    <option value="{{ serviceType.service_type_name }}">{{ serviceType.service_type_name }}</option>
-                                                {% endif %}
+                                                   
+                                                    <optgroup label="{{ serviceType.service_type_name }}">
+                                                        {% for serviceTypeClass in serviceType.classifications %}
+                                                            <option value="{{ serviceTypeClass.id }}">{{ serviceTypeClass.name }}</option>
+                                                        {% endfor %}     
+                                                    </optgroup> 
+                                              
                                             {% endfor %}
                                         </select>
                                     </div>
 
-                                    <div class="form-group col-sm-12">
+                                   <!--  <div class="form-group col-sm-12">
                                         {% for serviceType in serviceTypes %}
                                             <div id="{{ serviceType.service_type_name }}" class="serviceTypeCheckbox col-sm-12" style="display: none;" >
                                                 {% for serviceTypeClass in serviceType.classifications %}
@@ -129,7 +118,7 @@
                                                 {% endfor %}
                                             </div>
                                         {% endfor %} 
-                                    </div>
+                                    </div> -->
                                 </div>
                                
                                 <div class="col-sm-4">
@@ -229,6 +218,21 @@
                                             <label for="mechanic_name">Mechanic Name</label>
                                             <input aria-required="true" name="mechanic_name" id="mechanic_name" class="form-control" data-validation="required" type="text">
                                         </div>
+                                    </div>
+                                </div>
+
+                                 <div class='col-sm-4'>
+                                    <label>Upload Image</label>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                         Browse… <input type="file" id="imgInp" name="imgInp">
+                                        </span>
+                                        </span>
+           
+                                    </div>
+                                    <div class='col-sm-12 usr-img'>
+                                        <img id='img-upload'/>
                                     </div>
                                 </div>
                                 <div class="col-sm-12">

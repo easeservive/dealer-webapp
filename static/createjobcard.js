@@ -614,11 +614,11 @@ jQuery(document).ready(function($){
        otherparts_cost = $form.find( "input[name='oc']" ).val(),
        mechanic_name = $form.find( "input[name='mechanic_name']" ).val(),
        service_type = $('#serviceType :selected').val(),
-       service_type_class = []
+       // service_type_class = []
        
-        $('input[name=' + $('#serviceType :selected').val() +']:checked').each(function(){ 
-            service_type_class.push($(this).val());
-        });
+       //  $('input[name=' + $('#serviceType :selected').val() +']:checked').each(function(){ 
+       //      service_type_class.push($(this).val());
+       //  });
 
        d_reason = "";
 
@@ -694,13 +694,13 @@ jQuery(document).ready(function($){
 
     });
 
-    $('.serviceTypeCheckbox').hide();
-    $('#'+$('#serviceType :selected').text()).show();
+    // $('.serviceTypeCheckbox').hide();
+    // $('#'+$('#serviceType :selected').text()).show();
 
-    $("#serviceType").change(function () {
-        $('.serviceTypeCheckbox').hide();
-        $('#'+$('#serviceType :selected').text()).show();
-    });
+    // $("#serviceType").change(function () {
+    //     $('.serviceTypeCheckbox').hide();
+    //     $('#'+$('#serviceType :selected').text()).show();
+    // });
 
     // $('#number').keypress(function(){
     //    if(vehicleNumbStatus == 'correct') {

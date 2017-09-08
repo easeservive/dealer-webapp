@@ -1,15 +1,16 @@
 jQuery(document).ready(function($){
 
 	$('.sr-accept-btn').click(function(){
-	console.log($(this).attr('value'));
+	// console.log($(this).attr('value'));
 		$.post("/apis/jobcard/v1/service/accept",
 	    {
 	        booking_id: $(this).attr('value')
 	        
 	    },
 	    function(data, status){
+	
 	    	if(data['jc_id']) {
-	    		window.location.href('/jobcard/edit/?jc='+data['jc_id']);
+	    		window.location.href = '/jobcard/edit/?jc='+data['jc_id'];
 	    	}
 	        
 	    });

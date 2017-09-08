@@ -742,6 +742,7 @@ def accept_service_request(request):
     service_obj.save()
 
     # get vehicle data from vehicle_model_id
+    
     vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
 
     # retrieve data from user vehicle database

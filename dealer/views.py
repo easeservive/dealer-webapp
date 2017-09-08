@@ -441,5 +441,12 @@ def retrieve_service_requests(request):
 
     t = get_template('servicerequests.html')
     context = {'service_requests': service_requests, 'emergency_service_requests': emergency_service_requests}
+    context['user'] = request.user
+    user_agent = "all"
+    user_agent=request.META.get("HTTP_USER_AGENT")
+            
+    if "Android" in user_agent:
+        user_agent = "android"
+    context['user_agent'] = user_agent
     html = t.render(context)
     return HttpResponse(html)
