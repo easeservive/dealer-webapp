@@ -596,7 +596,7 @@ jQuery(document).ready(function($){
     });
     // Attach a submit handler to the form
     $( "#jc" ).submit(function( event ) {
-        debugger;
+        
        event.preventDefault();
        var $form = $( this ),
        veh_numb = $form.find( "input[name='number']" ).val(),
