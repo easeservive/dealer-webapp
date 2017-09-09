@@ -223,6 +223,7 @@ def create_job_card(request):
                 details['otherparts_cost'] = data['otherparts_cost']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
+                details['vehicle_images'] = data['vehicle_images']
 
                 if 'mechanic_name' in data:
                     details['mechanic_name'] = data['mechanic_name']
@@ -332,6 +333,7 @@ def save_job_card(request):
                 details['spares'] = data['spares']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
+                details['vehicle_images'] = data['vehicle_images']
 
                 if 'mechanic_name' in details:
                     details['mechanic_name'] = data['mechanic_name']

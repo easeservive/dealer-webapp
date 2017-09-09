@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django_mysql.models import JSONField
 #import urllib
 import requests
 
@@ -31,6 +32,8 @@ class JCStatus(models.Model):
     LastedEditedTime = models.CharField(max_length=30)
     CustomerComplaint = models.TextField()
     ServiceTypeId = models.CharField(max_length=30)
+    VehicleImages = JSONField()
+
 
 class JCServiceDetails(models.Model):
     id = models.AutoField(primary_key=True)
@@ -46,6 +49,7 @@ class JCRecommendedServices(models.Model):
     DealerID = models.CharField(max_length=30)
     ServiceItems = models.TextField()
 
+
 class JCStocksInfo(models.Model):
     id = models.AutoField(primary_key=True)
     PartIdentifier = models.CharField(max_length=100)
@@ -55,6 +59,7 @@ class JCStocksInfo(models.Model):
     TotalPrice = models.CharField(max_length=30)
     JobCardID = models.CharField(max_length=30)
     DealerID = models.CharField(max_length=30)
+
 
 class JCInvoiceAndLabourCost(models.Model):
     JobCardID = models.CharField(max_length=30)
@@ -68,10 +73,12 @@ class JCInvoiceAndLabourCost(models.Model):
     VATPercentage = models.CharField(max_length=30)
     TaxPercentage = models.CharField(max_length=30)
     
+
 class JCOtherStocksInfo(models.Model):
     JobCardID = models.CharField(max_length=30)
     OtherPartsDesc = models.CharField(max_length=100)
     OtherPartsCost = models.CharField(max_length=30)
+
 
 # Method for sendsms to customer 
 @receiver(post_save)
