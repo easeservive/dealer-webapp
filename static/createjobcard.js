@@ -89,7 +89,7 @@ jQuery(document).ready(function($){
         success : function(response) {
             // response = JSON.parse(response);
             if (response.status == "success") {
-                debugger;
+                
                 response.compliants.forEach(function(value) {
                     
                     availableTags.push(value.Description);
@@ -742,9 +742,9 @@ jQuery(document).ready(function($){
             }
 
         }).fail(function(data,status){
-            console.log("issue");
+            // console.log("issue");
             console.log(status);
-            console.log(data);
+            // console.log(data);
             // return true;
         });
     }
@@ -755,9 +755,9 @@ jQuery(document).ready(function($){
            
             if(value.length == 10 && value.slice(0,2).match(/^[a-z]+$/gi)  && $.isNumeric(value.slice(2,4)) &&  value.slice(4,6).match(/^[a-z]+$/gi) &&  $.isNumeric(value.slice(6,10))) {
                     // vehicleNumbStatus = 'correct';
-                    console.log("checking once again");
-                    // vehNumbDetails(value);
-                    console.log("issue solved");
+                    // console.log("checking once again");
+                    vehNumbDetails(value);
+                    // console.log("issue solved");
                     return true;
             }
                             

@@ -95,7 +95,8 @@ def meshup(request):
                 date_joined = timezone.now()
             )
 
-            status = util.generateVLINK(user_obj)
+            ######TEMP
+            #status = util.generateVLINK(user_obj)
 
             # create service_center
             ServiceCenterInfo.objects.create(
