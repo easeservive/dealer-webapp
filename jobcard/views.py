@@ -796,6 +796,7 @@ def accept_service_request(request):
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated,))
 def retrieve_vehicle_data(request):
 
     if not request.user.is_authenticated():
