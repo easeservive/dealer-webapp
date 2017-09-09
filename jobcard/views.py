@@ -821,6 +821,7 @@ def accept_service_request(request):
     return JsonResponse({'status': "success", "message": "Service accepted and job created successfully.", "jc_id": jc_id})
 
 
+
 #@api_view(['GET'])
 def retrieve_vehicle_data(request):
 

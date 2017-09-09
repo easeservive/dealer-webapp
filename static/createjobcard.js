@@ -89,7 +89,9 @@ jQuery(document).ready(function($){
         success : function(response) {
             // response = JSON.parse(response);
             if (response.status == "success") {
+                
                 response.compliants.forEach(function(value) {
+                    
                     availableTags.push(value.Description);
                     sparesTags.push(value);
                 });
@@ -596,7 +598,7 @@ jQuery(document).ready(function($){
     });
     // Attach a submit handler to the form
     $( "#jc" ).submit(function( event ) {
-        
+       
        event.preventDefault();
        var $form = $( this ),
        veh_numb = $form.find( "input[name='number']" ).val(),
@@ -673,9 +675,10 @@ jQuery(document).ready(function($){
            }
 
            var all_services = $.merge(services, customerComplaints);
+           
            if (!(all_services.length == 0)) {
                var url = $form.attr( "action" );
-               var data = JSON.stringify({ data : { service_type : service_type, service_type_class: service_type_class, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
+               var data = JSON.stringify({ data : { service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
                // Send the data using post
                var posting = $.post( url, data);
                posting.done(function( data ) {
@@ -716,7 +719,7 @@ jQuery(document).ready(function($){
 
     function vehNumbDetails(value) {
         $.get("/apis/jobcard/v1/user/vehicle", {vehicle_registration_number: value}, function(data, status){
-            
+          
             if(data['vehicle_data']['chassis_number']) {
                 $("label[for='"+ 'chasis'+"']").addClass('open');
                 $('#jc').find( "input[name='chasis']" ).val(data['vehicle_data']['chassis_number']);
@@ -738,6 +741,11 @@ jQuery(document).ready(function($){
                $('#type').val(data['vehicle_data']['fuel_type']);
             }
 
+        }).fail(function(data,status){
+            // console.log("issue");
+            console.log(status);
+            // console.log(data);
+            // return true;
         });
     }
 
@@ -747,7 +755,9 @@ jQuery(document).ready(function($){
            
             if(value.length == 10 && value.slice(0,2).match(/^[a-z]+$/gi)  && $.isNumeric(value.slice(2,4)) &&  value.slice(4,6).match(/^[a-z]+$/gi) &&  $.isNumeric(value.slice(6,10))) {
                     // vehicleNumbStatus = 'correct';
+                    // console.log("checking once again");
                     vehNumbDetails(value);
+                    // console.log("issue solved");
                     return true;
             }
                             
