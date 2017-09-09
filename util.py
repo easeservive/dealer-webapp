@@ -175,12 +175,38 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
     try:
         veh_obj = JCVehicleInfo.objects.get(JobCardID = jc_id, DealerID = dealerid)
         jc_obj = JCStatus.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-        other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
-        ser_obj = JCServiceDetails.objects.filter(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-        spares_obj = JCStocksInfo.objects.filter(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-        lab_cost_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-        recomd_obj = JCRecommendedServices.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-        if veh_obj and jc_obj and ser_obj:
+
+        # fetch other parts
+        try:
+            other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+        except JCOtherStocksInfo.DoesNotExist:
+            other_parts = None
+
+        # fetch service details
+        try:
+            ser_obj = JCServiceDetails.objects.filter(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
+        except JCServiceDetails.DoesNotExist:
+            ser_obj = None
+
+        # fetch stocks info
+        try:
+            spares_obj = JCStocksInfo.objects.filter(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
+        except JCStocksInfo.DoesNotExist:
+            spares_obj = None
+
+        # fetch labour and cost info
+        try:
+            lab_cost_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
+        except JCInvoiceAndLabourCost.DoesNotExist:
+            lab_cost_obj = None
+
+        try:
+            recomd_obj = JCRecommendedServices.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
+        except JCRecommendedServices.DoesNotExist:
+            recomd_obj = None
+
+        #if veh_obj and jc_obj and ser_obj:
+        if veh_obj and jc_obj:   
             details = {}
             details['veh_num'] = veh_obj.VehicleNumber
             details['brand'] = veh_obj.Brand
@@ -193,8 +219,11 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
             details['km_ticked'] = veh_obj.KilometersTicked
             details['jc_id'] = veh_obj.JobCardID
             details['service_reminder_time'] = jc_obj.service_reminder_time
+
+            #print("jc_obj.ServiceTypeId - %s" % jc_obj.ServiceTypeId)
             details['service_type'] = "%s - %s" % (global_constants.service_types[jc_obj.ServiceTypeId]['service_type'],
                 global_constants.service_types[jc_obj.ServiceTypeId]['classification'])
+
             details['del_time'] = jc_obj.DeliveryTime
             details['status'] = jc_obj.Status
             details['reason'] = jc_obj.PendingReason
@@ -209,9 +238,9 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
                 services.append(service)
             details['services'] = services
 
-            total_parts_cost = 0.00
-            total_taxable_price = 0.00
-            optaxableprice = 0.00
+            total_parts_cost = 0.0
+            total_taxable_price = 0.0
+            optaxableprice = 0.0
             if spares_obj:
                 spares = []
                 for obj in spares_obj:
@@ -229,22 +258,45 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
                     spares.append(spare)
                 details['spares'] = spares
 
-            details['lab_cost'] = "%.2f"%float(lab_cost_obj.LabourCharge)
-            details['otherparts'] = other_parts.OtherPartsDesc
-            details['othercost'] = "%.2f"%float(other_parts.OtherPartsCost)
+            if lab_cost_obj:
+                details['lab_cost'] = "%.2f"%float(lab_cost_obj.LabourCharge)
+                service_tax_amt = float(lab_cost_obj.LabourCharge)*(float(config.SERVICE_TAX_PERCENTAGE)/100)
+                details['lab_cost_with_tax'] = "%.2f"%((float(lab_cost_obj.LabourCharge) + service_tax_amt))
+            else:
+                details['lab_cost'] = 0.0
+                service_tax_amt = 0.0
+                details['lab_cost_with_tax'] = 0.0
+
+            if other_parts:
+                details['otherparts'] = other_parts.OtherPartsDesc
+                details['othercost'] = "%.2f"%float(other_parts.OtherPartsCost)
+            else:
+                details['otherparts'] = ""
+                details['othercost'] = 0.0
+
             details['optax'] = "%.2f"%(config.TAX_PERCENTAGE)
             details['optaxableprice'] = float(details['othercost']) + (float(details['othercost'])*(float(config.TAX_PERCENTAGE)/100))
-            service_tax_amt = float(lab_cost_obj.LabourCharge)*(float(config.SERVICE_TAX_PERCENTAGE)/100)
-            details['lab_cost_with_tax'] = "%.2f"%((float(lab_cost_obj.LabourCharge) + service_tax_amt))
+
+            
+            
             details['total_parts_cost'] = "%.2f"%(total_parts_cost)
             details['total_parts_cost_editjc'] = "%.2f"%(total_parts_cost+float(details['othercost']))
-            details['total_cost_editjc'] = "%.2f"%(float(details['total_parts_cost_editjc'])+ float(lab_cost_obj.LabourCharge))
+
+            if lab_cost_obj:
+                details['total_cost_editjc'] = "%.2f"%(float(details['total_parts_cost_editjc'])+ float(lab_cost_obj.LabourCharge))
+                details['total_cost'] = "%.2f"%(total_parts_cost + float(lab_cost_obj.LabourCharge))
+            else:
+                details['total_cost_editjc'] = "%.2f"%(float(details['total_parts_cost_editjc'])+ float(0))
+                details['total_cost'] = "%.2f"%(total_parts_cost + float(0))
+
             details['total_taxable_price'] = "%.2f"%(float(total_taxable_price)+details['optaxableprice'])
-            details['total_cost'] = "%.2f"%(total_parts_cost + float(lab_cost_obj.LabourCharge))
             details['total_cost_with_tax'] = "%.2f"%(float(details['total_taxable_price']) + float(details['lab_cost_with_tax']))
             details['service_tax'] = "%.2f"%(config.SERVICE_TAX_PERCENTAGE)
             
-            details['recommendedservices'] = (recomd_obj.ServiceItems).split('##')
+            if recomd_obj:
+                details['recommendedservices'] = (recomd_obj.ServiceItems).split('##')
+            else:
+                details['recommendedservices'] = []
 
             if invoice_details:
                 details['inv_no'] = lab_cost_obj.InvoiceNumber
@@ -683,7 +735,11 @@ def getJobCardsList(dealerid, for_invoice=False):
                                 global_constants.service_types[obj.ServiceTypeId]['classification'])
                             temp_dict['invoice'] = False
                             temp_dict['mechanic_name'] = obj.MechanicName
-                            invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = obj.JobCardID)
+                            try:
+                                invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = obj.JobCardID)
+                            except JCInvoiceAndLabourCost.DoesNotExist:
+                                invoice_obj = None
+
                             if invoice_obj and invoice_obj.InvoiceNumber != "":
                                 temp_dict['invoice'] = True
                                 temp_dict['mode'] = invoice_obj.PaymentMode

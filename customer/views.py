@@ -276,6 +276,22 @@ def retrieve_customer(request):
 
     customer_obj = models.Customer.objects.get(mobile=request.user.username)
 
+    try:
+        vehicles_obj = models.Vehicles.objects.filter(customer_id=customer_obj.mobile)
+    except models.Vehicles.DoesNotExist:
+        vehicles_obj = []
+
+    vehicles = []
+    for vehile_obj in vehicles_obj:
+        vehicles.append({
+            "vehicle_model_id": vehile_obj.vehicle_model_id,
+            "fuel_type": vehile_obj.fuel_type,
+            "vehicle_registration_number": vehile_obj.vehicle_registration_number,
+            "year": vehile_obj.year,
+            "chassis_number": vehile_obj.chassis_number,
+            "total_kms": vehile_obj.total_kms
+        })
+
     return Response({'status': "success",
         "customer_data": {
             "customer_id": customer_obj.mobile,
@@ -285,6 +301,7 @@ def retrieve_customer(request):
             "email": customer_obj.email,
             "first_name": customer_obj.first_name,
             "last_name": customer_obj.last_name,
+            "vehicles": vehicles
         }
     })
 
@@ -326,7 +343,7 @@ def add_vehicle(request):
     if not vehicle_form.is_valid():
         return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    vehicle_obj = Vehicles.objects.create(
+    vehicle_obj = models.Vehicles.objects.create(
         total_kms = vehicle_form.cleaned_data['total_kms'],
         vehicle_model_id = vehicle_form.cleaned_data['vehicle_model_id'],
         vehicle_registration_number = vehicle_form.cleaned_data['vehicle_registration_number'],
@@ -371,12 +388,11 @@ def retrieve_maintenance_tips(request):
     
 
 
-@api_view(['GET'])
+#@api_view(['GET'])
 #@permission_classes((IsAuthenticated,))
 def test(request):
 
-    print("Auth success")
+    print(request.user)
+    print(request.user)
 
-    sc_obj = ServiceCenterInfo.objects.get(ServiceCenterID="21232324wergvwerg")
-
-    return Response({'status': "success"})
+    return HttpResponse()

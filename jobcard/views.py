@@ -456,9 +456,15 @@ def book_service(request):
     if not is_valid:
         return Response({"status":"failure", "msg": message}, status=status_code.HTTP_400_BAD_REQUEST)
 
+    # get vehicle_name from vehicle_model_id
+    try:
+        vehicle_obj = VehicleModels.objects.get(vehicle_model_id=service_form.cleaned_data['vehicle_model_id'])
+    except VehicleModels.DoesNotExist:
+        return Response({"status":"failure", "msg": "Invalid vehicle_model_id"}, status=status_code.HTTP_400_BAD_REQUEST)
+
     service_obj = models.CServiceBooking.objects.create(
         customer_id = request.user.username,
-        vehicle_type = service_form.cleaned_data['vehicle_type'],
+        #vehicle_type = service_form.cleaned_data['vehicle_type'],
         vehicle_model_id = service_form.cleaned_data['vehicle_model_id'],
         vehicle_registration_number = service_form.cleaned_data['vehicle_registration_number'],
         service_center_id = service_form.cleaned_data['service_center_id'],
@@ -466,12 +472,10 @@ def book_service(request):
         service_details = service_form.cleaned_data['service_details'],
         status = "Pending Confirmation"
     )
-
-    # get vehicle_name from vehicle_model_id
-    #####TEMP
-    vehicle_name = service_form.cleaned_data['vehicle_model_id']
     
-    return Response({'status': "success", "booking_id": service_obj.booking_id, "vehicle_name": vehicle_name})
+    return Response({'status': "success", "booking_id": service_obj.booking_id,
+        "vehicle_name": "%s %s" % (vehicle_obj.brand_name, vehicle_obj.model_name)
+    })
 
 
 @api_view(['GET'])
@@ -486,12 +490,15 @@ def retrieve_service_details(request):
         service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
     except models.CServiceBooking.DoesNotExist:
         return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+
+    vehicle_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
     
     return Response({'status': "success", "booking_data":{
             "booking_id": service_obj.booking_id,
             "customer_id": service_obj.customer_id,
-            "vehicle_type": service_obj.vehicle_type,
-            "vehicle_model_id": service_obj.vehicle_model_id,
+            "vehicle_type": vehicle_obj.vehicle_type,
+            "vehicle_name": "%s %s" % (vehicle_obj.brand_name, vehicle_obj.model_name),
+            #"vehicle_model_id": service_obj.vehicle_model_id,
             "vehicle_registration_number": service_obj.vehicle_registration_number,
             "service_center_id": service_obj.service_center_id,
             "customer_address_id": service_obj.customer_address_id,
@@ -581,7 +588,7 @@ def book_emergency_service(request):
         ):
         return Response({'status': "failure", 'msg': "Please enter an address or send your current location."}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    print("request.user.username - %s" % request.user.username)
+    #print("request.user.username - %s" % request.user.username)
 
     service_obj = models.EmergencyServiceBooking.objects.create(
         customer_id = request.user.username,
@@ -726,51 +733,70 @@ def retrieve_emergency_service(request):
 
 
 
-@api_view(['POST'])
 def accept_service_request(request):
 
-    service_form = forms.AcceptServiceForm(request.data)
+    if not request.method == "POST":
+        return JsonResponse({'status': "failure", "msg": "Invalid request method."})
+
+    service_form = forms.AcceptServiceForm(request.POST)
     if not service_form.is_valid():
         return JsonResponse({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     try:
         service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
     except models.CServiceBooking.DoesNotExist:
-        return JsonResponse({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+        try:
+            service_obj = models.EmergencyServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+        except models.EmergencyServiceBooking.DoesNotExist:
+            return JsonResponse({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
 
     service_obj.status = "Accepted"
     service_obj.save()
 
-    # get vehicle data from vehicle_model_id
-    
-    vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
+    try:
+        # get vehicle data from vehicle_model_id
+        vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
+        brand_name = vehicle_model_obj.brand_name
+        model_name = vehicle_model_obj.model_name
+    except:
+        brand_name = model_name = ""
 
     # retrieve data from user vehicle database
-    #vehicle_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_registration_number)
-    #### TEMP
-    fuel_type = "Petrol"
-    chassis_number = "xsasas"
-    total_kms= 1000
+    try:
+        vehicle_registration_number = service_obj.vehicle_registration_number
+    except:
+        vehicle_registration_number = ""
+
+    if vehicle_registration_number:
+        vehicle_obj = Vehicles.objects.get(vehicle_registration_number=service_obj.vehicle_registration_number)
+        fuel_type = vehicle_obj.fuel_type
+        chassis_number = vehicle_obj.chassis_number
+        total_kms = vehicle_obj.total_kms
+    else:
+        fuel_type = chassis_number = total_kms= ""
 
     # get customer_data using customer_id
     customer_obj = Customer.objects.get(mobile=service_obj.customer_id)
-    
-    #TEMP
-    customer_obj.address = {'1252': "27, nakkirar street, chennai"}
 
     # create a job card and save the data
     jc_id = "JC" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999))
 
     # create job card vehile info
     models.JCVehicleInfo.objects.create(
-        VehicleNumber = service_obj.vehicle_registration_number,
-        Brand = vehicle_model_obj.brand_name,
-        Model = vehicle_model_obj.model_name,
+        VehicleNumber = vehicle_registration_number,
+        Brand = brand_name,
+        Model = model_name,
         FuelType = fuel_type,
         ChassisNumber = chassis_number,
         CustomerName = "%s %s" % (customer_obj.first_name, customer_obj.last_name),
         ContactNumber = customer_obj.mobile,
-        Address = customer_obj.address[service_obj.customer_address_id],
+        Address = "%s, %s, %s, %s - %s" % (
+                customer_obj.address[service_obj.customer_address_id]['address_line_1'],
+                customer_obj.address[service_obj.customer_address_id]['address_line_2'],
+                customer_obj.address[service_obj.customer_address_id]['city'],
+                customer_obj.address[service_obj.customer_address_id]['state'],
+                customer_obj.address[service_obj.customer_address_id]['zipcode'],
+            ),
         KilometersTicked = total_kms,
         JobCardID = jc_id,
         DealerID = request.user,
@@ -781,12 +807,12 @@ def accept_service_request(request):
     models.JCStatus.objects.create(
         JobCardID = jc_id,
         DealerID = request.user,
-        #DeliveryTime = "",
         Status = "OPEN",
-        #PendingReason = "",
         CreatedTime = str(datetime.datetime.now()),
         LastedEditedTime = str(datetime.datetime.now()),
-        CustomerComplaint=service_obj.service_details
+        CustomerComplaint=service_obj.service_details,
+        # general service by default
+        ServiceTypeId = "5s5d5f5g"
     )
 
     service_obj.job_card_id = jc_id
@@ -795,13 +821,16 @@ def accept_service_request(request):
     return JsonResponse({'status': "success", "message": "Service accepted and job created successfully.", "jc_id": jc_id})
 
 
-@api_view(['GET'])
+#@api_view(['GET'])
 def retrieve_vehicle_data(request):
+
+    if not request.method == "GET":
+        return JsonResponse({'status': "failure", "msg": "Invalid request method."})
 
     if not request.user.is_authenticated():
         return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
 
-    vehicle_form = forms.RetrieveVehicleDataForm(request.data)
+    vehicle_form = forms.RetrieveVehicleDataForm(request.GET)
     if not vehicle_form.is_valid():
         return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 

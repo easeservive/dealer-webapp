@@ -7,7 +7,7 @@ from easeservice import global_constants
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from core.models import ServiceCenterInfo
+from core.models import ServiceCenterInfo, VehicleModels
 from jobcard.models import CServiceBooking, EmergencyServiceBooking
 
 from rest_framework.decorators import authentication_classes, permission_classes
@@ -272,7 +272,7 @@ def jobcard_new(request):
                 user_agent = "android"
             context_dictionary = util.getCarBrands()
 
-            print("context_dictionary - %s" % context_dictionary)
+            #print("context_dictionary - %s" % context_dictionary)
 
             context_dictionary['user'] = request.user
             context_dictionary['user_agent'] = user_agent
@@ -306,7 +306,8 @@ def jobcard_edit(request):
             view_logger.debug("USER AGENT : %s"%user_agent)
             if "Android" in user_agent:
                 user_agent = "android"
-            context_dictionary = util.getJobCard(jc_id, request.user)['jobcard_details']
+            context_dictionary_data = util.getJobCard(jc_id, request.user)
+            context_dictionary = context_dictionary_data['jobcard_details']
             context_dictionary['user'] = request.user
             context_dictionary['user_agent'] = user_agent
             html = t.render(context_dictionary)
@@ -378,13 +379,17 @@ def retrieve_service_requests(request):
     if request.method != "GET":
         return Response({"status":"failure"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    print(request.session['service_center_id'])
+    #print(request.session['service_center_id'])
     
-    service_requests = CServiceBooking.objects.filter(service_center_id=request.session['service_center_id'])
-    print(service_requests)
+    service_requests = CServiceBooking.objects.filter(service_center_id=request.session['service_center_id'], status="Pending Confirmation")
+    for entry in service_requests:
+    	vehicle_obj = VehicleModels.objects.get(vehicle_model_id=entry.vehicle_model_id)
+    	entry.vehicle_type = vehicle_obj.vehicle_type
+    	entry.vehicle_name = "%s %s" % (vehicle_obj.brand_name, vehicle_obj.model_name)
+
 
     emergency_service_requests = EmergencyServiceBooking.objects.filter(
-        Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'])
+        Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'], status="Pending Confirmation")
     )
 
     #requests_list = list(chain(services_requests, emergency_service_requests_list))
