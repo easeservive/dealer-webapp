@@ -828,26 +828,26 @@ def retrieve_vehicle_data(request):
         return JsonResponse({'status': "failure", "msg": "Invalid request method."})
 
     if not request.user.is_authenticated():
-        return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
+        return JsonResponse({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
 
     vehicle_form = forms.RetrieveVehicleDataForm(request.GET)
     if not vehicle_form.is_valid():
-        return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     is_valid, message = util.vehicle_number_check(vehicle_form.cleaned_data['vehicle_registration_number'])
     if not is_valid:
-        return Response({'status': "failure", "msg": message}, 
+        return JsonResponse({'status': "failure", "msg": message}, 
                 status=status_code.HTTP_400_BAD_REQUEST
             )
 
     try:
         vehicle_obj = Vehicles.objects.get(vehicle_registration_number=vehicle_form.cleaned_data['vehicle_registration_number'])
     except Vehicles.DoesNotExist:
-        return Response({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)
+        return JsonResponse({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)
 
     vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=vehicle_obj.vehicle_model_id)
 
-    return Response({'status': "success", 
+    return JsonResponse({'status': "success", 
         "vehicle_data":{
             "vehicle_registration_number": vehicle_obj.vehicle_registration_number,
             "vehicle_type": vehicle_model_obj.vehicle_type,
