@@ -24,4 +24,19 @@ else:
 
 #sys.path.append("/host/Ease/easeserver/easeservice")
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.settings")
+
+if ( 
+    'ENV_TYPE' in os.environ and 
+    os.environ['ENV_TYPE'] == "00" 
+    ): 
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.local_settings")
+elif ( 
+    'ENV_TYPE' in os.environ and 
+    os.environ['ENV_TYPE'] == "01" 
+    ): 
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.stage_settings")
+
+else: 
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "easeservice.settings")
+
 application = get_wsgi_application()

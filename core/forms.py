@@ -7,3 +7,7 @@ class RetrieveServiceCenter(forms.Form):
 class RetrieveVehicleReview(forms.Form):
 
     vehicle_model_id = forms.IntegerField()
+
+class RetrieveVehicleModels(forms.Form):
+
+    vehicle_type = forms.CharField()
