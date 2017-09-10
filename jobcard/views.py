@@ -200,7 +200,9 @@ def create_job_card(request):
        
             if request.user.is_authenticated():
 
+
                 data = json.loads(request.body.decode('utf-8'))['data']
+
        
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
@@ -225,7 +227,11 @@ def create_job_card(request):
                 details['otherparts_cost'] = data['otherparts_cost']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
-                details['vehicle_images'] = data['vehicle_images']
+              
+                if 'vehicle_images' in data:
+                    details['vehicle_images'] = data['vehicle_images']
+                else:
+                    details['vehicle_images'] = []
                 
                 if 'mechanic_name' in data:
                     details['mechanic_name'] = data['mechanic_name']
@@ -245,7 +251,7 @@ def create_job_card(request):
         else:
             result = {"status": "failure", "msg": "Invalid request method"}
     except:
-        raise
+        
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         result = {"status": "failure", "msg": "something went wrong"}
@@ -337,8 +343,12 @@ def save_job_card(request):
                 details['spares'] = data['spares']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
-                details['vehicle_images'] = ""
 
+
+                if 'vehicle_images' in data:
+                    details['vehicle_images'] = data['vehicle_images']
+                else:
+                    details['vehicle_images'] = []
                 if 'mechanic_name' in details:
                     details['mechanic_name'] = data['mechanic_name']
                 else:
@@ -410,9 +420,10 @@ def generate_invoice(request):
                 #data = json.loads(data)
                 #data = data['data']
             except:
-                data={} 
-                data['jc_id']=request.POST.keys()[0]
-                data['pmt_mode']=request.POST.values()[0]
+                data={}
+                print("request.POST.keys() - %s" % request.POST.keys())
+                data['jc_id']=list(request.POST.keys())[0]
+                data['pmt_mode']=list(request.POST.values())[0]
                 view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))       
             view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))
             jc_id = data['jc_id']
