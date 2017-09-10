@@ -345,59 +345,66 @@ def createJobCard(details, dealerid):
                     total_price = "%.2f"%(( unit_price * qty ))
                     qty = "%.2f"%(qty)
                     JCStocksInfo.objects.create(PartIdentifier = spare['identifier'],
-                                            Description = spare['description'],
-                                            UnitPrice = unit_price,
-                                            Qty = qty,
-                                            TotalPrice = total_price,
-                                            JobCardID = jc_id,
-                                            DealerID = dealerid)
+                        Description = spare['description'],
+                        UnitPrice = unit_price,
+                        Qty = qty,
+                        TotalPrice = total_price,
+                        JobCardID = jc_id,
+                        DealerID = dealerid
+                    )
 
                 JCVehicleInfo.objects.create(VehicleNumber = details['veh_num'],
-                                         Brand = details['brand'],
-                                         Model = details['model'],
-                                         FuelType = details['fuel_type'],
-                                         ChassisNumber = details['c_num'],
-                                         CustomerName = details['cust_name'],
-                                         ContactNumber = details['cont_num'],
-                                         Address = details['cont_address'],
-                                         KilometersTicked = details['km_ticked'],
-                                         JobCardID = jc_id,
-                                         DealerID = dealerid,
-                                         CreatedTime = str(datetime.datetime.now()))
+                    Brand = details['brand'],
+                    Model = details['model'],
+                    FuelType = details['fuel_type'],
+                    ChassisNumber = details['c_num'],
+                    CustomerName = details['cust_name'],
+                    ContactNumber = details['cont_num'],
+                    Address = details['cont_address'],
+                    KilometersTicked = details['km_ticked'],
+                    JobCardID = jc_id,
+                    DealerID = dealerid,
+                    CreatedTime = str(datetime.datetime.now())
+                )
                 JCStatus.objects.create(JobCardID = jc_id,
-                                    DealerID = dealerid,
-                                    DeliveryTime = details['del_time'],
-                                    MechanicName = details['mechanic_name'],
-                                    Status = "OPEN",
-                                    PendingReason = "",
-                                    CreatedTime = str(datetime.datetime.now()),
-                                    LastedEditedTime = str(datetime.datetime.now()),
-                                    ServiceTypeId = details['ServiceTypeId'],
-                                    )
+                    DealerID = dealerid,
+                    DeliveryTime = details['del_time'],
+                    MechanicName = details['mechanic_name'],
+                    Status = "OPEN",
+                    PendingReason = "",
+                    CreatedTime = str(datetime.datetime.now()),
+                    LastedEditedTime = str(datetime.datetime.now()),
+                    ServiceTypeId = details['ServiceTypeId'],
+                    VehicleImages = details['vehicle_images']
+                )
                 JCOtherStocksInfo.objects.create(OtherPartsDesc = details['otherparts_desc'],
-                                            OtherPartsCost = details['otherparts_cost'],
-                                            JobCardID = jc_id)
+                    OtherPartsCost = details['otherparts_cost'],
+                    JobCardID = jc_id
+                )
                 for service in details['services']:
                     JCServiceDetails.objects.create(ServiceItem = service['description'],
-                                                IsAvailed = service['is_availed'],
-                                                JobCardID = jc_id,
-                                                DealerID = dealerid)
+                        IsAvailed = service['is_availed'],
+                        JobCardID = jc_id,
+                        DealerID = dealerid
+                    )
                 # update labour cost
                 JCInvoiceAndLabourCost.objects.create(JobCardID = jc_id,
-                                                  DealerID = dealerid,
-                                                  InvoiceNumber = "",
-                                                  LabourCharge = details['labour_cost'],
-                                                  PaymentMode = "",
-                                                  PartsTotalPrice = "",
-                                                  VATPercentage = "",
-                                                  TaxPercentage = "",
-                                                  MechanicName = details['mechanic_name']
-                                                  )
+                    DealerID = dealerid,
+                    InvoiceNumber = "",
+                    LabourCharge = details['labour_cost'],
+                    PaymentMode = "",
+                    PartsTotalPrice = "",
+                    VATPercentage = "",
+                    TaxPercentage = "",
+                    MechanicName = details['mechanic_name']
+                )
 
                 service_items = "##".join(details['recommendedservices'])
+
                 JCRecommendedServices.objects.create(JobCardID = jc_id,
-                                                 DealerID = dealerid,
-                                                 ServiceItems = service_items)
+                    DealerID = dealerid,
+                    ServiceItems = service_items
+                )
 
                 result = {"status": "success", "msg": "Job Card created successfully", "jc_id": jc_id}
         else:
@@ -447,12 +454,13 @@ def saveJobCard(details, dealerid, jc_id):
                             obj.save()
                         except ObjectDoesNotExist:
                             JCStocksInfo.objects.create(PartIdentifier = spare['identifier'],
-                                            Description = spare['description'],
-                                            UnitPrice = spare['unit_price'],
-                                            Qty = spare['qty'],
-                                            TotalPrice = spare['total_price'],
-                                            JobCardID = jc_id,
-                                            DealerID = dealerid)
+                                Description = spare['description'],
+                                UnitPrice = spare['unit_price'],
+                                Qty = spare['qty'],
+                                TotalPrice = spare['total_price'],
+                                JobCardID = jc_id,
+                                DealerID = dealerid
+                            )
 
                     #veh_obj.VehicleNumber = details['veh_num']
                     #veh_obj.Brand = details['brand']
@@ -471,6 +479,7 @@ def saveJobCard(details, dealerid, jc_id):
                     jc_obj.Status = details['status']
                     jc_obj.PendingReason = details['reason']
                     jc_obj.ServiceTypeId = details['ServiceTypeId']
+                    jc_obj.VehicleImages = details['vehicle_images']
                     jc_obj.save()
                     
                     other_parts.OtherPartsDesc=details['otherparts_desc']
@@ -485,9 +494,10 @@ def saveJobCard(details, dealerid, jc_id):
                             obj.save()
                         except ObjectDoesNotExist:
                             JCServiceDetails.objects.create(ServiceItem = service['description'],
-                                                IsAvailed = service['is_availed'],
-                                                JobCardID = jc_id,
-                                                DealerID = dealerid)
+                                IsAvailed = service['is_availed'],
+                                JobCardID = jc_id,
+                                DealerID = dealerid
+                            )
 
                     # update labour cost
                     try:
@@ -496,15 +506,15 @@ def saveJobCard(details, dealerid, jc_id):
                         jc_inv_obj.save()
                     except ObjectDoesNotExist:
                         JCInvoiceAndLabourCost.objects.create(JobCardID = jc_id,
-                                                          DealerID = dealerid,
-                                                          InvoiceNumber = "",
-                                                          LabourCharge = details['labour_cost'],
-                                                          PaymentMode = "",
-                                                          PartsTotalPrice = "",
-                                                          VATPercentage = "",
-                                                          TaxPercentage = "",
-                                                          MechanicName=details['mechanic_name']
-                                                          )
+                            DealerID = dealerid,
+                            InvoiceNumber = "",
+                            LabourCharge = details['labour_cost'],
+                            PaymentMode = "",
+                            PartsTotalPrice = "",
+                            VATPercentage = "",
+                            TaxPercentage = "",
+                            MechanicName=details['mechanic_name']
+                        )
 
                     recomd_obj.ServiceItems = "##".join(details['recommendedservices'])
                     recomd_obj.save()
@@ -528,7 +538,10 @@ def generateInvoice(jc_id, pmt_mode, dealerid):
             invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
             if invoice_obj.InvoiceNumber == "":
                 spares_obj = JCStocksInfo.objects.filter(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-                other_parts_inv = other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+                try:
+                    other_parts_inv = other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+                except JCOtherStocksInfo.DoesNotExist:
+                    other_parts_inv = None
                 total_parts_cost = 0.00
                 if spares_obj:
                     for obj in spares_obj:
@@ -735,6 +748,7 @@ def getJobCardsList(dealerid, for_invoice=False):
                                 global_constants.service_types[obj.ServiceTypeId]['classification'])
                             temp_dict['invoice'] = False
                             temp_dict['mechanic_name'] = obj.MechanicName
+                            temp_dict['vehicle_images'] = obj.VehicleImages
                             try:
                                 invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = obj.JobCardID)
                             except JCInvoiceAndLabourCost.DoesNotExist:
