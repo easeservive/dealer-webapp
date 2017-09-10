@@ -195,13 +195,12 @@ def create_job_card(request):
 
     try:
         view_logger = log_rotator.view_logger()
-        if request.method == 'POST':
 
+        if request.method == 'POST':
+       
             if request.user.is_authenticated():
-                print(request.body.decode('utf-8')['veh_num'])
+
                 data = json.loads(request.body.decode('utf-8'))['data']
-                data = request.body.decode('utf-8')
-                print(request.Data)
        
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
@@ -227,7 +226,7 @@ def create_job_card(request):
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
                 details['vehicle_images'] = data['vehicle_images']
-
+                
                 if 'mechanic_name' in data:
                     details['mechanic_name'] = data['mechanic_name']
                 else:
@@ -238,6 +237,7 @@ def create_job_card(request):
                     # General service by default
                     details['ServiceTypeId'] = "5s5d5f5g"
 
+                
                 result = util.createJobCard(details, dealerid)
                 result['url'] = '/jobcard/'
             else:
@@ -245,6 +245,7 @@ def create_job_card(request):
         else:
             result = {"status": "failure", "msg": "Invalid request method"}
     except:
+        raise
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         result = {"status": "failure", "msg": "something went wrong"}
@@ -336,7 +337,7 @@ def save_job_card(request):
                 details['spares'] = data['spares']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
-                details['vehicle_images'] = data['vehicle_images']
+                details['vehicle_images'] = ""
 
                 if 'mechanic_name' in details:
                     details['mechanic_name'] = data['mechanic_name']

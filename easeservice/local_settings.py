@@ -86,6 +86,7 @@ JWT_AUTH = {
 }
 
 ROOT_URLCONF = 'easeservice.urls'
+
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #SESSION_COOKIE_AGE = 5 * 60 #
 TEMPLATES = [
@@ -120,7 +121,7 @@ DATABASES = {
         #'NAME': 'easedb_server',
         'NAME': 'easedb_test',
         'USER': 'root',
-        'PASSWORD': '404lollypop',
+        'PASSWORD': 'beagle',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }

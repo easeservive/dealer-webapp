@@ -684,9 +684,9 @@ jQuery(document).ready(function($){
            if (!(all_services.length == 0)) {
                var url = $form.attr( "action" );
 
-               var data = { data : {  service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}};
+               var data = JSON.stringify({ data : {  service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
                // Send the data using post
-            
+                console.log(data);
                var posting = $.post( url, data);
                posting.done(function( data ) {
                    if (data.status == "failure") {

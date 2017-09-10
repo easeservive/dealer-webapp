@@ -326,6 +326,7 @@ def updateStockQty(identifier, quantity, dealerid):
         return ("%s not in inventory"%identifier)
 
 def createJobCard(details, dealerid):
+  
     try:
         if isinstance(details['services'], list) and isinstance(details['spares'], list):
             jc_id = "JC" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999))
@@ -410,6 +411,7 @@ def createJobCard(details, dealerid):
         else:
             raise
     except:
+        raise
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         result = {"status": "failure", "msg": "Something went wrong."}
