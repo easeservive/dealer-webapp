@@ -196,10 +196,13 @@ def create_job_card(request):
     try:
         view_logger = log_rotator.view_logger()
         if request.method == 'POST':
-            if request.user.is_authenticated():
 
+            if request.user.is_authenticated():
+                print(request.body.decode('utf-8')['veh_num'])
                 data = json.loads(request.body.decode('utf-8'))['data']
-                print(data)
+                data = request.body.decode('utf-8')
+                print(request.Data)
+       
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
                 details = {}
@@ -827,7 +830,7 @@ def accept_service_request(request):
 
 #@api_view(['GET'])
 def retrieve_vehicle_data(request):
-
+    print(request.GET)
     if not request.method == "GET":
         return JsonResponse({'status': "failure", "msg": "Invalid request method."})
 
@@ -845,6 +848,7 @@ def retrieve_vehicle_data(request):
             )
 
     try:
+
         vehicle_obj = Vehicles.objects.get(vehicle_registration_number=vehicle_form.cleaned_data['vehicle_registration_number'])
     except Vehicles.DoesNotExist:
         return JsonResponse({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)

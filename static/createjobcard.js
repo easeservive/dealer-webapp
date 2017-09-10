@@ -1,4 +1,5 @@
 jQuery(document).ready(function($){
+
     $('.has-dropdown .dropdown').click(function(e){
         e.preventDefault();
         $(this).toggleClass('active');
@@ -596,12 +597,16 @@ jQuery(document).ready(function($){
            }
 
     });
+
+
     // Attach a submit handler to the form
     $( "#jc" ).submit(function( event ) {
+
        
        event.preventDefault();
        var $form = $( this ),
-       veh_numb = $form.find( "input[name='number']" ).val(),
+       veh_numb = vehNumb,
+       imgInput = $('#imgInp')[0].files[0],
        chasis_num = $form.find( "input[name='chasis']" ).val(),
        veh_brand = $('#brand :selected').text(),
        veh_model = $form.find( "input[name='model']" ).val(),
@@ -615,7 +620,7 @@ jQuery(document).ready(function($){
        otherparts_desc = $form.find( "input[name='op']" ).val(),
        otherparts_cost = $form.find( "input[name='oc']" ).val(),
        mechanic_name = $form.find( "input[name='mechanic_name']" ).val(),
-       service_type = $('#serviceType :selected').val(),
+       service_type = $('#serviceType :selected').val();
        // service_type_class = []
        
        //  $('input[name=' + $('#serviceType :selected').val() +']:checked').each(function(){ 
@@ -623,7 +628,7 @@ jQuery(document).ready(function($){
        //  });
 
        d_reason = "";
-
+       
        if (!(veh_numb.length === 0 || veh_brand.length === 0 || veh_model.length === 0 || f_type.length === 0 || kms_ticked.length === 0 ||
          custr_name.length === 0 || cont_numb.length === 0 || delivery_time.length === 0 || lab_cost.length === 0)) {
            var services           = [];
@@ -678,8 +683,10 @@ jQuery(document).ready(function($){
            
            if (!(all_services.length == 0)) {
                var url = $form.attr( "action" );
-               var data = JSON.stringify({ data : { service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
+
+               var data = { data : {  service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}};
                // Send the data using post
+            
                var posting = $.post( url, data);
                posting.done(function( data ) {
                    if (data.status == "failure") {
@@ -749,22 +756,127 @@ jQuery(document).ready(function($){
         });
     }
 
-    $.formUtils.addValidator({
-        name : 'veh_numb',
-        validatorFunction : function(value, $el, config, language, $form) {
+
+    function vehNumbcheckDetails() {
+        var veh_numb1 = $('#jc').find( "input[id='veh-numbr1']" ).val();
+        var veh_numb2 = $('#jc').find( "input[id='veh-numbr2']" ).val();
+        var veh_numb3 = $('#jc').find( "input[id='veh-numbr3']" ).val();
+        var veh_numb4 = $('#jc').find( "input[id='veh-numbr4']" ).val();
+
+        vehNumb = veh_numb1 + " "+ veh_numb2 + " " + veh_numb3 + " " + veh_numb4;
+
+        if(vehNumb1Status == true && vehNumb2Status == true && vehNumb3Status == true && vehNumb4Status == true && prvVehNumbr != vehNumb) {
+            prvVehNumbr = vehNumb;
+            vehNumbDetails(vehNumb);
+
+        }
+    }
+
+
+
+    // $.formUtils.addValidator({
+    //     name : 'veh_numb',
+    //     validatorFunction : function(value, $el, config, language, $form) {
            
-            if(value.length == 10 && value.slice(0,2).match(/^[a-z]+$/gi)  && $.isNumeric(value.slice(2,4)) &&  value.slice(4,6).match(/^[a-z]+$/gi) &&  $.isNumeric(value.slice(6,10))) {
-                    // vehicleNumbStatus = 'correct';
-                    // console.log("checking once again");
-                    vehNumbDetails(value);
-                    // console.log("issue solved");
-                    return true;
-            }
+    //         if(value.length == 10 && value.slice(0,2).match(/^[a-z]+$/gi)  && $.isNumeric(value.slice(2,4)) &&  value.slice(4,6).match(/^[a-z]+$/gi) &&  $.isNumeric(value.slice(6,10))) {
+    //                 // vehicleNumbStatus = 'correct';
+    //                 // console.log("checking once again");
+    //                 vehNumbDetails(value);
+    //                 // console.log("issue solved");
+    //                 return true;
+    //         }
                             
-            else { vehicleNumbStatus = 'incorrect'; return false;}
+    //         else { vehicleNumbStatus = 'incorrect'; return false;}
             
 
+    //     },
+    //     errorMessage : 'Enter valid vehicle number',
+    //     errorMessageKey: 'badVehNumber'
+    // });
+
+    vehNumb1Status = false;
+    vehNumb2Status = false;
+    vehNumb3Status = false;
+    vehNumb4Status = false;
+    prvVehNumbr = "";
+    vehNumbcheckDetails();
+
+    $.formUtils.addValidator({
+        name : 'veh_numb1',
+        validatorFunction : function(value, $el, config, language, $form) {
+            if(value.length == 2 &&  value.match(/^[a-z]+$/gi))   {
+                vehNumb1Status = true;
+                vehNumbcheckDetails();
+                return true;
+            }
+
+            else {
+                vehNumb1Status = false;
+                return false;
+            }
+
         },
+
+        errorMessage : 'Enter valid vehicle number',
+        errorMessageKey: 'badVehNumber'
+    });
+
+
+    $.formUtils.addValidator({
+            name : 'veh_numb2',
+            validatorFunction : function(value, $el, config, language, $form) {
+                if(value.length == 2 &&  $.isNumeric(value))  {
+                    vehNumb2Status = true;
+                    vehNumbcheckDetails();
+                    return true;
+                }
+                else { 
+                    vehNumb2Status = false;
+                    return false;
+                }
+
+            },
+
+            errorMessage : 'Enter valid vehicle number',
+            errorMessageKey: 'badVehNumber'
+    });
+
+    $.formUtils.addValidator({
+        name : 'veh_numb3',
+        validatorFunction : function(value, $el, config, language, $form) {
+            if(value.length >=1 &&  value.match(/^[a-z]+$/gi) && value.length <= 2)   {
+                vehNumb3Status = true;
+                vehNumbcheckDetails();
+                return true;
+            }
+
+            else {
+                vehNumb3Status = false;
+                return false;
+            }
+
+        },
+
+        errorMessage : 'Enter valid vehicle number',
+        errorMessageKey: 'badVehNumber'
+    });
+
+    $.formUtils.addValidator({
+        name : 'veh_numb4',
+        validatorFunction : function(value, $el, config, language, $form) {
+            if(value.length == 4 && $.isNumeric(value) )   {
+                vehNumb4Status = true;
+                vehNumbcheckDetails();
+                return true;
+            }
+
+            else {
+                vehNumb4Status = false;
+                return false;
+            }
+
+        },
+
         errorMessage : 'Enter valid vehicle number',
         errorMessageKey: 'badVehNumber'
     });
@@ -775,39 +887,39 @@ jQuery(document).ready(function($){
 
 
 
-});
 
 
-$(document).ready( function() {
-        $(document).on('change', '.btn-file :file', function() {
-        var input = $(this),
-            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-        input.trigger('fileselect', [label]);
-        });
 
-        $('.btn-file :file').on('fileselect', function(event, label) {
-            
-            var input = $(this).parents('.input-group').find(':text'),
-                log = label;
-            
-            if( input.length ) {
-                input.val(log);
-            } 
+    $(document).on('change', '.btn-file :file', function() {
+    var input = $(this),
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function(event, label) {
         
-        });
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                
-                reader.onload = function (e) {
-                    $('#img-upload').attr('src', e.target.result);
-                }
-                
-                reader.readAsDataURL(input.files[0]);
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+        
+        if( input.length ) {
+            input.val(log);
+        } 
+    
+    });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
             }
+            
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 
-        $("#imgInp").change(function(){
-            readURL(this);
-        });     
+    $("#imgInp").change(function(){
+        readURL(this);
+
+    });     
 });
