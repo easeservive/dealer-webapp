@@ -601,3 +601,23 @@ def retrieve_vehicle_review(request):
         vehicle_data['user_count'] = "Not Available"
 
     return Response({'status': "success", "vehicle_data": vehicle_data})
+
+
+@api_view(['GET'])
+def retrieve_vehicle_models(request):
+
+    vehicle_form = forms.RetrieveVehicleModels(request.GET)
+    if not vehicle_form.is_valid():
+        return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    vehicle_objs = models.VehicleModels.objects.filter(vehicle_type=vehicle_form.cleaned_data['vehicle_type'])
+    vehicles_list = [
+        {
+            "model_name": vehicle_obj.model_name,
+            "brand_name": vehicle_obj.brand_name,
+            "vehicle_model_id": vehicle_obj.vehicle_model_id,
+            "vehicle_type": vehicle_obj.vehicle_type
+        } for vehicle_obj in vehicle_objs
+    ]
+
+    return Response({'status': "success", "vehicles_list": vehicles_list})
