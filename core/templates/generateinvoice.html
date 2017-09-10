@@ -63,7 +63,7 @@
                                   </select>
                               </td>
                               <td>
-                                  <button type="submit" form="{{jobcard.jc_id}}" class="btn btn-success btn-xs">Generate Invoice</button>
+                                  <button type="submit" form="{{jobcard.jc_id}}"  class="btn btn-success btn-xs">Generate Invoice</button>
                               </td>
                               </form>
                               {% else %}
@@ -96,7 +96,8 @@
         </div>
         
         <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-        <script src="/static/jquery.js"></script>
+         <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> -->
+        <!-- <script src="/static/jquery.js"></script> -->
         <script src="/static/bootstrap.js"></script>
         <script type="text/javascript" src="/static/datatables.js"></script>
         <script src="/static/script.js"></script>
@@ -109,10 +110,15 @@
                 });
         </script>
         <script>
-            jQuery(document).ready(function($) {
+            // jQuery(document).ready(function($) {
+
+                
                 $( ".invoice" ).submit(function( event ) {
+
+                     console.log("heloo");
                      event.preventDefault();
                      var jc_id = $(this).attr('id');
+                     
                      var mode = $('select[name='+jc_id +']').val();
                      var url  = $(this).attr('action');
                      var data = JSON.stringify({ data : {jc_id : jc_id, pmt_mode : mode}});
@@ -129,6 +135,7 @@
                          }
                      });
                 });
-            });  
+            // }); 
+
         </script>
 </body></html>

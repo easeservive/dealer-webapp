@@ -353,7 +353,7 @@ def createJobCard(details, dealerid):
                         JobCardID = jc_id,
                         DealerID = dealerid
                     )
-
+                                  
                 JCVehicleInfo.objects.create(VehicleNumber = details['veh_num'],
                     Brand = details['brand'],
                     Model = details['model'],
@@ -367,6 +367,7 @@ def createJobCard(details, dealerid):
                     DealerID = dealerid,
                     CreatedTime = str(datetime.datetime.now())
                 )
+             
                 JCStatus.objects.create(JobCardID = jc_id,
                     DealerID = dealerid,
                     DeliveryTime = details['del_time'],
@@ -378,6 +379,7 @@ def createJobCard(details, dealerid):
                     ServiceTypeId = details['ServiceTypeId'],
                     VehicleImages = details['vehicle_images']
                 )
+                
                 JCOtherStocksInfo.objects.create(OtherPartsDesc = details['otherparts_desc'],
                     OtherPartsCost = details['otherparts_cost'],
                     JobCardID = jc_id
@@ -389,6 +391,7 @@ def createJobCard(details, dealerid):
                         DealerID = dealerid
                     )
                 # update labour cost
+               
                 JCInvoiceAndLabourCost.objects.create(JobCardID = jc_id,
                     DealerID = dealerid,
                     InvoiceNumber = "",

@@ -44,7 +44,7 @@
                         <div class="clear"></div>
                         <div class="col-sm-12 padding-left-free">
                             <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form"  enctype="multipart/form-data">
-                            
+
                                 <div class="col-sm-4 veh-numb-grp">
                                     <label for="veh-reg-nm">Enter Vehicle number</label>
                                     <div class="form-group transistion" id="veh-reg-nm">
@@ -253,7 +253,7 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <button class="btn btn-default btn-pink">Create Jobcard</button>
+                                        <button class="btn btn-default create-job-btn btn-pink" id="create-job-btn">Create Jobcard</button>
                                         <a href="/jobcard/" class="btn btn-pink">Cancel</a>
                                     </div>
                                 </div>
@@ -274,7 +274,12 @@
         <script src="/static/bootstrap-datepicker.js"></script>
         <script src="/static/bootstrap-datetimepicker.js"></script>
         <script src="/static/createjobcard.js"></script>
-
+        <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script>
+  <!--       <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script> -->
 
 <ul style="display: none;" tabindex="0" id="ui-id-1" class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content"></ul>
 <span class="ui-helper-hidden-accessible" aria-relevant="additions" aria-live="assertive" role="status"></span>

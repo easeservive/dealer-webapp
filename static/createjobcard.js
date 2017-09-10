@@ -598,7 +598,7 @@ jQuery(document).ready(function($){
 
     });
 
-
+  
     // Attach a submit handler to the form
     $( "#jc" ).submit(function( event ) {
 
@@ -606,7 +606,7 @@ jQuery(document).ready(function($){
        event.preventDefault();
        var $form = $( this ),
        veh_numb = vehNumb,
-       imgInput = $('#imgInp')[0].files[0],
+       // imgInput = $('#imgInp')[0].files[0],
        chasis_num = $form.find( "input[name='chasis']" ).val(),
        veh_brand = $('#brand :selected').text(),
        veh_model = $form.find( "input[name='model']" ).val(),
@@ -684,7 +684,7 @@ jQuery(document).ready(function($){
            if (!(all_services.length == 0)) {
                var url = $form.attr( "action" );
 
-               var data = JSON.stringify({ data : {  service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
+               var data = JSON.stringify({ data : { vehicle_images: imgInput, service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
                // Send the data using post
                 console.log(data);
                var posting = $.post( url, data);
@@ -704,25 +704,6 @@ jQuery(document).ready(function($){
 
     });
 
-    // $('.serviceTypeCheckbox').hide();
-    // $('#'+$('#serviceType :selected').text()).show();
-
-    // $("#serviceType").change(function () {
-    //     $('.serviceTypeCheckbox').hide();
-    //     $('#'+$('#serviceType :selected').text()).show();
-    // });
-
-    // $('#number').keypress(function(){
-    //    if(vehicleNumbStatus == 'correct') {
-    //          console.log($('#number').val());
-    //     }
-    // });
-    // $('#number').change(function() {
-    //     if(vehicleNumbStatus == 'correct') {
-    //          console.log($('#number').val());
-    //     }
-   
-    // });
 
     function vehNumbDetails(value) {
         $.get("/apis/jobcard/v1/user/vehicle", {vehicle_registration_number: value}, function(data, status){
@@ -774,32 +755,13 @@ jQuery(document).ready(function($){
 
 
 
-    // $.formUtils.addValidator({
-    //     name : 'veh_numb',
-    //     validatorFunction : function(value, $el, config, language, $form) {
-           
-    //         if(value.length == 10 && value.slice(0,2).match(/^[a-z]+$/gi)  && $.isNumeric(value.slice(2,4)) &&  value.slice(4,6).match(/^[a-z]+$/gi) &&  $.isNumeric(value.slice(6,10))) {
-    //                 // vehicleNumbStatus = 'correct';
-    //                 // console.log("checking once again");
-    //                 vehNumbDetails(value);
-    //                 // console.log("issue solved");
-    //                 return true;
-    //         }
-                            
-    //         else { vehicleNumbStatus = 'incorrect'; return false;}
-            
-
-    //     },
-    //     errorMessage : 'Enter valid vehicle number',
-    //     errorMessageKey: 'badVehNumber'
-    // });
-
     vehNumb1Status = false;
     vehNumb2Status = false;
     vehNumb3Status = false;
     vehNumb4Status = false;
     prvVehNumbr = "";
     vehNumbcheckDetails();
+
 
     $.formUtils.addValidator({
         name : 'veh_numb1',
@@ -886,10 +848,6 @@ jQuery(document).ready(function($){
     // vehicleNumbStatus = 'incorrect';
 
 
-
-
-
-
     $(document).on('change', '.btn-file :file', function() {
     var input = $(this),
         label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
@@ -915,6 +873,10 @@ jQuery(document).ready(function($){
             }
             
             reader.readAsDataURL(input.files[0]);
+
+            previewFile();
+            $('#create-job-btn').attr('disabled',true);
+
         }
     }
 
@@ -922,4 +884,48 @@ jQuery(document).ready(function($){
         readURL(this);
 
     });     
+
+    var config = {
+        apiKey: "AIzaSyDlLL9zOp1oJfNhrm2K80LSlDjvVa8V0iM",
+        authDomain: "ease-service-test.firebaseapp.com",
+        databaseURL: "https://ease-service-test.firebaseio.com",
+        projectId: "ease-service-test",
+        storageBucket: "ease-service-test.appspot.com",
+        messagingSenderId: "357393270027"
+    };
+
+
+
+    firebase.initializeApp(config);
+
+
+    function previewFile(){
+      var storage = firebase.storage();
+      var file = $('#imgInp')[0].files[0];
+          
+      var storageRef = storage.ref();
+
+      var thisRef = storageRef.child("dealers");
+      
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for(var i = 0; i < 10; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+      var spaceRef = thisRef.child(text+".img");
+
+      spaceRef.put(file).then(function(snapshot) {
+        console.log('Uploaded a blob or file!');
+        $('#create-job-btn').attr('disabled',false);
+            spaceRef.getDownloadURL().then(function(url) {
+            
+                imgInput = url;
+            })
+        });
+      
+    }
+
 });
+
+var imgInput = '';
