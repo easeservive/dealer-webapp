@@ -406,9 +406,10 @@ def generate_invoice(request):
                 #data = json.loads(data)
                 #data = data['data']
             except:
-                data={} 
-                data['jc_id']=request.POST.keys()[0]
-                data['pmt_mode']=request.POST.values()[0]
+                data={}
+                print("request.POST.keys() - %s" % request.POST.keys())
+                data['jc_id']=list(request.POST.keys())[0]
+                data['pmt_mode']=list(request.POST.values())[0]
                 view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))       
             view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))
             jc_id = data['jc_id']
