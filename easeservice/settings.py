@@ -27,6 +27,12 @@ SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 DEBUG = False
 SMS_BLOCK = False
 
+SMS_GATEWAY = {
+    'USER': "easeservice",
+    'PASSWORD': "easeservice123!",
+    'SENDER': "EASESE"
+}
+
 ALLOWED_HOSTS = ['*']
 PATH_LOGS = PATH_LOGS = "/var/ease/logs"
 
