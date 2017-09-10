@@ -419,7 +419,16 @@ def createJobCard(details, dealerid):
 def saveJobCard(details, dealerid, jc_id):
     try:
         jc_obj = JCStatus.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-        other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+        try:
+            other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+            other_parts.OtherPartsDesc=details['otherparts_desc']
+            other_parts.OtherPartsCost=details['otherparts_cost']
+            other_parts.save()
+        except:
+            other_parts = JCOtherStocksInfo.objects.create(OtherPartsDesc = details['otherparts_desc'],
+                OtherPartsCost = details['otherparts_cost'],
+                JobCardID = jc_id
+            )
         recomd_obj = JCRecommendedServices.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
         if jc_obj.Status != 'CLOSED':
             if isinstance(details['services'], list) and isinstance(details['spares'], list):
@@ -481,10 +490,6 @@ def saveJobCard(details, dealerid, jc_id):
                     jc_obj.ServiceTypeId = details['ServiceTypeId']
                     jc_obj.VehicleImages = details['vehicle_images']
                     jc_obj.save()
-                    
-                    other_parts.OtherPartsDesc=details['otherparts_desc']
-                    other_parts.OtherPartsCost=details['otherparts_cost']
-                    other_parts.save()
 
                     for service in details['services']:
                         try:

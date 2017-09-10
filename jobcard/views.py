@@ -198,10 +198,10 @@ def create_job_card(request):
         if request.method == 'POST':
 
             if request.user.is_authenticated():
-                print(request.body.decode('utf-8')['veh_num'])
+                #print(request.body.decode('utf-8')['veh_num'])
                 data = json.loads(request.body.decode('utf-8'))['data']
                 data = request.body.decode('utf-8')
-                print(request.Data)
+                #print(request.Data)
        
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
@@ -336,8 +336,11 @@ def save_job_card(request):
                 details['spares'] = data['spares']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
-                details['vehicle_images'] = data['vehicle_images']
 
+                if 'vehicle_images' in data:
+                    details['vehicle_images'] = data['vehicle_images']
+                else:
+                    details['vehicle_images'] = []
                 if 'mechanic_name' in details:
                     details['mechanic_name'] = data['mechanic_name']
                 else:
