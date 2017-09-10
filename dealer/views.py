@@ -80,8 +80,11 @@ def login_dealer(request):
             view_logger.debug("Dealer login response for %s : %s"%(username, str(result)))
 
             # save ServiceCenterID to session
-            sc_obj = ServiceCenterInfo.objects.get(USER=user_obj)
-            request.session['service_center_id'] = sc_obj.ServiceCenterID
+            try:
+                sc_obj = ServiceCenterInfo.objects.get(USER=user_obj)
+                request.session['service_center_id'] = sc_obj.ServiceCenterID
+            except ServiceCenterInfo.DoesNotExist:
+                request.session['service_center_id'] = None
 
             return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
         elif request.method == 'GET':

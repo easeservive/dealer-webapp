@@ -538,7 +538,10 @@ def generateInvoice(jc_id, pmt_mode, dealerid):
             invoice_obj = JCInvoiceAndLabourCost.objects.get(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
             if invoice_obj.InvoiceNumber == "":
                 spares_obj = JCStocksInfo.objects.filter(JobCardID__iexact = jc_id, DealerID__iexact = dealerid)
-                other_parts_inv = other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+                try:
+                    other_parts_inv = other_parts = JCOtherStocksInfo.objects.get(JobCardID__iexact = jc_id)
+                except JCOtherStocksInfo.DoesNotExist:
+                    other_parts_inv = None
                 total_parts_cost = 0.00
                 if spares_obj:
                     for obj in spares_obj:

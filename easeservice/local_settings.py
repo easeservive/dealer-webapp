@@ -117,7 +117,8 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easedb_server',
+        #'NAME': 'easedb_server',
+        'NAME': 'easedb_test',
         'USER': 'root',
         'PASSWORD': '404lollypop',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
