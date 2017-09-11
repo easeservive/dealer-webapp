@@ -30,6 +30,7 @@ from . import models
 from . import forms
 from easeservice.portal_functions import generate_uuid
 from easeservice.global_constants import ResponseMessages
+from easeservice.message_functions import send_text_message
 
 
 def create_username():
@@ -76,6 +77,14 @@ def meshup(request):
             owner_name = request.POST.get('owner_name', 'NA')
             specialization = request.POST.get('specialization', 'NA')
 
+            try:
+                user_obj = User.objects.filter(email=email)
+                if user_obj:
+                    result = {'status': 'error', 'msg': 'E-mail already in use.'}
+                    return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+            except User.DoesNotExist:
+                pass
+
             is_not_unique = True
             while is_not_unique:
                 service_center_id = generate_uuid(8)
@@ -113,6 +122,11 @@ def meshup(request):
                 OwnerName = owner_name,
                 Specialization = specialization,
                 USER=user_obj
+            )
+
+            send_text_message(contact_no,
+                "EaseService Account Details\nUsername: %s,\nPassoword: %s\nLogin URL: http://easeservice.com/dealer/login" % (
+                    user_name, user_name)
             )
 
             t = get_template('home.html')
