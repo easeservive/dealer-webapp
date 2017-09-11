@@ -14,6 +14,7 @@ import config
 from easeservice.message_functions import send_text_message
 from easeservice import global_constants
 from easeservice.portal_functions import generate_confirmation_token
+from core.models import VehicleModels
 
 def fetch_vehicles(user):
     try:
@@ -799,6 +800,7 @@ def getCompliantCodes():
 def getCarBrands():
     try:
         brands = list(SupportedCarBrands.objects.all())
+        #brands = list(VehicleModels.objects.all())
         data = []
         if brands:
             for brand in brands:
