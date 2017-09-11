@@ -203,7 +203,7 @@ def create_job_card(request):
 
                 data = json.loads(request.body.decode('utf-8'))['data']
 
-       
+                print(data)
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
                 details = {}
@@ -320,7 +320,7 @@ def save_job_card(request):
                 details = {}
 
                 data = json.loads(request.body.decode('utf-8'))['data']
-
+                print(data)
                 view_logger.debug("JOBCARD VIEW : Save job card request - %s"%str(data))
 
                 details['jc_id'] = data.get('jc_id', 'NA')

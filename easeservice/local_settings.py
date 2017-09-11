@@ -121,7 +121,7 @@ DATABASES = {
         #'NAME': 'easedb_server',
         'NAME': 'easedb_test',
         'USER': 'root',
-        #'PASSWORD': 'beagle',
+        # 'PASSWORD': 'beagle',
         'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',

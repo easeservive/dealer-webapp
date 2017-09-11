@@ -64,7 +64,7 @@ jQuery(document).ready(function($){
             var html = '<div class="form-group checkbox">' +
                 '<input type="hidden" class="recommended-items" value="'+label+'"/>' +
                 '<input type="hidden" class="recommended-items-ids" value=""/>' +
-                '<input type="checkbox" disabled name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
+                '<input type="checkbox" name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
                 '<label for="'+sluggable+'">'+label+'</label>'+
                 '<a class="remove-me"><i class="ion-ios-close"></i></a>' +
                 '</div>';
@@ -124,7 +124,7 @@ jQuery(document).ready(function($){
                         var html = '<div class="form-group checkbox">' +
                             '<input type="hidden" class="recommended-items" value="'+label+'"/>' +
                             '<input type="hidden" class="recommended-items-ids" value=""/>' +
-                            '<input type="checkbox" disabled name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
+                            '<input type="checkbox"  name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
                             '<label for="'+sluggable+'">'+label+'</label>'+
                             '<a class="remove-me"><i class="ion-ios-close"></i></a>' +
                             '</div>';
@@ -328,9 +328,9 @@ jQuery(document).ready(function($){
                     html += '<tr class="insert-after">'+
                     '<td><input type="text" class="form-control parts"/></td>'+
                     '<td><input type="text" class="form-control description sparesdescription"/></td>'+
-                    '<td><input type="text" readonly disabled class="form-control price unit_price" id="u_price"/></td>'+
+                    '<td><input type="text" class="form-control price unit_price" id="u_price"/></td>'+
                     '<td><input type="number" min="0" class="form-control qty" id="quantity"/></td>'+
-                    '<td><input type="text" class="form-control total_price" readonly id="tot_price"/></td>'+
+                    '<td><input type="text" class="form-control total_price"  id="tot_price"/></td>'+
                     '<td><a class="btn btn-success add-part">Add</a></td>'+
                     '</tr>'+
                     '</tbody></table></div>';
@@ -510,9 +510,10 @@ jQuery(document).ready(function($){
     }
 
     $( "#editjc" ).submit(function( event ) {
+       
            event.preventDefault();
            var $form = $( this ),
-           veh_numb = $form.find( "input[name='number']" ).val(),
+           veh_numb = vehNumb,
            chasis_num = $form.find( "input[name='chasis']" ).val(),
            veh_brand = $('#brand :selected').text(),
            veh_model = $form.find( "input[name='model']" ).val(),
@@ -527,7 +528,10 @@ jQuery(document).ready(function($){
            jobcard_id = $form.find( "input[name='jobcard_id']" ).val(),
            pending_reason = $form.find( "input[name='reason']" ).val(),
            otherparts_desc = $form.find( "input[name='op']" ).val(),
-           otherparts_cost = $form.find( "input[name='oc']" ).val();
+           otherparts_cost = $form.find( "input[name='oc']" ).val(),
+           service_type = $('#serviceType :selected').val(),
+           mechanic_name = $form.find( "input[name='mechanic_name']" ).val(),
+
            service_reminder_time = $form.find( "input[name='service-reminder-time']" ).val();
            if (current_status == "PENDING" && pending_reason.length == 0) {
                alert("Please enter the reason for jobcard pending");
@@ -576,10 +580,16 @@ jQuery(document).ready(function($){
                for(var i = 0; i < recommendedserviceitems.length; i++) {
                    recommendedServices[i] = $(recommendedserviceitems[i]).val();
                }
+               
+              
+               if (!(customerComplaints.length == 0) && !(pending_reason.length == 0) && !(veh_numb.length == 0) &&
+                   !(veh_model.length == 0) && !(f_type.length == 0) &&
+                    !(kms_ticked.length == 0) && !(custr_name.length == 0) && !(cont_numb.length == 0) &&
+                    !(delivery_time.length == 0) && !(lab_cost.length == 0)) {
 
-               if (!(customerComplaints.length == 0)) {
+                    console.log("all present");
                    var url = $form.attr( "action" );
-                   var data = JSON.stringify({ data : { jc_id: jobcard_id,labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: pending_reason, status: current_status, services : customerComplaints, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost,service_reminder_time:service_reminder_time }});
+                   var data = JSON.stringify({ data : { service_type: service_type, mechanic_name: mechanic_name, jc_id: jobcard_id,labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: pending_reason, status: current_status, services : customerComplaints, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost,service_reminder_time:service_reminder_time }});
                   //  Send the data using post
                    var posting = $.post( url, data);
                    posting.done(function( data ) {
@@ -739,10 +749,18 @@ jQuery(document).ready(function($){
 
 
     function vehNumbcheckDetails() {
-        var veh_numb1 = $('#jc').find( "input[id='veh-numbr1']" ).val();
-        var veh_numb2 = $('#jc').find( "input[id='veh-numbr2']" ).val();
-        var veh_numb3 = $('#jc').find( "input[id='veh-numbr3']" ).val();
-        var veh_numb4 = $('#jc').find( "input[id='veh-numbr4']" ).val();
+        if($('#jc').length > 0 ) {
+            var formIs = '#jc';
+        }
+
+        else if($('#editjc').length > 0) {
+            var formIs = '#editjc';
+        }
+
+        var veh_numb1 = $(formIs).find( "input[id='veh-numbr1']" ).val();
+        var veh_numb2 = $(formIs).find( "input[id='veh-numbr2']" ).val();
+        var veh_numb3 = $(formIs).find( "input[id='veh-numbr3']" ).val();
+        var veh_numb4 = $(formIs).find( "input[id='veh-numbr4']" ).val();
 
         vehNumb = veh_numb1 + " "+ veh_numb2 + " " + veh_numb3 + " " + veh_numb4;
 
@@ -920,7 +938,7 @@ jQuery(document).ready(function($){
         $('#create-job-btn').attr('disabled',false);
             spaceRef.getDownloadURL().then(function(url) {
             
-                imgInput = url;
+                imgInput.push(url);
             })
         });
       
@@ -928,4 +946,4 @@ jQuery(document).ready(function($){
 
 });
 
-var imgInput = '';
+var imgInput = [];

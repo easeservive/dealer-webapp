@@ -311,8 +311,12 @@ def jobcard_edit(request):
                 user_agent = "android"
             context_dictionary_data = util.getJobCard(jc_id, request.user)
             context_dictionary = context_dictionary_data['jobcard_details']
+            print(context_dictionary)
             context_dictionary['user'] = request.user
             context_dictionary['user_agent'] = user_agent
+            context_dictionary['serviceTypes'] = global_constants.service_types_dropdown
+            service_type = context_dictionary['service_type']
+            context_dictionary['service_type_list'] = (service_type.split(' - '))
             html = t.render(context_dictionary)
             view_logger.debug("DEALER VIEW : Rendered Edit Job card page for : %s with context : %s"%(request.user, str(context_dictionary)))
             return HttpResponse(html)
