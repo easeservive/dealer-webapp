@@ -311,7 +311,7 @@ def jobcard_edit(request):
                 user_agent = "android"
             context_dictionary_data = util.getJobCard(jc_id, request.user)
             context_dictionary = context_dictionary_data['jobcard_details']
-            print(context_dictionary)
+           
             context_dictionary['user'] = request.user
             context_dictionary['user_agent'] = user_agent
             context_dictionary['serviceTypes'] = global_constants.service_types_dropdown
