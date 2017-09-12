@@ -12,12 +12,12 @@ class BookServiceForm(forms.Form):
 
 class RetrieveServiceForm(forms.Form):
     
-    booking_id = forms.IntegerField()
+    booking_id = forms.CharField()
 
 
 class ServiceFeedbackForm(forms.Form):
     
-    booking_id = forms.IntegerField()
+    booking_id = forms.CharField()
     feedback_text = forms.CharField(required=False)
     feedback_stars = forms.IntegerField()
 
@@ -37,7 +37,8 @@ class RetrieveServiceRequests(forms.Form):
 
 class AcceptServiceForm(forms.Form):
 
-    booking_id = forms.IntegerField()
+    booking_id = forms.CharField()
+    #booking_type = forms.CharField()
 
 
 class JcForm(forms.Form):

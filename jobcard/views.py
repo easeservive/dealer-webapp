@@ -22,6 +22,7 @@ from . import forms
 from customer.models import Vehicles, Customer
 from core.models import VehicleModels
 from easeservice import global_constants
+from easeservice.portal_functions import generate_uuid
 
 
 def json_default(obj):
@@ -487,7 +488,16 @@ def book_service(request):
     except VehicleModels.DoesNotExist:
         return Response({"status":"failure", "msg": "Invalid vehicle_model_id"}, status=status_code.HTTP_400_BAD_REQUEST)
 
+    is_not_unique = True
+    while is_not_unique:
+        booking_id = generate_uuid(4)
+        try:
+            sc_obj = models.EmergencyServiceBooking.objects.get(booking_id=booking_id)
+        except models.EmergencyServiceBooking.DoesNotExist:
+            is_not_unique = False
+
     service_obj = models.CServiceBooking.objects.create(
+        booking_id=booking_id,
         customer_id = request.user.username,
         #vehicle_type = service_form.cleaned_data['vehicle_type'],
         vehicle_model_id = service_form.cleaned_data['vehicle_model_id'],
@@ -614,8 +624,16 @@ def book_emergency_service(request):
         return Response({'status': "failure", 'msg': "Please enter an address or send your current location."}, status=status_code.HTTP_400_BAD_REQUEST)
 
     #print("request.user.username - %s" % request.user.username)
+    is_not_unique = True
+    while is_not_unique:
+        booking_id = generate_uuid(4)
+        try:
+            sc_obj = models.EmergencyServiceBooking.objects.get(booking_id="EMERGENCY_%s" % booking_id)
+        except models.EmergencyServiceBooking.DoesNotExist:
+            is_not_unique = False
 
     service_obj = models.EmergencyServiceBooking.objects.create(
+        booking_id="EMERGENCY_%s" % booking_id,
         customer_id = request.user.username,
         vehicle_type = service_form.cleaned_data['vehicle_type'],
         customer_address_id = service_form.cleaned_data['customer_address_id'],
@@ -767,13 +785,10 @@ def accept_service_request(request):
     if not service_form.is_valid():
         return JsonResponse({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    try:
+    if "EMERGENCY_" in service_form.cleaned_data['booking_id']:
+        service_obj = models.EmergencyServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+    else:
         service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
-    except models.CServiceBooking.DoesNotExist:
-        try:
-            service_obj = models.EmergencyServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
-        except models.EmergencyServiceBooking.DoesNotExist:
-            return JsonResponse({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
 
     service_obj.status = "Accepted"
     service_obj.save()
@@ -837,7 +852,8 @@ def accept_service_request(request):
         LastedEditedTime = str(datetime.datetime.now()),
         CustomerComplaint=service_obj.service_details,
         # general service by default
-        ServiceTypeId = "5s5d5f5g"
+        ServiceTypeId = "5s5d5f5g",
+        VehicleImages = []
     )
 
     service_obj.job_card_id = jc_id
