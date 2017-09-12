@@ -229,9 +229,9 @@ def create_job_card(request):
                 details['labour_cost'] = data['labour_cost']
               
                 if 'vehicle_images' in data:
-                    try:
-                        details['vehicle_images'] = json.loads(data['vehicle_images'])
-                    except:
+                    if type(data['vehicle_images']) == list:
+                        details['vehicle_images'] = data['vehicle_images']
+                    else:
                         result = {"status": "failure", "msg": "Invalid vehicle_images format."}
                         return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
                 else:
@@ -241,8 +241,8 @@ def create_job_card(request):
                     details['mechanic_name'] = data['mechanic_name']
                 else:
                     details['mechanic_name'] = ""
-                if 'service_type_id' in details:
-                    details['ServiceTypeId'] = data['service_type_id']
+                if 'service_type' in details:
+                    details['ServiceTypeId'] = data['service_type']
                 else:
                     # General service by default
                     details['ServiceTypeId'] = "5s5d5f5g"
@@ -350,9 +350,9 @@ def save_job_card(request):
 
 
                 if 'vehicle_images' in data:
-                    try:
-                        details['vehicle_images'] = json.loads(data['vehicle_images'])
-                    except:
+                    if type(data['vehicle_images']) == list:
+                        details['vehicle_images'] = data['vehicle_images']
+                    else:
                         result = {"status": "failure", "msg": "Invalid vehicle_images format."}
                         return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
                 else:
