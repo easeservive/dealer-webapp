@@ -668,7 +668,8 @@ div.form-group.transistion label.error {
 
 .veh-numb {
     padding: 0px;
-    padding-right: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 .input-block-level {
