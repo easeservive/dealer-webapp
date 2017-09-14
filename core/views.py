@@ -572,6 +572,32 @@ def retrieve_service_center(request):
 
 
 @api_view(['GET'])
+#@permission_classes((IsAuthenticated,))
+def retrieve_service_centers(request):
+
+    service_center_objs = models.ServiceCenterInfo.objects.all()
+
+    service_center_list = []
+    for service_center_obj in service_center_objs:
+    	service_center_list.append({
+		    "name": service_center_obj.Name,
+		    "contact_number": service_center_obj.ContactNumber,
+		    "email": service_center_obj.Email,
+		    "building_number": service_center_obj.BuildingNo,
+		    "street": service_center_obj.Street,
+		    "town": service_center_obj.Town,
+		    "district": service_center_obj.District,
+		    "city": service_center_obj.City,
+		    "pincode": service_center_obj.Pincode,
+		    "owner_name": service_center_obj.OwnerName,
+		    "specilization": service_center_obj.Specialization,
+		    "images": service_center_obj.Images
+	    })
+
+    return Response({"status":"success", "service_center_list": service_center_list})
+
+
+@api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def retrieve_surveys(request):
 
