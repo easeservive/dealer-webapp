@@ -575,11 +575,12 @@ def retrieve_service_center(request):
 #@permission_classes((IsAuthenticated,))
 def retrieve_service_centers(request):
 
-    service_center_objs = models.ServiceCenterInfo.objects.all()
+    service_center_objs = models.ServiceCenterInfo.objects.all().order_by('-ServiceCenterID')[0:10][::-1]
 
     service_center_list = []
     for service_center_obj in service_center_objs:
     	service_center_list.append({
+    		"service_center_id":  service_center_obj.ServiceCenterID,
 		    "name": service_center_obj.Name,
 		    "contact_number": service_center_obj.ContactNumber,
 		    "email": service_center_obj.Email,
