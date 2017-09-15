@@ -292,12 +292,16 @@ def retrieve_customer(request):
             "total_kms": vehile_obj.total_kms
         })
 
+    customer_address = []
+    for key, value in customer_obj.address.items():
+        customer_address.append(value)
+
     return Response({'status': "success",
         "customer_data": {
             "customer_id": customer_obj.mobile,
             "username": customer_obj.mobile,
             "mobile": customer_obj.mobile,
-            "address": customer_obj.address,
+            "address": customer_address,
             "email": customer_obj.email,
             "first_name": customer_obj.first_name,
             "last_name": customer_obj.last_name,
