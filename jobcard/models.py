@@ -113,7 +113,7 @@ def trigger_sms(sender, instance=None,created=False, **kwargs):
 
 
 class CServiceBooking(models.Model):
-    booking_id = models.CharField(primary_key=True, max_length=50)
+    booking_id = models.CharField(primary_key=True, max_length=20)
     customer_id = models.CharField(max_length=20)
     vehicle_type = models.CharField(max_length=50)
     vehicle_model_id = models.CharField(max_length=20)
@@ -130,7 +130,7 @@ class CServiceBooking(models.Model):
 
 
 class EmergencyServiceBooking(models.Model):
-    booking_id = models.CharField(primary_key=True, max_length=50)
+    booking_id = models.CharField(primary_key=True, max_length=20)
     customer_id = models.CharField(max_length=20)
     vehicle_type = models.CharField(max_length=50)
     customer_address_id = models.CharField(max_length=20)

@@ -492,8 +492,8 @@ def book_service(request):
     while is_not_unique:
         booking_id = generate_uuid(4)
         try:
-            sc_obj = models.EmergencyServiceBooking.objects.get(booking_id=booking_id)
-        except models.EmergencyServiceBooking.DoesNotExist:
+            sc_obj = models.CServiceBooking.objects.get(booking_id=booking_id)
+        except models.CServiceBooking.DoesNotExist:
             is_not_unique = False
 
     service_obj = models.CServiceBooking.objects.create(
