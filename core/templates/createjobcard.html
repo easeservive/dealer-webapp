@@ -43,21 +43,29 @@
                         </div>
                         <div class="clear"></div>
                         <div class="col-sm-12 padding-left-free">
-                            <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form" enctype="multipart/form-data">
-                                <div class='col-sm-4'>
-                                    <label>Upload Image</label>
-                                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                        <span class="btn btn-default btn-file">
-                                         Browse… <input type="file" id="imgInp" name="imgInp">
-                                        </span>
-                                        </span>
-           
-                                    </div>
-                                    <div class='col-sm-12'>
-                                        <img id='img-upload'/>
+                            <form id="jc" novalidate="novalidate" action="/api/create/jobcard/" method="POST" class="validate-form"  enctype="multipart/form-data">
+
+                                <div class="col-sm-4 veh-numb-grp">
+                                    <label for="veh-reg-nm">Enter Vehicle number</label>
+                                    <div class="form-group transistion" id="veh-reg-nm">
+                                        
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="text"  aria-required="true" id="veh-numbr1" class="input-block-level" data-validation="veh_numb1" autocomplete="off"  maxlength="2">
+                                        </div>
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="number" aria-required="true" id="veh-numbr2" class="input-block-level" data-validation="veh_numb2" autocomplete="off"  >
+                                        </div>
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="text" aria-required="true" id="veh-numbr3" class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2">
+                                        </div>
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="number" aria-required="true" id="veh-numbr4" class="input-block-level" data-validation="veh_numb4"  autocomplete="off" >
+                                        </div>
+                                        
                                     </div>
                                 </div>
+
+
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="cust_name">Name</label>
@@ -76,12 +84,7 @@
                                         <input aria-required="true" name="cont_addr" id="cont_addr" class="form-control" data-validation="required" type="text">
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group transistion">
-                                        <label for="number">Enter Vehicle number</label>
-                                        <input aria-required="true" name="number" id="number" data-validation="veh_numb" class="form-control"  type="text">
-                                    </div>
-                                </div>
+                                
                                 <div class="col-sm-4">
                                     <div class="form-group transistion">
                                         <label for="chasis">Enter Chasis number</label>
@@ -110,16 +113,18 @@
                                         <label for="serviceType">Service Types</label>
                                         <select aria-required="true" name="serviceType" id="serviceType" class="form-control" data-validation="required">
                                             {% for serviceType in serviceTypes %}
-                                                {% if forloop.first %}
-                                                    <option value="{{ serviceType.service_type_name }}" selected="selected">{{ serviceType.service_type_name }}</option>
-                                                {% else %}
-                                                    <option value="{{ serviceType.service_type_name }}">{{ serviceType.service_type_name }}</option>
-                                                {% endif %}
+                                                   
+                                                    <optgroup label="{{ serviceType.service_type_name }}">
+                                                        {% for serviceTypeClass in serviceType.classifications %}
+                                                            <option value="{{ serviceTypeClass.id }}">{{ serviceTypeClass.name }}</option>
+                                                        {% endfor %}     
+                                                    </optgroup> 
+                                              
                                             {% endfor %}
                                         </select>
                                     </div>
 
-                                    <div class="form-group col-sm-12">
+                                   <!--  <div class="form-group col-sm-12">
                                         {% for serviceType in serviceTypes %}
                                             <div id="{{ serviceType.service_type_name }}" class="serviceTypeCheckbox col-sm-12" style="display: none;" >
                                                 {% for serviceTypeClass in serviceType.classifications %}
@@ -129,7 +134,7 @@
                                                 {% endfor %}
                                             </div>
                                         {% endfor %} 
-                                    </div>
+                                    </div> -->
                                 </div>
                                
                                 <div class="col-sm-4">
@@ -231,9 +236,24 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                 <div class='col-sm-4'>
+                                    <label>Upload Image</label>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                         Browse… <input type="file" id="imgInp" name="imgInp">
+                                        </span>
+                                        </span>
+           
+                                    </div>
+                                    <div class='col-sm-12 usr-img'>
+                                        <img id='img-upload'/>
+                                    </div>
+                                </div>
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <button class="btn btn-default btn-pink">Create Jobcard</button>
+                                        <button class="btn btn-default create-job-btn btn-pink" id="create-job-btn">Create Jobcard</button>
                                         <a href="/jobcard/" class="btn btn-pink">Cancel</a>
                                     </div>
                                 </div>
@@ -254,7 +274,12 @@
         <script src="/static/bootstrap-datepicker.js"></script>
         <script src="/static/bootstrap-datetimepicker.js"></script>
         <script src="/static/createjobcard.js"></script>
-
+        <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script>
+  <!--       <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script> -->
 
 <ul style="display: none;" tabindex="0" id="ui-id-1" class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content"></ul>
 <span class="ui-helper-hidden-accessible" aria-relevant="additions" aria-live="assertive" role="status"></span>

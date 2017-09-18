@@ -17,7 +17,7 @@ urlpatterns = [
    url('^api/get/jobcards/$', views.get_jobcards_list),
 
    # DJANGO
-   url(r'^jobcard/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
+   #url(r'^dealer/service/requests$', views.retrieve_service_requests, name="retrieve_service_requests"),
 
    # REST
    url(r'^apis/jobcard/v1/service/book$', views.book_service, name="book_service"),

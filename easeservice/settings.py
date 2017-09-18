@@ -33,6 +33,8 @@ SMS_GATEWAY = {
     'SENDER': "EASESE"
 }
 
+SECURITY_PASSWORD_SALT = "bVFOOugP5PAIf!EqLJbXQbfTxs"
+
 ALLOWED_HOSTS = ['*']
 PATH_LOGS = PATH_LOGS = "/var/ease/logs"
 

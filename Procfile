@@ -1,1 +1,1 @@
-web: gunicorn portalApp.heroku_wsgi:application --log-file -
+web: gunicorn easeservice.heroku_wsgi:application --log-file -

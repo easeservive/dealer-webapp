@@ -16,20 +16,49 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="my-navigation">
                     <ul class="nav navbar-nav navbar-right"> 
+                        <li><a><i class="ion-ios-person-outline"></i>Welcome {{ user }}!</a></li>
+                        <li>
+                            <a href="/jobcard/">
+                                <i class="ion-ios-compose-outline"></i>
+                                Jobcard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dealer/service/requests">
+                                <i class="ion-ios-compose-outline"></i>
+                                Service Requests
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/invoice/">
+                                <i class="ion-ios-email-outline"></i>
+                                Invoice
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dealer/inventory/">
+                                <i class="ion-ios-gear-outline"></i>
+                                Spares Inventory
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dealer/service/history/">
+                                <i class="ion-ios-paper-outline"></i>
+                                Service History
+                            </a>
+                        </li>
+
                         <li><a href="/dealer/home/">
                             <i class="ion-ios-speedometer-outline"></i>
-                            Dashboard
+                                Dashboard
                             </a>
                         </li>
                         <!--Included the sidebar options-->
-                        <li><a href="/jobcard/">
-                            <i class="ion-ios-compose-outline"></i>
-                            Jobcard
-                        </a></li>
+
                     <li><a href="/dealer/logout/">
                             <i class="ion-ios-person-outline"></i>Logout</a>
                     </li>
-                    <li><a><i class="ion-ios-person-outline"></i>Welcome {{ user }}!</a></li>
+                   
                         <!--li><a href=""><i class="ion-ios-gear-outline"></i>Settings</a></li-->
                     </ul>
                 </div>

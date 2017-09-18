@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class ScheduledServices(models.Model):
     Brand = models.CharField(max_length=200)
@@ -23,6 +23,8 @@ class ComplaintCode(models.Model):
 
 
 class ServiceCenterInfo(models.Model):
+    USER = models.ForeignKey(User, editable = False)
+    ServiceCenterID = models.CharField(max_length=20, primary_key = True)
     Name = models.CharField(max_length=200)
     ContactNumber = models.CharField(max_length=50)
     Email = models.CharField(max_length=200)
