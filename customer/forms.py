@@ -55,6 +55,13 @@ class AddVehicleForm(forms.Form):
     year = forms.IntegerField()
     chassis_number = forms.CharField(required=False)
 
+
 class TipsForm(forms.Form):
 
     vehicle_type = forms.CharField()
+
+
+class RemoveUserForm(forms.Form):
+
+    mobile = forms.IntegerField()
+    api_key = forms.CharField()

@@ -17,6 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status as status_code
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
+from django.conf import settings
 
 from . import models
 from core.models import MaintenanceTips
@@ -260,7 +261,7 @@ def resend_otp(request):
     if not otp_form.is_valid():
         return Response({'status': "failure", 'errors': otp_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    status, otptranid = util.generateOTP(otp_form.cleaned_data['mobile'])
+    status, otptranid = util.regenerateOTP(otp_form.cleaned_data['mobile'])
     if status != 1:
         return Response({'status': "failure", 'msg': "OPT Failure"}, status=status_code.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -356,6 +357,31 @@ def retrieve_maintenance_tips(request):
         })
 
     return Response({'status': "success", "tips_list": tips_list})
+
+
+@api_view(['POST'])
+def remove_user(request):
+
+    remove_user_form = forms.RemoveUserForm(request.POST)
+    if not remove_user_form.is_valid():
+        return Response({'status': "failure", 'errors': remove_user_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    if remove_user_form.cleaned_data['api_key'] != settings.API_KEY:
+        return Response({'status': "failure", "msg": "Invalid API key."}, status=status_code.HTTP_403_FORBIDDEN)
+
+    try:
+        user_obj = User.objects.get(username=remove_user_form.cleaned_data['mobile'])
+        user_obj.delete()
+
+        customer_obj = models.Customer.objects.create(mobile=remove_user_form.cleaned_data['mobile'])
+        customer_obj.delete()
+
+        return Response({'status': "success"})
+
+    except User.DoesNotExist:
+        return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
+    except customer_obj.DoesNotExist:
+        return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
 
 
 # @api_view(['GET'])
