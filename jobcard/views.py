@@ -6,27 +6,23 @@ from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from itertools import chain
-
-#import simplejson
 import util
 import log_rotator
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status as status_code
-from rest_framework.decorators import authentication_classes
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 from . import models
 from . import forms
-from customer.models import Vehicles
+from customer.models import Vehicles, Customer
 from core.models import VehicleModels
 from easeservice import global_constants
+from easeservice.portal_functions import generate_uuid
 
 
 def json_default(obj):
@@ -200,10 +196,14 @@ def create_job_card(request):
 
     try:
         view_logger = log_rotator.view_logger()
+
         if request.method == 'POST':
+       
             if request.user.is_authenticated():
 
+
                 data = json.loads(request.body.decode('utf-8'))['data']
+
                 print(data)
                 view_logger.debug("JOBCARD VIEW : Create job card request - %s"%str(data))
                 dealerid = request.user
@@ -228,17 +228,27 @@ def create_job_card(request):
                 details['otherparts_cost'] = data['otherparts_cost']
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
-
+              
+                if 'vehicle_images' in data:
+                    if type(data['vehicle_images']) == list:
+                        details['vehicle_images'] = data['vehicle_images']
+                    else:
+                        result = {"status": "failure", "msg": "Invalid vehicle_images format."}
+                        return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+                else:
+                    details['vehicle_images'] = []
+                
                 if 'mechanic_name' in data:
                     details['mechanic_name'] = data['mechanic_name']
                 else:
                     details['mechanic_name'] = ""
-                if 'service_type_id' in details:
-                    details['ServiceTypeId'] = data['service_type_id']
+                if 'service_type' in details:
+                    details['ServiceTypeId'] = data['service_type']
                 else:
                     # General service by default
                     details['ServiceTypeId'] = "5s5d5f5g"
 
+                
                 result = util.createJobCard(details, dealerid)
                 result['url'] = '/jobcard/'
             else:
@@ -246,6 +256,7 @@ def create_job_card(request):
         else:
             result = {"status": "failure", "msg": "Invalid request method"}
     except:
+        
         error_logger = log_rotator.error_logger()
         error_logger.debug("Exception::", exc_info=True)
         result = {"status": "failure", "msg": "something went wrong"}
@@ -314,7 +325,7 @@ def save_job_card(request):
                 details = {}
 
                 data = json.loads(request.body.decode('utf-8'))['data']
-
+                print(data)
                 view_logger.debug("JOBCARD VIEW : Save job card request - %s"%str(data))
 
                 details['jc_id'] = data.get('jc_id', 'NA')
@@ -338,6 +349,15 @@ def save_job_card(request):
                 details['recommendedservices'] = data['recommendedservices']
                 details['labour_cost'] = data['labour_cost']
 
+
+                if 'vehicle_images' in data:
+                    if type(data['vehicle_images']) == list:
+                        details['vehicle_images'] = data['vehicle_images']
+                    else:
+                        result = {"status": "failure", "msg": "Invalid vehicle_images format."}
+                        return HttpResponse(json.dumps(result, default=json_default), content_type="application/json")
+                else:
+                    details['vehicle_images'] = []
                 if 'mechanic_name' in details:
                     details['mechanic_name'] = data['mechanic_name']
                 else:
@@ -409,9 +429,10 @@ def generate_invoice(request):
                 #data = json.loads(data)
                 #data = data['data']
             except:
-                data={} 
-                data['jc_id']=request.POST.keys()[0]
-                data['pmt_mode']=request.POST.values()[0]
+                data={}
+                print("request.POST.keys() - %s" % request.POST.keys())
+                data['jc_id']=list(request.POST.keys())[0]
+                data['pmt_mode']=list(request.POST.values())[0]
                 view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))       
             view_logger.debug("JOBCARD VIEW : Generate Invoice request - %s"%str(data))
             jc_id = data['jc_id']
@@ -461,9 +482,24 @@ def book_service(request):
     if not is_valid:
         return Response({"status":"failure", "msg": message}, status=status_code.HTTP_400_BAD_REQUEST)
 
+    # get vehicle_name from vehicle_model_id
+    try:
+        vehicle_obj = VehicleModels.objects.get(vehicle_model_id=service_form.cleaned_data['vehicle_model_id'])
+    except VehicleModels.DoesNotExist:
+        return Response({"status":"failure", "msg": "Invalid vehicle_model_id"}, status=status_code.HTTP_400_BAD_REQUEST)
+
+    is_not_unique = True
+    while is_not_unique:
+        booking_id = generate_uuid(4)
+        try:
+            sc_obj = models.CServiceBooking.objects.get(booking_id=booking_id)
+        except models.CServiceBooking.DoesNotExist:
+            is_not_unique = False
+
     service_obj = models.CServiceBooking.objects.create(
+        booking_id=booking_id,
         customer_id = request.user.username,
-        vehicle_type = service_form.cleaned_data['vehicle_type'],
+        #vehicle_type = service_form.cleaned_data['vehicle_type'],
         vehicle_model_id = service_form.cleaned_data['vehicle_model_id'],
         vehicle_registration_number = service_form.cleaned_data['vehicle_registration_number'],
         service_center_id = service_form.cleaned_data['service_center_id'],
@@ -471,11 +507,10 @@ def book_service(request):
         service_details = service_form.cleaned_data['service_details'],
         status = "Pending Confirmation"
     )
-
-    # get vehicle_name from vehicle_model_id
-    vehicle_name = service_form.cleaned_data['vehicle_model_id']
     
-    return Response({'status': "success", "booking_id": service_obj.booking_id, "vehicle_name": vehicle_name})
+    return Response({'status': "success", "booking_id": service_obj.booking_id,
+        "vehicle_name": "%s %s" % (vehicle_obj.brand_name, vehicle_obj.model_name)
+    })
 
 
 @api_view(['GET'])
@@ -490,12 +525,15 @@ def retrieve_service_details(request):
         service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
     except models.CServiceBooking.DoesNotExist:
         return Response({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
+
+    vehicle_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
     
     return Response({'status': "success", "booking_data":{
             "booking_id": service_obj.booking_id,
             "customer_id": service_obj.customer_id,
-            "vehicle_type": service_obj.vehicle_type,
-            "vehicle_model_id": service_obj.vehicle_model_id,
+            "vehicle_type": vehicle_obj.vehicle_type,
+            "vehicle_name": "%s %s" % (vehicle_obj.brand_name, vehicle_obj.model_name),
+            #"vehicle_model_id": service_obj.vehicle_model_id,
             "vehicle_registration_number": service_obj.vehicle_registration_number,
             "service_center_id": service_obj.service_center_id,
             "customer_address_id": service_obj.customer_address_id,
@@ -585,7 +623,17 @@ def book_emergency_service(request):
         ):
         return Response({'status': "failure", 'msg': "Please enter an address or send your current location."}, status=status_code.HTTP_400_BAD_REQUEST)
 
+    #print("request.user.username - %s" % request.user.username)
+    is_not_unique = True
+    while is_not_unique:
+        booking_id = generate_uuid(4)
+        try:
+            sc_obj = models.EmergencyServiceBooking.objects.get(booking_id="EMERGENCY_%s" % booking_id)
+        except models.EmergencyServiceBooking.DoesNotExist:
+            is_not_unique = False
+
     service_obj = models.EmergencyServiceBooking.objects.create(
+        booking_id="EMERGENCY_%s" % booking_id,
         customer_id = request.user.username,
         vehicle_type = service_form.cleaned_data['vehicle_type'],
         customer_address_id = service_form.cleaned_data['customer_address_id'],
@@ -728,43 +776,68 @@ def retrieve_emergency_service(request):
 
 
 
-@api_view(['POST'])
 def accept_service_request(request):
 
-    service_form = forms.AcceptServiceForm(request.data)
+    if not request.method == "POST":
+        return JsonResponse({'status': "failure", "msg": "Invalid request method."})
+
+    service_form = forms.AcceptServiceForm(request.POST)
     if not service_form.is_valid():
         return JsonResponse({'status': "failure", 'errors': service_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    try:
+    if "EMERGENCY_" in service_form.cleaned_data['booking_id']:
+        service_obj = models.EmergencyServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
+    else:
         service_obj = models.CServiceBooking.objects.get(booking_id=service_form.cleaned_data['booking_id'])
-    except models.CServiceBooking.DoesNotExist:
-        return JsonResponse({'status': "failure", "msg": "Invalid booking_id."}, status=status_code.HTTP_409_CONFLICT)
 
     service_obj.status = "Accepted"
     service_obj.save()
 
-    # get vehicle data from vehicle_model_id
-    vehicle_model_obj = VehicleModels.object.get(vehicle_model_id=service_obj.vehicle_model_id)
+    try:
+        # get vehicle data from vehicle_model_id
+        vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=service_obj.vehicle_model_id)
+        brand_name = vehicle_model_obj.brand_name
+        model_name = vehicle_model_obj.model_name
+    except:
+        brand_name = model_name = ""
 
-    vehicle_obj = VehicleModels.object.get(vehicle_model_id=service_obj.vehicle_registration_number)
+    # retrieve data from user vehicle database
+    try:
+        vehicle_registration_number = service_obj.vehicle_registration_number
+    except:
+        vehicle_registration_number = ""
+
+    if vehicle_registration_number:
+        vehicle_obj = Vehicles.objects.get(vehicle_registration_number=service_obj.vehicle_registration_number)
+        fuel_type = vehicle_obj.fuel_type
+        chassis_number = vehicle_obj.chassis_number
+        total_kms = vehicle_obj.total_kms
+    else:
+        fuel_type = chassis_number = total_kms= ""
 
     # get customer_data using customer_id
-    customer_obj = models.Customer.objects.get(mobile=request.user.username)
+    customer_obj = Customer.objects.get(mobile=service_obj.customer_id)
 
     # create a job card and save the data
     jc_id = "JC" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999))
 
     # create job card vehile info
     models.JCVehicleInfo.objects.create(
-        VehicleNumber = service_obj.vehicle_registration_number,
-        Brand = vehicle_model_obj.brand,
-        Model = vehicle_model_obj.model,
-        FuelType = vehicle_obj.fuel_type,
-        ChassisNumber = vehicle_obj.chassis_number,
+        VehicleNumber = vehicle_registration_number,
+        Brand = brand_name,
+        Model = model_name,
+        FuelType = fuel_type,
+        ChassisNumber = chassis_number,
         CustomerName = "%s %s" % (customer_obj.first_name, customer_obj.last_name),
         ContactNumber = customer_obj.mobile,
-        Address = customer_obj.address[service_obj.customer_address_id],
-        KilometersTicked = vehicle_obj.total_kms,
+        Address = "%s, %s, %s, %s - %s" % (
+                customer_obj.address[service_obj.customer_address_id]['address_line_1'],
+                customer_obj.address[service_obj.customer_address_id]['address_line_2'],
+                customer_obj.address[service_obj.customer_address_id]['city'],
+                customer_obj.address[service_obj.customer_address_id]['state'],
+                customer_obj.address[service_obj.customer_address_id]['zipcode'],
+            ),
+        KilometersTicked = total_kms,
         JobCardID = jc_id,
         DealerID = request.user,
         CreatedTime = str(datetime.datetime.now())
@@ -774,12 +847,13 @@ def accept_service_request(request):
     models.JCStatus.objects.create(
         JobCardID = jc_id,
         DealerID = request.user,
-        #DeliveryTime = "",
         Status = "OPEN",
-        #PendingReason = "",
         CreatedTime = str(datetime.datetime.now()),
         LastedEditedTime = str(datetime.datetime.now()),
-        CustomerComplaint=service_obj.service_details
+        CustomerComplaint=service_obj.service_details,
+        # general service by default
+        ServiceTypeId = "5s5d5f5g",
+        VehicleImages = []
     )
 
     service_obj.job_card_id = jc_id
@@ -788,30 +862,35 @@ def accept_service_request(request):
     return JsonResponse({'status': "success", "message": "Service accepted and job created successfully.", "jc_id": jc_id})
 
 
-@api_view(['GET'])
+
+#@api_view(['GET'])
 def retrieve_vehicle_data(request):
+    print(request.GET)
+    if not request.method == "GET":
+        return JsonResponse({'status': "failure", "msg": "Invalid request method."})
 
     if not request.user.is_authenticated():
-        return Response({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
+        return JsonResponse({"status": "failure", "msg" : "Invalid session"}, status=status_code.HTTP_423_LOCKED)
 
-    vehicle_form = forms.RetrieveVehicleDataForm(request.data)
+    vehicle_form = forms.RetrieveVehicleDataForm(request.GET)
     if not vehicle_form.is_valid():
-        return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     is_valid, message = util.vehicle_number_check(vehicle_form.cleaned_data['vehicle_registration_number'])
     if not is_valid:
-        return Response({'status': "failure", "msg": message}, 
+        return JsonResponse({'status': "failure", "msg": message}, 
                 status=status_code.HTTP_400_BAD_REQUEST
             )
 
     try:
+
         vehicle_obj = Vehicles.objects.get(vehicle_registration_number=vehicle_form.cleaned_data['vehicle_registration_number'])
     except Vehicles.DoesNotExist:
-        return Response({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)
+        return JsonResponse({'status': "failure", "msg": "vehicle_registration_number not in database."}, status=status_code.HTTP_409_CONFLICT)
 
     vehicle_model_obj = VehicleModels.objects.get(vehicle_model_id=vehicle_obj.vehicle_model_id)
 
-    return Response({'status': "success", 
+    return JsonResponse({'status': "success", 
         "vehicle_data":{
             "vehicle_registration_number": vehicle_obj.vehicle_registration_number,
             "vehicle_type": vehicle_model_obj.vehicle_type,
@@ -829,75 +908,3 @@ def retrieve_vehicle_data(request):
 def retrieve_service_types(request):
 
     return JsonResponse({"status": "success", "service_types": global_constants.service_types_dropdown})
-
-
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def retrieve_service_requests(request):
-    ''' Retrieve service requests for a particular service center '''
-
-    if request.method != "GET":
-        return Response({"status":"failure"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    services_requests = models.CServiceBooking.objects.filter(service_center_id=request.session['service_center_id'])
-
-    emergency_service_requests_list = models.EmergencyServiceBooking.objects.filter(
-        Q(status="Pending Confirmation") | Q(service_center_id=request.session['service_center_id'])
-    )
-
-    #requests_list = list(chain(services_requests, emergency_service_requests_list))
-
-    # print("requests_list - %s" % requests_list)
-
-    # service_requests = [ 
-    #            { "booking_id": 'bookid9876',
-    #             "customer_id": 'cus_id987',
-    #             "vehicle_type": 'veh_type_test',
-    #             "vehicle_model_id": 'au43',
-    #             "vehicle_registration_number": 'TN09BN9876',
-    #             "service_center_id": 'serv_id09',
-    #             "customer_address_id": 'test address',
-    #             "service_details": 'ac service work in progress',
-    #             "feedback_stars": 4,
-    #             "feedback_text": 'good service',
-    #             "created_at": '2016/09/09',
-    #             "status": 'pending'
-    #             },
-               
-
-    #           { "booking_id": 'bookid0067',
-    #             "customer_id": 'cus_id98237',
-    #             "vehicle_type": 'veh_type_tesdfdft',
-    #             "vehicle_model_id": 'au4asdf3',
-    #             "vehicle_registration_number": 'PY09BN9876',
-    #             "service_center_id": 'serv_id4509',
-    #             "customer_address_id": 'test addrpyindfess',
-    #             "service_details": 'engine service work in progress',
-    #             "feedback_stars": 2,
-    #             "feedback_text": 'good ok service',
-    #             "created_at": '2016/05/09',
-    #             "status": 'done'
-    #             }
-    # ]
-
-   
-    # emergency_service_requests = [ 
-    #         {
-    #             'booking_id': 'bookid1234',
-    #             'customer_id': 'cus_id4565',
-    #             'vehicle_type': 'veh_type_ya',
-    #             'customer_address_id': 'testing address tn',
-    #             'customer_latlon': '3.4555, 5,6666',
-    #             'service_details': 'engine failure',
-    #             'feedback_stars': '',
-    #             'feedback_text': '',
-    #             "created_at": '2017/08/01',
-    #             "status": 'pending',
-    #             "service_center_id": 'SerID9980'
-    #         }
-    # ]    
-
-    t = get_template('servicerequests.html')
-    context = {'service_requests': service_requests, 'emergency_service_requests': emergency_service_requests}
-    html = t.render(context)
-    return HttpResponse(html)

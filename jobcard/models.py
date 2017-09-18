@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django_mysql.models import JSONField
 #import urllib
 import requests
 
@@ -31,6 +32,8 @@ class JCStatus(models.Model):
     LastedEditedTime = models.CharField(max_length=30)
     CustomerComplaint = models.TextField()
     ServiceTypeId = models.CharField(max_length=30)
+    VehicleImages = JSONField()
+
 
 class JCServiceDetails(models.Model):
     id = models.AutoField(primary_key=True)
@@ -46,6 +49,7 @@ class JCRecommendedServices(models.Model):
     DealerID = models.CharField(max_length=30)
     ServiceItems = models.TextField()
 
+
 class JCStocksInfo(models.Model):
     id = models.AutoField(primary_key=True)
     PartIdentifier = models.CharField(max_length=100)
@@ -55,6 +59,7 @@ class JCStocksInfo(models.Model):
     TotalPrice = models.CharField(max_length=30)
     JobCardID = models.CharField(max_length=30)
     DealerID = models.CharField(max_length=30)
+
 
 class JCInvoiceAndLabourCost(models.Model):
     JobCardID = models.CharField(max_length=30)
@@ -68,10 +73,12 @@ class JCInvoiceAndLabourCost(models.Model):
     VATPercentage = models.CharField(max_length=30)
     TaxPercentage = models.CharField(max_length=30)
     
+
 class JCOtherStocksInfo(models.Model):
     JobCardID = models.CharField(max_length=30)
     OtherPartsDesc = models.CharField(max_length=100)
     OtherPartsCost = models.CharField(max_length=30)
+
 
 # Method for sendsms to customer 
 @receiver(post_save)
@@ -106,31 +113,31 @@ def trigger_sms(sender, instance=None,created=False, **kwargs):
 
 
 class CServiceBooking(models.Model):
-    booking_id = models.AutoField(primary_key=True)
-    customer_id = models.IntegerField()
-    #vehicle_type = models.CharField(max_length=50)
-    vehicle_model_id = models.IntegerField()
+    booking_id = models.CharField(primary_key=True, max_length=20)
+    customer_id = models.CharField(max_length=20)
+    vehicle_type = models.CharField(max_length=50)
+    vehicle_model_id = models.CharField(max_length=20)
     vehicle_registration_number = models.CharField(max_length=20)
     service_center_id = models.CharField(max_length=20)
-    customer_address_id = models.IntegerField()
+    customer_address_id = models.CharField(max_length=20)
     service_details = models.TextField()
-    feedback_stars = models.IntegerField()
-    feedback_text = models.TextField()
+    feedback_stars = models.IntegerField(null=True, blank=True)
+    feedback_text = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20)
-    job_card_id = models.CharField(max_length=30)
+    job_card_id = models.CharField(max_length=30, null=True, blank=True)
 
 
 class EmergencyServiceBooking(models.Model):
-    booking_id = models.AutoField(primary_key=True)
-    customer_id = models.IntegerField()
+    booking_id = models.CharField(primary_key=True, max_length=20)
+    customer_id = models.CharField(max_length=20)
     vehicle_type = models.CharField(max_length=50)
-    customer_address_id = models.IntegerField()
+    customer_address_id = models.CharField(max_length=20)
     customer_latlon = models.CharField(max_length=100)
     service_details = models.TextField()
-    feedback_stars = models.IntegerField()
-    feedback_text = models.TextField()
+    feedback_stars = models.IntegerField(null=True, blank=True)
+    feedback_text = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20)

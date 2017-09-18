@@ -26,7 +26,7 @@ SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-SMS_BLOCK = True
+SMS_BLOCK = False
 
 API_KEY = "3@s3-api-key-3@s3"
 
@@ -40,6 +40,8 @@ SMS_GATEWAY = {
     'PASSWORD': "easeservice123!",
     'SENDER': "EASESE"
 }
+
+SECURITY_PASSWORD_SALT = "bVFOOugP5PAIf!EqLJbXQbfTxs"
 
 # Application definition
 INSTALLED_APPS = [
@@ -86,6 +88,7 @@ JWT_AUTH = {
 }
 
 ROOT_URLCONF = 'easeservice.urls'
+
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #SESSION_COOKIE_AGE = 5 * 60 #
 TEMPLATES = [
@@ -117,9 +120,11 @@ WSGI_APPLICATION = 'easeservice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easedb_server',
+        #'NAME': 'easedb_server',
+        'NAME': 'easedb_test',
         'USER': 'root',
-        'PASSWORD': '404lollypop',
+        # 'PASSWORD': 'beagle',
+        'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }

@@ -1,6 +1,5 @@
 import json
 import datetime
-import random
 from django.utils import timezone
 
 from django.contrib.auth import authenticate, login
@@ -23,6 +22,7 @@ from . import models
 from core.models import MaintenanceTips
 from . import forms
 from easeservice.portal_functions import generate_uuid
+from core.models import ServiceCenterInfo
 #from core.models import VehicleModels
 
 
@@ -221,9 +221,12 @@ def login(request):
         return Response({'status': "failure", 'errors': login_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
     # check if user account is activated
-    user_obj = User.objects.get(username=login_form.cleaned_data['mobile'])
-    if user_obj.is_active != 1:
-        return Response({'status': "failure", 'msg': "User not verified."}, status=status_code.HTTP_401_UNAUTHORIZED)
+    try:
+        user_obj = User.objects.get(username=login_form.cleaned_data['mobile'])
+        if user_obj.is_active != 1:
+            return Response({'status': "failure", 'msg': "User not verified."}, status=status_code.HTTP_401_UNAUTHORIZED)
+    except User.DoesNotExist:
+        return Response({'status': "failure", 'msg': "Invalid username/password."}, status=status_code.HTTP_401_UNAUTHORIZED)
 
     user = authenticate(username=login_form.cleaned_data['mobile'], password=login_form.cleaned_data['password'])
     if user is not None:
@@ -274,15 +277,36 @@ def retrieve_customer(request):
 
     customer_obj = models.Customer.objects.get(mobile=request.user.username)
 
+    try:
+        vehicles_obj = models.Vehicles.objects.filter(customer_id=customer_obj.mobile)
+    except models.Vehicles.DoesNotExist:
+        vehicles_obj = []
+
+    vehicles = []
+    for vehile_obj in vehicles_obj:
+        vehicles.append({
+            "vehicle_model_id": vehile_obj.vehicle_model_id,
+            "fuel_type": vehile_obj.fuel_type,
+            "vehicle_registration_number": vehile_obj.vehicle_registration_number,
+            "year": vehile_obj.year,
+            "chassis_number": vehile_obj.chassis_number,
+            "total_kms": vehile_obj.total_kms
+        })
+
+    customer_address = []
+    for key, value in customer_obj.address.items():
+        customer_address.append(value)
+
     return Response({'status': "success",
         "customer_data": {
             "customer_id": customer_obj.mobile,
             "username": customer_obj.mobile,
             "mobile": customer_obj.mobile,
-            "address": customer_obj.address,
+            "address": customer_address,
             "email": customer_obj.email,
             "first_name": customer_obj.first_name,
             "last_name": customer_obj.last_name,
+            "vehicles": vehicles
         }
     })
 
@@ -324,7 +348,7 @@ def add_vehicle(request):
     if not vehicle_form.is_valid():
         return Response({'status': "failure", 'errors': vehicle_form.errors}, status=status_code.HTTP_400_BAD_REQUEST)
 
-    vehicle_obj = Vehicles.objects.create(
+    vehicle_obj = models.Vehicles.objects.create(
         total_kms = vehicle_form.cleaned_data['total_kms'],
         vehicle_model_id = vehicle_form.cleaned_data['vehicle_model_id'],
         vehicle_registration_number = vehicle_form.cleaned_data['vehicle_registration_number'],
@@ -394,10 +418,11 @@ def remove_user(request):
     
 
 
-@api_view(['POST'])
-@permission_classes((IsAuthenticated,))
+#@api_view(['GET'])
+#@permission_classes((IsAuthenticated,))
 def test(request):
 
-    print("Auth success")
+    print(request.user)
+    print(request.user)
 
-    return Response({'status': "success"})
+    return HttpResponse()

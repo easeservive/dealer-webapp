@@ -1,4 +1,5 @@
 jQuery(document).ready(function($){
+
     $('.has-dropdown .dropdown').click(function(e){
         e.preventDefault();
         $(this).toggleClass('active');
@@ -63,7 +64,7 @@ jQuery(document).ready(function($){
             var html = '<div class="form-group checkbox">' +
                 '<input type="hidden" class="recommended-items" value="'+label+'"/>' +
                 '<input type="hidden" class="recommended-items-ids" value=""/>' +
-                '<input type="checkbox" disabled name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
+                '<input type="checkbox" name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
                 '<label for="'+sluggable+'">'+label+'</label>'+
                 '<a class="remove-me"><i class="ion-ios-close"></i></a>' +
                 '</div>';
@@ -89,7 +90,9 @@ jQuery(document).ready(function($){
         success : function(response) {
             // response = JSON.parse(response);
             if (response.status == "success") {
+                
                 response.compliants.forEach(function(value) {
+                    
                     availableTags.push(value.Description);
                     sparesTags.push(value);
                 });
@@ -121,7 +124,7 @@ jQuery(document).ready(function($){
                         var html = '<div class="form-group checkbox">' +
                             '<input type="hidden" class="recommended-items" value="'+label+'"/>' +
                             '<input type="hidden" class="recommended-items-ids" value=""/>' +
-                            '<input type="checkbox" disabled name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
+                            '<input type="checkbox"  name="recommended-items[]" value="1" class="uncheck-recommended-item recommended-checkbox" checked id="'+sluggable+'">' +
                             '<label for="'+sluggable+'">'+label+'</label>'+
                             '<a class="remove-me"><i class="ion-ios-close"></i></a>' +
                             '</div>';
@@ -325,9 +328,9 @@ jQuery(document).ready(function($){
                     html += '<tr class="insert-after">'+
                     '<td><input type="text" class="form-control parts"/></td>'+
                     '<td><input type="text" class="form-control description sparesdescription"/></td>'+
-                    '<td><input type="text" readonly disabled class="form-control price unit_price" id="u_price"/></td>'+
+                    '<td><input type="text" class="form-control price unit_price" id="u_price"/></td>'+
                     '<td><input type="number" min="0" class="form-control qty" id="quantity"/></td>'+
-                    '<td><input type="text" class="form-control total_price" readonly id="tot_price"/></td>'+
+                    '<td><input type="text" class="form-control total_price"  id="tot_price"/></td>'+
                     '<td><a class="btn btn-success add-part">Add</a></td>'+
                     '</tr>'+
                     '</tbody></table></div>';
@@ -507,9 +510,10 @@ jQuery(document).ready(function($){
     }
 
     $( "#editjc" ).submit(function( event ) {
+       
            event.preventDefault();
            var $form = $( this ),
-           veh_numb = $form.find( "input[name='number']" ).val(),
+           veh_numb = vehNumb,
            chasis_num = $form.find( "input[name='chasis']" ).val(),
            veh_brand = $('#brand :selected').text(),
            veh_model = $form.find( "input[name='model']" ).val(),
@@ -524,7 +528,10 @@ jQuery(document).ready(function($){
            jobcard_id = $form.find( "input[name='jobcard_id']" ).val(),
            pending_reason = $form.find( "input[name='reason']" ).val(),
            otherparts_desc = $form.find( "input[name='op']" ).val(),
-           otherparts_cost = $form.find( "input[name='oc']" ).val();
+           otherparts_cost = $form.find( "input[name='oc']" ).val(),
+           service_type = $('#serviceType :selected').val(),
+           mechanic_name = $form.find( "input[name='mechanic_name']" ).val(),
+
            service_reminder_time = $form.find( "input[name='service-reminder-time']" ).val();
            if (current_status == "PENDING" && pending_reason.length == 0) {
                alert("Please enter the reason for jobcard pending");
@@ -573,10 +580,16 @@ jQuery(document).ready(function($){
                for(var i = 0; i < recommendedserviceitems.length; i++) {
                    recommendedServices[i] = $(recommendedserviceitems[i]).val();
                }
+               
+              
+               if (!(customerComplaints.length == 0) && !(pending_reason.length == 0) && !(veh_numb.length == 0) &&
+                   !(veh_model.length == 0) && !(f_type.length == 0) &&
+                    !(kms_ticked.length == 0) && !(custr_name.length == 0) && !(cont_numb.length == 0) &&
+                    !(delivery_time.length == 0) && !(lab_cost.length == 0)) {
 
-               if (!(customerComplaints.length == 0)) {
+                    console.log("all present");
                    var url = $form.attr( "action" );
-                   var data = JSON.stringify({ data : { jc_id: jobcard_id,labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: pending_reason, status: current_status, services : customerComplaints, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost,service_reminder_time:service_reminder_time }});
+                   var data = JSON.stringify({ data : { service_type: service_type, mechanic_name: mechanic_name, jc_id: jobcard_id,labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: pending_reason, status: current_status, services : customerComplaints, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost,service_reminder_time:service_reminder_time }});
                   //  Send the data using post
                    var posting = $.post( url, data);
                    posting.done(function( data ) {
@@ -594,12 +607,16 @@ jQuery(document).ready(function($){
            }
 
     });
+
+  
     // Attach a submit handler to the form
     $( "#jc" ).submit(function( event ) {
-        debugger;
+
+       
        event.preventDefault();
        var $form = $( this ),
-       veh_numb = $form.find( "input[name='number']" ).val(),
+       veh_numb = vehNumb,
+       // imgInput = $('#imgInp')[0].files[0],
        chasis_num = $form.find( "input[name='chasis']" ).val(),
        veh_brand = $('#brand :selected').text(),
        veh_model = $form.find( "input[name='model']" ).val(),
@@ -613,15 +630,15 @@ jQuery(document).ready(function($){
        otherparts_desc = $form.find( "input[name='op']" ).val(),
        otherparts_cost = $form.find( "input[name='oc']" ).val(),
        mechanic_name = $form.find( "input[name='mechanic_name']" ).val(),
-       service_type = $('#serviceType :selected').val(),
-       service_type_class = []
+       service_type = $('#serviceType :selected').val();
+       // service_type_class = []
        
-        $('input[name=' + $('#serviceType :selected').val() +']:checked').each(function(){ 
-            service_type_class.push($(this).val());
-        });
+       //  $('input[name=' + $('#serviceType :selected').val() +']:checked').each(function(){ 
+       //      service_type_class.push($(this).val());
+       //  });
 
        d_reason = "";
-
+       
        if (!(veh_numb.length === 0 || veh_brand.length === 0 || veh_model.length === 0 || f_type.length === 0 || kms_ticked.length === 0 ||
          custr_name.length === 0 || cont_numb.length === 0 || delivery_time.length === 0 || lab_cost.length === 0)) {
            var services           = [];
@@ -673,10 +690,13 @@ jQuery(document).ready(function($){
            }
 
            var all_services = $.merge(services, customerComplaints);
+           
            if (!(all_services.length == 0)) {
                var url = $form.attr( "action" );
-               var data = JSON.stringify({ data : { service_type : service_type, service_type_class: service_type_class, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
+
+               var data = JSON.stringify({ data : { vehicle_images: imgInput, service_type : service_type, mechanic_name : mechanic_name, labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: d_reason, status: "OPEN", services : all_services, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost}});
                // Send the data using post
+                console.log(data);
                var posting = $.post( url, data);
                posting.done(function( data ) {
                    if (data.status == "failure") {
@@ -694,29 +714,10 @@ jQuery(document).ready(function($){
 
     });
 
-    $('.serviceTypeCheckbox').hide();
-    $('#'+$('#serviceType :selected').text()).show();
-
-    $("#serviceType").change(function () {
-        $('.serviceTypeCheckbox').hide();
-        $('#'+$('#serviceType :selected').text()).show();
-    });
-
-    // $('#number').keypress(function(){
-    //    if(vehicleNumbStatus == 'correct') {
-    //          console.log($('#number').val());
-    //     }
-    // });
-    // $('#number').change(function() {
-    //     if(vehicleNumbStatus == 'correct') {
-    //          console.log($('#number').val());
-    //     }
-   
-    // });
 
     function vehNumbDetails(value) {
         $.get("/apis/jobcard/v1/user/vehicle", {vehicle_registration_number: value}, function(data, status){
-            
+          
             if(data['vehicle_data']['chassis_number']) {
                 $("label[for='"+ 'chasis'+"']").addClass('open');
                 $('#jc').find( "input[name='chasis']" ).val(data['vehicle_data']['chassis_number']);
@@ -738,23 +739,124 @@ jQuery(document).ready(function($){
                $('#type').val(data['vehicle_data']['fuel_type']);
             }
 
+        }).fail(function(data,status){
+            // console.log("issue");
+            console.log(status);
+            // console.log(data);
+            // return true;
         });
     }
 
+
+    function vehNumbcheckDetails() {
+        if($('#jc').length > 0 ) {
+            var formIs = '#jc';
+        }
+
+        else if($('#editjc').length > 0) {
+            var formIs = '#editjc';
+        }
+
+        var veh_numb1 = $(formIs).find( "input[id='veh-numbr1']" ).val();
+        var veh_numb2 = $(formIs).find( "input[id='veh-numbr2']" ).val();
+        var veh_numb3 = $(formIs).find( "input[id='veh-numbr3']" ).val();
+        var veh_numb4 = $(formIs).find( "input[id='veh-numbr4']" ).val();
+
+        vehNumb = veh_numb1 + " "+ veh_numb2 + " " + veh_numb3 + " " + veh_numb4;
+
+        if(vehNumb1Status == true && vehNumb2Status == true && vehNumb3Status == true && vehNumb4Status == true && prvVehNumbr != vehNumb) {
+            prvVehNumbr = vehNumb;
+            vehNumbDetails(vehNumb);
+
+        }
+    }
+
+
+
+    vehNumb1Status = false;
+    vehNumb2Status = false;
+    vehNumb3Status = false;
+    vehNumb4Status = false;
+    prvVehNumbr = "";
+    vehNumbcheckDetails();
+
+
     $.formUtils.addValidator({
-        name : 'veh_numb',
+        name : 'veh_numb1',
         validatorFunction : function(value, $el, config, language, $form) {
-           
-            if(value.length == 10 && value.slice(0,2).match(/^[a-z]+$/gi)  && $.isNumeric(value.slice(2,4)) &&  value.slice(4,6).match(/^[a-z]+$/gi) &&  $.isNumeric(value.slice(6,10))) {
-                    // vehicleNumbStatus = 'correct';
-                    vehNumbDetails(value);
-                    return true;
+            if(value.length == 2 &&  value.match(/^[a-z]+$/gi))   {
+                vehNumb1Status = true;
+                vehNumbcheckDetails();
+                return true;
             }
-                            
-            else { vehicleNumbStatus = 'incorrect'; return false;}
-            
+
+            else {
+                vehNumb1Status = false;
+                return false;
+            }
 
         },
+
+        errorMessage : 'Enter valid vehicle number',
+        errorMessageKey: 'badVehNumber'
+    });
+
+
+    $.formUtils.addValidator({
+            name : 'veh_numb2',
+            validatorFunction : function(value, $el, config, language, $form) {
+                if(value.length == 2 &&  $.isNumeric(value))  {
+                    vehNumb2Status = true;
+                    vehNumbcheckDetails();
+                    return true;
+                }
+                else { 
+                    vehNumb2Status = false;
+                    return false;
+                }
+
+            },
+
+            errorMessage : 'Enter valid vehicle number',
+            errorMessageKey: 'badVehNumber'
+    });
+
+    $.formUtils.addValidator({
+        name : 'veh_numb3',
+        validatorFunction : function(value, $el, config, language, $form) {
+            if(value.length >=1 &&  value.match(/^[a-z]+$/gi) && value.length <= 2)   {
+                vehNumb3Status = true;
+                vehNumbcheckDetails();
+                return true;
+            }
+
+            else {
+                vehNumb3Status = false;
+                return false;
+            }
+
+        },
+
+        errorMessage : 'Enter valid vehicle number',
+        errorMessageKey: 'badVehNumber'
+    });
+
+    $.formUtils.addValidator({
+        name : 'veh_numb4',
+        validatorFunction : function(value, $el, config, language, $form) {
+            if(value.length == 4 && $.isNumeric(value) )   {
+                vehNumb4Status = true;
+                vehNumbcheckDetails();
+                return true;
+            }
+
+            else {
+                vehNumb4Status = false;
+                return false;
+            }
+
+        },
+
         errorMessage : 'Enter valid vehicle number',
         errorMessageKey: 'badVehNumber'
     });
@@ -764,40 +866,84 @@ jQuery(document).ready(function($){
     // vehicleNumbStatus = 'incorrect';
 
 
+    $(document).on('change', '.btn-file :file', function() {
+    var input = $(this),
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [label]);
+    });
 
-});
-
-
-$(document).ready( function() {
-        $(document).on('change', '.btn-file :file', function() {
-        var input = $(this),
-            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-        input.trigger('fileselect', [label]);
-        });
-
-        $('.btn-file :file').on('fileselect', function(event, label) {
-            
-            var input = $(this).parents('.input-group').find(':text'),
-                log = label;
-            
-            if( input.length ) {
-                input.val(log);
-            } 
+    $('.btn-file :file').on('fileselect', function(event, label) {
         
-        });
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                
-                reader.onload = function (e) {
-                    $('#img-upload').attr('src', e.target.result);
-                }
-                
-                reader.readAsDataURL(input.files[0]);
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+        
+        if( input.length ) {
+            input.val(log);
+        } 
+    
+    });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
             }
+            
+            reader.readAsDataURL(input.files[0]);
+
+            previewFile();
+            $('#create-job-btn').attr('disabled',true);
+
+        }
+    }
+
+    $("#imgInp").change(function(){
+        readURL(this);
+
+    });     
+
+    var config = {
+        apiKey: "AIzaSyDlLL9zOp1oJfNhrm2K80LSlDjvVa8V0iM",
+        authDomain: "ease-service-test.firebaseapp.com",
+        databaseURL: "https://ease-service-test.firebaseio.com",
+        projectId: "ease-service-test",
+        storageBucket: "ease-service-test.appspot.com",
+        messagingSenderId: "357393270027"
+    };
+
+
+
+    firebase.initializeApp(config);
+
+
+    function previewFile(){
+      var storage = firebase.storage();
+      var file = $('#imgInp')[0].files[0];
+          
+      var storageRef = storage.ref();
+
+      var thisRef = storageRef.child("dealers");
+      
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for(var i = 0; i < 10; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
 
-        $("#imgInp").change(function(){
-            readURL(this);
-        });     
+      var spaceRef = thisRef.child(text+".img");
+
+      spaceRef.put(file).then(function(snapshot) {
+        console.log('Uploaded a blob or file!');
+        $('#create-job-btn').attr('disabled',false);
+            spaceRef.getDownloadURL().then(function(url) {
+            
+                imgInput.push(url);
+            })
+        });
+      
+    }
+
 });
+
+var imgInput = [];
