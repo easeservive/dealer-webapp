@@ -61,25 +61,25 @@
                                     <div class="form-group transistion" id="veh-reg-nm">
                                         
                                         <div class="col-sm-3 col-xs-3 veh-numb">
-                                          <input type="text"  aria-required="true" id="veh-numbr1" class="input-block-level" data-validation="veh_numb1" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:':2' }}">
+                                          <input type="text"  aria-required="true" id="veh-numbr1"  readonly class="input-block-level" data-validation="veh_numb1" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:':2' }}">
                                         </div>
                                         <div class="col-sm-3 col-xs-3 veh-numb">
-                                          <input type="number" aria-required="true" id="veh-numbr2" class="input-block-level" data-validation="veh_numb2" autocomplete="off"  value="{{ veh_num|slice:'3:5' }}">
+                                          <input type="number" aria-required="true" id="veh-numbr2" readonly class="input-block-level" data-validation="veh_numb2" autocomplete="off"  value="{{ veh_num|slice:'3:5' }}">
                                         </div>
 
                                         {% if veh_num|length == 13 %}
                                         <div class="col-sm-3 col-xs-3 veh-numb">
-                                          <input type="text" aria-required="true" id="veh-numbr3" class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:'6:8' }}">
+                                          <input type="text" aria-required="true" id="veh-numbr3" readonly class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:'6:8' }}">
                                         </div>
                                         <div class="col-sm-3 col-xs-3 veh-numb">
-                                          <input type="number" aria-required="true" id="veh-numbr4" class="input-block-level" data-validation="veh_numb4"  autocomplete="off" value="{{ veh_num|slice:'9:13' }}" >
+                                          <input type="number" aria-required="true" id="veh-numbr4" readonly class="input-block-level" data-validation="veh_numb4"  autocomplete="off" value="{{ veh_num|slice:'9:13' }}" >
                                         </div>
                                         {% elif veh_num|length == 12 %}
                                         <div class="col-sm-3 col-xs-3 veh-numb">
-                                          <input type="text" aria-required="true" id="veh-numbr3" class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:'6:7' }}">
+                                          <input type="text" aria-required="true" id="veh-numbr3" readonly class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:'6:7' }}">
                                         </div>
                                         <div class="col-sm-3 col-xs-3 veh-numb">
-                                          <input type="number" aria-required="true" id="veh-numbr4" class="input-block-level" data-validation="veh_numb4"  autocomplete="off" value="{{ veh_num|slice:'8:12' }}" >
+                                          <input type="number" aria-required="true" id="veh-numbr4" readonly class="input-block-level" data-validation="veh_numb4"  autocomplete="off" value="{{ veh_num|slice:'8:12' }}" >
                                         </div>
                                         {% endif %}
                                     </div>
@@ -88,20 +88,20 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="cust_name">Name</label>
-                                        <input value="{{cust_name}}"  name="cust_name" id="cust_name"  data-validation="required" type="text" class="form-control">
+                                        <input value="{{cust_name}}"  name="cust_name" id="cust_name"  readonly data-validation="required" type="text" class="form-control">
                                         <input type="hidden" name="jobcard_id" value="{{ jc_id }}"/>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="cont_num">Mobile number</label>
-                                        <input value="{{cont_num}}"  name="cont_num" id="cont_num" data-validation="required" type="text" class="form-control">
+                                        <input value="{{cont_num}}"  name="cont_num" id="cont_num" readonly data-validation="required" type="text" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="cont_addr">Address</label>
-                                        <input value="{{cont_address}}"  name="cont_addr" id="cont_addr" data-validation="required" type="text" class="form-control">
+                                        <input value="{{cont_address}}"  name="cont_addr" id="cont_addr" readonly data-validation="required" type="text" class="form-control">
                                     </div>
                                 </div>
 
@@ -109,26 +109,26 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="chasis">Enter Chasis number</label>
-                                        <input type="text" name="chasis"  id="chasis" value="{{c_num}}" class="form-control">
+                                        <input type="text" name="chasis"  id="chasis" value="{{c_num}}" readonly class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="brand">Brand</label>
-                                        <input type="text" name="brand" id="brand" data-validation="required" value="{{brand}}"  class="form-control">
+                                        <input type="text" name="brand" id="brand" data-validation="required" readonly value="{{brand}}"  class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="model">Model</label>
-                                        <input type="text" name="model" value="{{model}}" data-validation="required"  id="model" class="form-control">
+                                        <input type="text" name="model" value="{{model}}" readonly data-validation="required"  id="model" class="form-control">
                                     </div>
                                 </div>
 
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="type">Fuel Type</label>
-                                        <select name="type" id="type" class="form-control" data-validation="required">
+                                        <select name="type" id="type" class="form-control" disabled data-validation="required">
                                             {% if fuel_type == 'Diesel' %}
                                                 <option selected="selected" value="Diesel">Diesel</option>
                                             {% else %}
@@ -154,7 +154,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group col-sm-12" style="padding: 0px   ;">
                                         <label for="serviceType">Service Types</label>
-                                        <select aria-required="true" name="serviceType" id="serviceType" class="form-control" data-validation="required">
+                                        <select aria-required="true" name="serviceType" id="serviceType" disabled class="form-control" data-validation="required">
                                             {% for serviceType in serviceTypes %}
                                                    
                                                     <optgroup label="{{ serviceType.service_type_name }}">
@@ -178,7 +178,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="kms">Kilometers</label>
-                                        <input type="text" name="kms" value="{{km_ticked}}" data-validation="required"  id="kms" class="form-control">
+                                        <input type="text" name="kms" value="{{km_ticked}}" readonly data-validation="required"  id="kms" class="form-control">
                                     </div>
                                 </div>
                                 {% if status == "CLOSED" %}
@@ -212,7 +212,7 @@
                                         {% if status == "CLOSED" %}
                                         <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" disabled>
                                         {% else %}
-                                        <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" data-validation="required"/>
+                                        <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" />
                                         {% endif %}
                                     </div>
                                 </div>
@@ -404,7 +404,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group overflow-not-hidden">
                                             <label for="mechanic_name">Mechanic Name</label>
-                                            <input  name="mechanic_name" id="mechanic_name" class="form-control" data-validation="required" value="{{ mechanic_name }}" type="text">
+                                            <input  name="mechanic_name" id="mechanic_name" readonly class="form-control" data-validation="required" value="{{ mechanic_name }}" type="text">
                                         </div>
                                     </div>
                                 </div>
