@@ -65,9 +65,50 @@ def generateOTP(user):
         return 0, ""
 
 
+def regenerateOTP(user):
+    try:
+        try:
+            otp_obj = OTPTransactionInfo.objects.get(User = user)
+            otp_obj.delete()
+
+        except OTPTransactionInfo.DoesNotExist:
+            print("New OTP Request.")
+            pass
+
+        tranID = "OTP" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '_' + str(random.randint(111, 999))
+        otpValue = str(random.randint(111111, 999999))
+        time = str(datetime.datetime.now())
+        status = 0
+        # trigger SMS
+        OTPTransactionInfo.objects.create(User = user,
+            TranID = tranID,
+            OTPValue = otpValue,
+            DateTime = time,
+            VerificationStatus = status
+        )
+
+        # deactivate user until verification
+        user_obj = User.objects.get(username = user)
+        user_obj.is_active = 0
+        user_obj.save()
+
+        print("otpValue - %s" % otpValue)
+
+        send_text_message(user, "EASE SERVICE OTP - %s" % otpValue)
+
+        return 1, tranID
+
+    except:
+        error_logger = log_rotator.error_logger()
+        error_logger.debug("Exception::", exc_info=True)
+
+
 def isValidOPT(tranid, otpvalue):
     try:
         otp_obj = OTPTransactionInfo.objects.get(TranID = tranid)
+
+        if (datetime.datetime.now() - datetime.datetime.strptime(otp_obj.DateTime, "%Y-%m-%d %H:%M:%S.%f")).seconds >= 180:
+            return False
 
         if otp_obj.OTPValue == otpvalue:
             otp_obj.VerificationStatus = '1'

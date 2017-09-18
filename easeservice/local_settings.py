@@ -28,6 +28,8 @@ SECRET_KEY = 'k+fyy*!xv^v5$m4r0!e13+pcq!u@1$rnbq(wnkm^8@02i2&g!v'
 DEBUG = True
 SMS_BLOCK = True
 
+API_KEY = "3@s3-api-key-3@s3"
+
 ALLOWED_HOSTS = ['*']
 
 #PATH_LOGS = os.path.join(BASE_DIR, 'es.log')

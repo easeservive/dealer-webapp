@@ -21,6 +21,7 @@ urlpatterns = [
    url(r'^address/add$', views.add_address, name="add_address"),
    url(r'^vehicle/add$', views.add_vehicle, name="add_vehicle"),
    url(r'^vehicle/tips$', views.retrieve_maintenance_tips, name="retrieve_maintenance_tips"),
+   url(r'^remove$', views.remove_user, name="remove_user"),
    url(r'^test$', views.test, name="test"),
 
 

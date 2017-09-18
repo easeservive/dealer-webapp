@@ -92,17 +92,20 @@ def meshup(request):
             #    #if util.save_image(image_id, images):
             #    #    image_ids.append(image_id)
             #    handle_uploaded_file(ImageFile(request.FILES['img']), image_id)
-            ServiceCenterInfo.objects.create(Name = service_center_name,
-                                             ContactNumber = contact_no,
-                                             Email = email,
-                                             BuildingNo = building_no,
-                                             Street = street_name,
-                                             Town  = town,
-                                             District = district,
-                                             City = city,
-                                             Pincode = pin_code,
-                                             OwnerName = owner_name,
-                                             Specialization = specialization)
+            ServiceCenterInfo.objects.create(
+                Name = service_center_name,
+                ContactNumber = contact_no,
+                Email = email,
+                BuildingNo = building_no,
+                Street = street_name,
+                Town  = town,
+                District = district,
+                City = city,
+                Pincode = pin_code,
+                OwnerName = owner_name,
+                Specialization = specialization
+            )
+            
             t = get_template('home.html')
             html = t.render({'show_success': True, 'show_failure': False})
             return HttpResponse(html) 
