@@ -126,7 +126,7 @@ class CServiceBooking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20)
-    job_card_id = models.CharField(max_length=30, null=True, blank=True)
+    job_card_id = models.CharField(max_length=30, default=None, blank=True, null=True)
 
 
 class EmergencyServiceBooking(models.Model):
@@ -142,4 +142,4 @@ class EmergencyServiceBooking(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20)
     service_center_id = models.CharField(max_length=20)
-    job_card_id = models.CharField(max_length=30)
+    job_card_id = models.CharField(max_length=30, default=None, blank=True, null=True)

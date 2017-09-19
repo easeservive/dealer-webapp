@@ -539,7 +539,7 @@ def retrieve_service_details(request):
             "customer_address_id": service_obj.customer_address_id,
             "service_details": service_obj.service_details,
             "feedback_stars": service_obj.feedback_stars,
-            "feedback_text": service_obj.feedback_text,
+            "feedback_text": service_obj.feedback_text
         }
     })
 
