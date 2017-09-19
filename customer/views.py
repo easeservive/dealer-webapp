@@ -404,7 +404,7 @@ def remove_user(request):
 
     except User.DoesNotExist:
         return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
-    except customer_obj.DoesNotExist:
+    except Customer.DoesNotExist:
         return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
 
 
