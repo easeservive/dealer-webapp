@@ -116,7 +116,7 @@ class CServiceBooking(models.Model):
     booking_id = models.CharField(primary_key=True, max_length=20)
     customer_id = models.CharField(max_length=20)
     vehicle_type = models.CharField(max_length=50)
-    vehicle_model_id = models.CharField(max_length=20)
+    vehicle_model_id = models.CharField(max_length=50)
     vehicle_registration_number = models.CharField(max_length=20)
     service_center_id = models.CharField(max_length=20)
     customer_address_id = models.CharField(max_length=20)
