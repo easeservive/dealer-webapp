@@ -8,6 +8,7 @@ class BookServiceForm(forms.Form):
     service_center_id = forms.CharField()
     customer_address_id = forms.CharField()
     service_details = forms.CharField()
+    service_type_id = forms.CharField()
 
 
 class RetrieveServiceForm(forms.Form):

@@ -505,6 +505,7 @@ def book_service(request):
         service_center_id = service_form.cleaned_data['service_center_id'],
         customer_address_id = service_form.cleaned_data['customer_address_id'],
         service_details = service_form.cleaned_data['service_details'],
+        service_type_id = service_form.cleaned_data['service_type_id'],
         status = "Pending Confirmation"
     )
     
@@ -539,7 +540,8 @@ def retrieve_service_details(request):
             "customer_address_id": service_obj.customer_address_id,
             "service_details": service_obj.service_details,
             "feedback_stars": service_obj.feedback_stars,
-            "feedback_text": service_obj.feedback_text
+            "feedback_text": service_obj.feedback_text,
+            "service_type_id": service_obj.service_type_id
         }
     })
 
@@ -566,7 +568,8 @@ def retrieve_service_history(request):
                 "feedback_stars": service_obj.feedback_stars,
                 "feedback_text": service_obj.feedback_text,
                 "created_at": service_obj.created_at,
-                "status": service_obj.status
+                "status": service_obj.status,
+                "service_type_id": service_obj.service_type_id
             })
 
     emergency_booking_list = models.EmergencyServiceBooking.objects.filter(customer_id=request.user.username)
@@ -851,8 +854,7 @@ def accept_service_request(request):
         CreatedTime = str(datetime.datetime.now()),
         LastedEditedTime = str(datetime.datetime.now()),
         CustomerComplaint=service_obj.service_details,
-        # general service by default
-        ServiceTypeId = "5s5d5f5g",
+        ServiceTypeId = service_obj.service_type_id,
         VehicleImages = []
     )
 
