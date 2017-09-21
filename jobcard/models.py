@@ -144,3 +144,4 @@ class EmergencyServiceBooking(models.Model):
     status = models.CharField(max_length=20)
     service_center_id = models.CharField(max_length=20)
     job_card_id = models.CharField(max_length=30, default=None, blank=True, null=True)
+    service_type_id = models.CharField(max_length=20)

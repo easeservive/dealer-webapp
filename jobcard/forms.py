@@ -29,6 +29,7 @@ class BookEmergencyServiceForm(forms.Form):
     customer_address_id = forms.CharField(required=False)
     customer_latlon = forms.CharField(required=False)
     service_details = forms.CharField()
+    service_type_id = forms.CharField()
 
 
 class RetrieveServiceRequests(forms.Form):

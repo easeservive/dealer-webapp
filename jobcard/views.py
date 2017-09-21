@@ -586,7 +586,8 @@ def retrieve_service_history(request):
                 'feedback_text': e_service_obj.feedback_text,
                 "created_at": e_service_obj.created_at,
                 "status": e_service_obj.status,
-                "service_center_id": e_service_obj.service_center_id
+                "service_center_id": e_service_obj.service_center_id,
+                "service_type_id": service_obj.service_type_id
             })
     
     return Response({'status': "success", 'services_history': services_history, 'emergency_services_history': emergency_services_history})
@@ -642,7 +643,8 @@ def book_emergency_service(request):
         customer_address_id = service_form.cleaned_data['customer_address_id'],
         customer_latlon = service_form.cleaned_data['customer_latlon'],
         service_details = service_form.cleaned_data['service_details'],
-        status = "Pending Confirmation"
+        status = "Pending Confirmation",
+        service_type_id = service_form.cleaned_data['service_type_id'],
     )
     
     return Response({'status': "success", "booking_id": service_obj.booking_id})
@@ -670,6 +672,7 @@ def retrieve_emergency_service(request):
             "service_details": service_obj.service_details,
             'feedback_stars': service_obj.feedback_stars,
             'feedback_text': service_obj.feedback_text,
+            "service_type_id": service_obj.service_type_id
         }
     })
 
