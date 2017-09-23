@@ -394,18 +394,18 @@ def remove_user(request):
         return Response({'status': "failure", "msg": "Invalid API key."}, status=status_code.HTTP_403_FORBIDDEN)
 
     try:
+    	customer_obj = models.Customer.objects.create(mobile=remove_user_form.cleaned_data['mobile'])
+        customer_obj.delete()
+    except:
+    	pass
+
+    try:
         user_obj = User.objects.get(username=remove_user_form.cleaned_data['mobile'])
         user_obj.delete()
-
-        customer_obj = models.Customer.objects.create(mobile=remove_user_form.cleaned_data['mobile'])
-        customer_obj.delete()
-
-        return Response({'status': "success"})
-
     except User.DoesNotExist:
         return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
-    except models.Customer.DoesNotExist:
-        return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
+
+    return Response({'status': "success"})
 
 
 # @api_view(['GET'])
