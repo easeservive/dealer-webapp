@@ -394,7 +394,7 @@ def remove_user(request):
         return Response({'status': "failure", "msg": "Invalid API key."}, status=status_code.HTTP_403_FORBIDDEN)
 
     try:
-        customer_obj = models.Customer.objects.create(mobile=remove_user_form.cleaned_data['mobile'])
+        customer_obj = models.Customer.objects.get(mobile=remove_user_form.cleaned_data['mobile'])
         customer_obj.delete()
     except:
         pass
