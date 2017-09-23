@@ -404,7 +404,7 @@ def remove_user(request):
 
     except User.DoesNotExist:
         return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
-    except Customer.DoesNotExist:
+    except models.Customer.DoesNotExist:
         return Response({'status':'failure', "msg": "Account DoesNotExist."}, status=status_code.HTTP_409_CONFLICT)
 
 
