@@ -582,7 +582,7 @@ jQuery(document).ready(function($){
                }
                
               
-               if (!(customerComplaints.length == 0) && !(pending_reason.length == 0) && !(veh_numb.length == 0) &&
+               if (!(customerComplaints.length == 0) &&  !(veh_numb.length == 0) &&
                    !(veh_model.length == 0) && !(f_type.length == 0) &&
                     !(kms_ticked.length == 0) && !(custr_name.length == 0) && !(cont_numb.length == 0) &&
                     !(delivery_time.length == 0) && !(lab_cost.length == 0)) {
@@ -886,9 +886,12 @@ jQuery(document).ready(function($){
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             
-            reader.onload = function (e) {
-                $('#img-upload').attr('src', e.target.result);
-            }
+            // reader.onload = function (e) {
+            //     // debugger;
+            //     // $('#img-upload').attr('src', e.target.result);
+            //     var newImg = $('.usr-img').empty().append("<img class='img-upload' src="+ String(e.target.result) +"/>");
+                
+            // }
             
             reader.readAsDataURL(input.files[0]);
 
@@ -937,7 +940,7 @@ jQuery(document).ready(function($){
         console.log('Uploaded a blob or file!');
         $('#create-job-btn').attr('disabled',false);
             spaceRef.getDownloadURL().then(function(url) {
-            
+                $('.usr-img').append("<img class='img-upload col-md-3' src=" + url + "/>");
                 imgInput.push(url);
             })
         });
