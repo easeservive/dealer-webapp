@@ -55,74 +55,144 @@
                         <div class="clear"></div>
                         <div class="col-sm-12 padding-left-free">
                             <form action="/api/save/jobcard" method="POST" id="editjc" class="validate-form">
+
+                                <div class="col-sm-4 veh-numb-grp">
+                                    <label for="veh-reg-nm">Enter Vehicle number</label>
+                                    <div class="form-group transistion" id="veh-reg-nm">
+                                        
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="text"  aria-required="true" id="veh-numbr1"  readonly class="input-block-level" data-validation="veh_numb1" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:':2' }}">
+                                        </div>
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="number" aria-required="true" id="veh-numbr2" readonly class="input-block-level" data-validation="veh_numb2" autocomplete="off"  value="{{ veh_num|slice:'3:5' }}">
+                                        </div>
+
+                                        {% if veh_num|length == 13 %}
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="text" aria-required="true" id="veh-numbr3" readonly class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:'6:8' }}">
+                                        </div>
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="number" aria-required="true" id="veh-numbr4" readonly class="input-block-level" data-validation="veh_numb4"  autocomplete="off" value="{{ veh_num|slice:'9:13' }}" >
+                                        </div>
+                                        {% elif veh_num|length == 12 %}
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="text" aria-required="true" id="veh-numbr3" readonly class="input-block-level"  data-validation="veh_numb3" autocomplete="off"  maxlength="2" value="{{ veh_num|slice:'6:7' }}">
+                                        </div>
+                                        <div class="col-sm-3 col-xs-3 veh-numb">
+                                          <input type="number" aria-required="true" id="veh-numbr4" readonly class="input-block-level" data-validation="veh_numb4"  autocomplete="off" value="{{ veh_num|slice:'8:12' }}" >
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="cust_name">Name</label>
-                                        <input value="{{cust_name}}" disabled name="cust_name" id="cust_name"  required type="text" class="form-control">
+                                        <input value="{{cust_name}}"  name="cust_name" id="cust_name"  readonly data-validation="required" type="text" class="form-control">
                                         <input type="hidden" name="jobcard_id" value="{{ jc_id }}"/>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="cont_num">Mobile number</label>
-                                        <input value="{{cont_num}}" disabled name="cont_num" id="cont_num" required type="text" class="form-control">
+                                        <input value="{{cont_num}}"  name="cont_num" id="cont_num" readonly data-validation="required" type="text" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="cont_addr">Address</label>
-                                        <input value="{{cont_address}}" disabled name="cont_addr" id="cont_addr" required type="text" class="form-control">
+                                        <input value="{{cont_address}}"  name="cont_addr" id="cont_addr" readonly data-validation="required" type="text" class="form-control">
                                     </div>
                                 </div>
 
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="number">Enter Vehicle number</label>
-                                        <input type="text" name="number" id="number" required value="{{veh_num}}" disabled class="form-control">
-                                    </div>
-                                </div>
+
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="chasis">Enter Chasis number</label>
-                                        <input type="text" name="chasis" readonly id="chasis" value="{{c_num}}" class="form-control">
+                                        <input type="text" name="chasis"  id="chasis" value="{{c_num}}" readonly class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="brand">Brand</label>
-                                        <input type="text" name="brand" id="brand" required value="{{brand}}" disabled class="form-control">
+                                        <input type="text" name="brand" id="brand" data-validation="required" readonly value="{{brand}}"  class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="model">Model</label>
-                                        <input type="text" name="model" value="{{model}}" required disabled id="model" class="form-control">
+                                        <input type="text" name="model" value="{{model}}" readonly data-validation="required"  id="model" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+
+                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="type">Fuel Type</label>
-                                        <input type="text" name="type" disabled required value="{{fuel_type}}" id="type" class="form-control">
+                                        <select name="type" id="type" class="form-control" disabled data-validation="required">
+                                            {% if fuel_type == 'Diesel' %}
+                                                <option selected="selected" value="Diesel">Diesel</option>
+                                            {% else %}
+                                                <option value="Diesel">Diesel</option>
+                                            {% endif %}
+
+                                            {% if fuel_type == 'Petrol' %}
+                                                <option selected="selected" value="Petrol">Petrol</option>
+                                            {% else %}
+                                                <option value="Petrol">Petrol</option>
+                                            {% endif %}
+
+                                            {% if fuel_type == 'LPG' %}
+                                                <option selected="selected" value="LPG">LPG</option>
+                                            {% else %}
+                                                <option value="LPG">LPG</option>
+                                            {% endif %}
+                                       
+                                        </select>
                                     </div>
                                 </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group col-sm-12" style="padding: 0px   ;">
+                                        <label for="serviceType">Service Types</label>
+                                        <select aria-required="true" name="serviceType" id="serviceType" disabled class="form-control" data-validation="required">
+                                            {% for serviceType in serviceTypes %}
+                                                   
+                                                    <optgroup label="{{ serviceType.service_type_name }}">
+                                                        {% for serviceTypeClass in serviceType.classifications %}
+
+                                                            {% if service_type_list.1 == serviceTypeClass.name  %}
+
+                                                            <option selected value="{{ serviceTypeClass.id }}">{{ serviceTypeClass.name }}</option>
+                                                            {% else %}
+                                                            <option value="{{ serviceTypeClass.id }}">{{ serviceTypeClass.name }}</option>
+                                                            {% endif %}
+                                                            
+                                                        {% endfor %}     
+                                                    </optgroup> 
+                                              
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                              
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="kms">Kilometers</label>
-                                        <input type="text" name="kms" value="{{km_ticked}}" required disabled id="kms" class="form-control">
+                                        <input type="text" name="kms" value="{{km_ticked}}" readonly data-validation="required"  id="kms" class="form-control">
                                     </div>
                                 </div>
                                 {% if status == "CLOSED" %}
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="status">Status</label>
-                                        <input type="text" name="status" value="{{status}}" required disabled id="status" class="form-control">
+                                        <input type="text" name="status" value="{{status}}" data-validation="required" disabled id="status" class="form-control">
                                     </div>
                                 </div>
                                 {% else %}
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="status">Status</label>
-                                        <select name="status" id="status" class="form-control" required>
+                                        <select name="status" id="status" class="form-control" data-validation="required">
                                         {% if status == "OPEN" %}
                                             <option value="OPEN" selected>OPEN</option>
                                             <option value="CLOSED">CLOSED</option>
@@ -136,13 +206,13 @@
                                     </div>
                                 </div>
                                 {% endif %}
-                                <div class="col-sm-8">
+                                <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="reason">Pending Reason</label>
                                         {% if status == "CLOSED" %}
                                         <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" disabled>
                                         {% else %}
-                                        <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" required=""/>
+                                        <input type="text" name="reason" value="{{reason}}" id="reason" class="form-control" />
                                         {% endif %}
                                     </div>
                                 </div>
@@ -237,9 +307,9 @@
                                                     <input type="hidden" value="" class="parts_ids" name="parts_ids[]">
                                                     <td><input type="text" class="form-control parts"/></td>
                                                     <td><input type="text" class="form-control description sparesdescription"/></td>
-                                                    <td><input type="text" readonly disabled class="form-control price" id="u_price"/></td>
+                                                    <td><input type="text" class="form-control price" id="u_price"/></td>
                                                     <td><input type="number" min="0" class="form-control qty" id="quantity"/></td>
-                                                    <td><input type="text" class="form-control total_price" readonly id="tot_price"/></td>
+                                                    <td><input type="text" class="form-control total_price"  id="tot_price"/></td>
                                                     <td><a class="btn btn-success add-part">Add</a></td>
                                                 </tr>
                                                 {% endif %}
@@ -263,9 +333,9 @@
                                         <div class="form-group">
                                             <label for="labour-estimation">Other Parts</label>
                                             {% if status == "CLOSED" %}
-                                            <input type="text" name="op" disabled required id="op" class="form-control" value="{{otherparts}}">
+                                            <input type="text" name="op" disabled data-validation="required" id="op" class="form-control" value="{{otherparts}}">
                                             {% else %}
-                                            <input type="text" name="op" required id="op" class="form-control" value="{{otherparts}}">
+                                            <input type="text" name="op"  id="op" class="form-control" value="{{otherparts}}">
                                             {% endif %}
                                         </div>
                                     </div>
@@ -273,9 +343,9 @@
                                         <div class="form-group">
                                             <label for="labour-estimation">Price</label>
                                             {% if status == "CLOSED" %}
-                                            <input type="text" name="oc" disabled required id="oc" class="form-control" value="{{othercost}}">
+                                            <input type="text" name="oc" disabled data-validation="required" id="oc" class="form-control" value="{{othercost}}">
                                             {% else %}
-                                            <input type="text" name="oc" required id="oc" class="form-control" value="{{othercost}}">
+                                            <input type="text" name="oc"  id="oc" class="form-control" value="{{othercost}}">
                                             {% endif %}
                                         </div>
                                     </div>
@@ -283,9 +353,9 @@
                                         <div class="form-group">
                                             <label for="labour-estimation">Labour Cost Estimation</label>
                                             {% if status == "CLOSED" %}
-                                            <input type="text" name="labour_estimation" disabled required id="labour-estimation" class="form-control" value="{{lab_cost}}">
+                                            <input type="text" name="labour_estimation" disabled data-validation="required" id="labour-estimation" class="form-control" value="{{lab_cost}}">
                                             {% else %}
-                                            <input type="text" name="labour_estimation" required id="labour-estimation" class="form-control" value="{{lab_cost}}">
+                                            <input type="text" name="labour_estimation"  id="labour-estimation" class="form-control" value="{{lab_cost}}">
                                             {% endif %}
                                         </div>
                                     </div>
@@ -293,9 +363,9 @@
                                         <div class="form-group">
                                             <label for="total-parts-cost">Total Parts cost</label>
                                             {% if status == "CLOSED" %}
-                                            <input type="text" disabled name="total_parts_cost" required id="total-parts-cost" class="form-control" value="{{total_parts_cost_editjc}}">
+                                            <input type="text" disabled name="total_parts_cost" data-validation="required" id="total-parts-cost" class="form-control" value="{{total_parts_cost_editjc}}">
                                             {% else %}
-                                            <input type="text" name="total_parts_cost" required id="total-parts-cost" class="form-control" value="{{total_parts_cost_editjc}}">
+                                            <input type="text" name="total_parts_cost"  id="total-parts-cost" class="form-control" value="{{total_parts_cost_editjc}}">
                                             {% endif %}
                                         </div>
                                     </div>
@@ -303,9 +373,9 @@
                                         <div class="form-group">
                                             <label for="total-estimation">Total Estimation</label>
                                             {% if status == "CLOSED" %}
-                                            <input type="text" disabled name="total_estimation" required readonly id="total-estimation" class="form-control" value="{{total_cost_editjc}}">
+                                            <input type="text" disabled name="total_estimation" data-validation="required" readonly id="total-estimation" class="form-control" value="{{total_cost_editjc}}">
                                             {% else %}
-                                            <input type="text" name="total_estimation" required readonly id="total-estimation" class="form-control" value="{{total_cost_editjc}}">
+                                            <input type="text" name="total_estimation"   id="total-estimation" class="form-control" value="{{total_cost_editjc}}">
                                             {% endif %}
                                         </div>
                                     </div>
@@ -314,21 +384,29 @@
                                         <div class="form-group overflow-not-hidden">
                                             <label for="delivery-time">Delivery Time</label>
                                             {% if status == "CLOSED" %}
-                                            <input type="text" disabled name="delivery_time" required id="delivery-time" class="form-control" value="{{del_time}}">
+                                            <input type="text" disabled name="delivery_time" data-validation="required" id="delivery-time" class="form-control" value="{{del_time}}">
                                             {% else %}
-                                            <input type="text" name="delivery_time" required id="delivery-time" class="form-control" value="{{del_time}}">
+                                            <input type="text" name="delivery_time"  id="delivery-time" class="form-control" value="{{del_time}}">
                                             {% endif %}
                                         </div>
                                     </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group overflow-not-hidden">
-                                        <label for="service-reminder-time">Service Reminder Time</label>
-                                        {% if status == "CLOSED" %}
-                                        <input type="text" disabled name="service-reminder-time" required id="service-reminder-time" class="form-control" value="{{service_reminder_time}}">
-                                        {% else %}                                    <input type="text" name="service-reminder-time" required id="service-reminder-time" class="form-control" value="{{service_reminder_time}}">{% endif %}
+                                    <div class="col-sm-4">
+                                        <div class="form-group overflow-not-hidden">
+                                            <label for="service-reminder-time">Service Reminder Time</label>
+                                            {% if status == "CLOSED" %}
+                                            <input type="text" disabled name="service-reminder-time" data-validation="required" id="service-reminder-time" class="form-control" value="{{service_reminder_time}}">
+                                            {% else %}                                    <input type="text" name="service-reminder-time"  id="service-reminder-time" class="form-control" value="{{service_reminder_time}}">{% endif %}
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
+                                <div class="col-sm-12 mechCol">
+                                    <div class="col-sm-4">
+                                        <div class="form-group overflow-not-hidden">
+                                            <label for="mechanic_name">Mechanic Name</label>
+                                            <input  name="mechanic_name" id="mechanic_name" readonly class="form-control" data-validation="required" value="{{ mechanic_name }}" type="text">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clear"></div>
                                 <div class="col-sm-6">
@@ -357,15 +435,35 @@
       function myFunction() {
           window.print();
       }</script> 
-        <script src="/static/browser-polyfill.js"></script> 
+<!--         <script src="/static/browser-polyfill.js"></script> 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/u/bs/jqc-1.12.3,dt-1.10.12,cr-1.3.2,r-2.1.0/datatables.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script> 
         <script src="/static/bootstrap-datetimepicker.js"></script>
+        <script src="/static/jquery_002.js"></script>
         <script src="/static/jquery-ui.js"></script>
         <script src="/static/bootstrap-datepicker.js"></script>
+        <script src="/static/createjobcard.js"></script>  -->
+
+
+        <script src="/static/browser-polyfill.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="/static/moment.js"></script>
+        <script type="text/javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
+        <script src="/static/jquery_002.js"></script>
+        <script src="/static/jquery-ui.js"></script>
+        <script src="/static/bootstrap-datepicker.js"></script>
+        <script src="/static/bootstrap-datetimepicker.js"></script>
         <script src="/static/createjobcard.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script>
+
+
     </body>
 </html>

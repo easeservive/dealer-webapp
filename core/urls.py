@@ -35,7 +35,8 @@ urlpatterns = [
      url(r'^apis/core/v1/servicecenter$', views.retrieve_service_center, name="retrieve_service_center"),
      url(r'^apis/core/v1/surveys$', views.retrieve_surveys, name="retrieve_surveys"),
      url(r'^apis/core/v1/reviews/vehicle$', views.retrieve_vehicle_review, name="retrieve_vehicle_review"),
-     url(r'^apis/core/v1/vehicle/models$', views.retrieve_vehicle_models, name="retrieve_vehicle_models"),
+     url(r'^apis/core/v1/vehicle/models$', views.retrieve_vehicle_models, name="retrieve_vehicle_models"),\
+     url(r'^apis/core/v1/servicecenter/all$', views.retrieve_service_centers, name="retrieve_service_centers"),
 
 ]
 

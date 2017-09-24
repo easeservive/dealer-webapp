@@ -2,8 +2,8 @@ from django import forms
 
 class BookServiceForm(forms.Form):
     
-    vehicle_type = forms.CharField()
-    vehicle_model_id = forms.IntegerField()
+    #vehicle_type = forms.CharField()
+    vehicle_model_id = forms.CharField()
     vehicle_registration_number = forms.CharField()
     service_center_id = forms.CharField()
     customer_address_id = forms.CharField()
@@ -12,12 +12,12 @@ class BookServiceForm(forms.Form):
 
 class RetrieveServiceForm(forms.Form):
     
-    booking_id = forms.IntegerField()
+    booking_id = forms.CharField()
 
 
 class ServiceFeedbackForm(forms.Form):
     
-    booking_id = forms.IntegerField()
+    booking_id = forms.CharField()
     feedback_text = forms.CharField(required=False)
     feedback_stars = forms.IntegerField()
 
@@ -37,7 +37,8 @@ class RetrieveServiceRequests(forms.Form):
 
 class AcceptServiceForm(forms.Form):
 
-    booking_id = forms.IntegerField()
+    booking_id = forms.CharField()
+    #booking_type = forms.CharField()
 
 
 class JcForm(forms.Form):

@@ -47,3 +47,9 @@ service_types_dropdown = [
     },
 
 ]
+
+class ResponseMessages(object):
+
+    MOBILE_VERIFICATION_LINK = "A verification link has been sent to your mobile, please verify by clicking on it."
+
+    LOGIN_VERIFICATION = "Sorry, the account has to be verified and activated by admin before you can login."
