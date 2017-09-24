@@ -261,6 +261,7 @@ def getJobCard(jc_id, dealerid, invoice_details = False):
             details['km_ticked'] = veh_obj.KilometersTicked
             details['jc_id'] = veh_obj.JobCardID
             details['service_reminder_time'] = jc_obj.service_reminder_time
+            details['vehicle_images'] = jc_obj.VehicleImages
 
             #print("jc_obj.ServiceTypeId - %s" % jc_obj.ServiceTypeId)
             details['service_type'] = "%s - %s" % (global_constants.service_types[jc_obj.ServiceTypeId]['service_type'],
