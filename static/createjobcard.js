@@ -968,10 +968,21 @@ jQuery(document).ready(function($){
          
     });
 
-    // $('.img-upload').click(function(){
-    //     imgInput.splice($.inArray($(this)[0].src, imgInput),1);
-    //     $(this).remove();
-    // });
+    $('.img-upload').click(function(){
+        clickedImg = ($(this)[0].src).slice(0,-1);
+        // this = $(this);
+        $(this).remove();
+        $.each(imgInput, function(i,val){
+            
+            if(val == clickedImg){
+                imgInput.splice(clickedImg,1);
+
+            }
+
+        });
+                
+    });    
+
 
 });
 
