@@ -941,6 +941,21 @@ jQuery(document).ready(function($){
         $('#create-job-btn').attr('disabled',false);
             spaceRef.getDownloadURL().then(function(url) {
                 $('.usr-img').append("<img class='img-upload col-md-3' src=" + url + "/>");
+                $('.img-upload').click(function(){
+                    clickedImg = ($(this)[0].src).slice(0,-1);
+                    // this = $(this);
+                    $(this).remove();
+                    $.each(imgInput, function(i,val){
+                        
+                        if(val == clickedImg){
+                            imgInput.splice(clickedImg,1);
+
+                        }
+
+                    });
+                    
+                });               
+
                 imgInput.push(url);
             })
         });
@@ -952,6 +967,11 @@ jQuery(document).ready(function($){
         imgInput.push($(this)[0].src);
          
     });
+
+    // $('.img-upload').click(function(){
+    //     imgInput.splice($.inArray($(this)[0].src, imgInput),1);
+    //     $(this).remove();
+    // });
 
 });
 
