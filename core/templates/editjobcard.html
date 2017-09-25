@@ -408,6 +408,22 @@
                                         </div>
                                     </div>
                                 </div>
+                                 <div class='col-sm-12'>
+                                    <label>Upload Image</label>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                        <span class="btn btn-default btn-file">
+                                         Browse… <input type="file" id="imgInp" name="imgInp">
+                                        </span>
+                                        </span>
+           
+                                    </div>
+                                    <div class='col-sm-12 usr-img'>
+                                        {% for img in vehicle_images %}
+                                       <img class="img-upload col-md-3" src="{{ img }}">
+                                        {% endfor %}
+                                    </div>
+                                </div>
                                 <div class="clear"></div>
                                 <div class="col-sm-6">
                                     <div class="form-group">

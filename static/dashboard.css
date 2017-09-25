@@ -689,3 +689,8 @@ div.form-group.transistion label.error {
     background-color: #FF4081;
 
 }
+
+.img-upload:hover {
+    opacity: 0.7;
+}
+

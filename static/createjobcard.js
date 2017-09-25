@@ -589,7 +589,7 @@ jQuery(document).ready(function($){
 
                     console.log("all present");
                    var url = $form.attr( "action" );
-                   var data = JSON.stringify({ data : { service_type: service_type, mechanic_name: mechanic_name, jc_id: jobcard_id,labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: pending_reason, status: current_status, services : customerComplaints, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost,service_reminder_time:service_reminder_time }});
+                   var data = JSON.stringify({ data : { vehicle_images: imgInput, service_type: service_type, mechanic_name: mechanic_name, jc_id: jobcard_id,labour_cost: lab_cost, veh_num: veh_numb, c_num: chasis_num, brand: veh_brand, model: veh_model, fuel_type: f_type, cust_name: custr_name, cont_num: cont_numb, cont_address: cont_addr, km_ticked: kms_ticked, del_time: delivery_time, reason: pending_reason, status: current_status, services : customerComplaints, spares: spares, recommendedservices : recommendedServices, otherparts_desc: otherparts_desc, otherparts_cost:otherparts_cost,service_reminder_time:service_reminder_time }});
                   //  Send the data using post
                    var posting = $.post( url, data);
                    posting.done(function( data ) {
@@ -941,12 +941,50 @@ jQuery(document).ready(function($){
         $('#create-job-btn').attr('disabled',false);
             spaceRef.getDownloadURL().then(function(url) {
                 $('.usr-img').append("<img class='img-upload col-md-3' src=" + url + "/>");
+                $('.img-upload').click(function(){
+                    clickedImg = ($(this)[0].src).slice(0,-1);
+                    // this = $(this);
+                    $(this).remove();
+                    $.each(imgInput, function(i,val){
+                        
+                        if(val == clickedImg){
+                            imgInput.splice(clickedImg,1);
+
+                        }
+
+                    });
+                    
+                });               
+
                 imgInput.push(url);
             })
         });
       
     }
 
+
+    $(".img-upload").each(function() { 
+        imgInput.push($(this)[0].src);
+         
+    });
+
+    $('.img-upload').click(function(){
+        clickedImg = ($(this)[0].src).slice(0,-1);
+        // this = $(this);
+        $(this).remove();
+        $.each(imgInput, function(i,val){
+            
+            if(val == clickedImg){
+                imgInput.splice(clickedImg,1);
+
+            }
+
+        });
+                
+    });    
+
+
 });
 
 var imgInput = [];
+
