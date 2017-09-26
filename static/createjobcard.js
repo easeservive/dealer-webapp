@@ -940,21 +940,32 @@ jQuery(document).ready(function($){
         console.log('Uploaded a blob or file!');
         $('#create-job-btn').attr('disabled',false);
             spaceRef.getDownloadURL().then(function(url) {
-                $('.usr-img').append("<img class='img-upload col-md-3' src=" + url + "/>");
-                $('.img-upload').click(function(){
-                    clickedImg = ($(this)[0].src).slice(0,-1);
-                    // this = $(this);
-                    $(this).remove();
-                    $.each(imgInput, function(i,val){
+                $('.usr-img').append("<div class='img-upld-grp col-md-4'>  <img class='img-upload ' src=" + url + "/>" + " <i class='fa fa-times close-img' aria-hidden='true'></i>  </div> "   );
+                // $('.img-upload').click(function(){
+                //     clickedImg = ($(this)[0].src).slice(0,-1);
+                //     // this = $(this);
+                //     $(this).remove();
+                //     $.each(imgInput, function(i,val){
                         
+                //         if(val == clickedImg){
+                //             imgInput.splice(clickedImg,1);
+
+                //         }
+
+                //     });
+                    
+                // }); 
+
+                $('.close-img').click(function(){
+                    clickedImg = $(this).parent().children()[0].src.slice(0,-1);
+                    $(this).parent().remove();
+                    $.each(imgInput, function(i,val){ 
                         if(val == clickedImg){
                             imgInput.splice(clickedImg,1);
-
                         }
 
                     });
-                    
-                });               
+                });              
 
                 imgInput.push(url);
             })
@@ -968,20 +979,33 @@ jQuery(document).ready(function($){
          
     });
 
-    $('.img-upload').click(function(){
-        clickedImg = ($(this)[0].src).slice(0,-1);
-        // this = $(this);
-        $(this).remove();
-        $.each(imgInput, function(i,val){
-            
+    $('.close-img').click(function(){
+        clickedImg = $(this).parent().children()[0].src.slice(0,-1);
+        $(this).parent().remove();
+        $.each(imgInput, function(i,val){ 
             if(val == clickedImg){
                 imgInput.splice(clickedImg,1);
-
             }
 
         });
+    });
+
+
+
+    // $('.img-upload').click(function(){
+    //     clickedImg = ($(this)[0].src).slice(0,-1);
+    //     // this = $(this);
+    //     $(this).remove();
+    //     $.each(imgInput, function(i,val){
+            
+    //         if(val == clickedImg){
+    //             imgInput.splice(clickedImg,1);
+
+    //         }
+
+    //     });
                 
-    });    
+    // });    
 
 
 });

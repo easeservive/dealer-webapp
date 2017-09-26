@@ -652,8 +652,8 @@ div.form-group.transistion label.error {
 }
 
 #img-upload, .img-upload {
-    width: 300px;
-    height: 200px;
+    width: 450px;
+    height: 300px;
     padding-left: 0px;
     padding-bottom: 10px;
 }
@@ -690,7 +690,38 @@ div.form-group.transistion label.error {
 
 }
 
-.img-upload:hover {
+.img-upld-grp:hover {
     opacity: 0.7;
+}
+
+.img-upld-grp:hover > .close-img {
+    display: block;
+    
+}
+
+.img-upld-grp > .close-img {
+    display: none;
+}
+
+
+.img-upld-grp {
+    position: relative;
+    padding: 0px;
+}
+
+
+.close-img {
+    position: absolute;
+    top: 5%;
+    left: 84%;
+    font-size: 30px;
+    color: #ff9999;
+}
+
+
+.close-img:hover {
+
+    color: #ff4c4c;
+    cursor: pointer;
 }
 
